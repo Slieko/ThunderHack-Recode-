@@ -12,7 +12,7 @@
 
 </div>
 
-## ThunderHack Recoded++
+## ThunderHack Recode++
   - Just fork with my personal improvements and enchantments. I have nothing to do with the creation of the original "mod"
   - Don't bite me <img src="https://cdn.discordapp.com/emojis/1090735881222103110.webp?size=44&quality=lossless">
 
