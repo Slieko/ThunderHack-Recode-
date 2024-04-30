@@ -50,7 +50,7 @@ public class SearchBar extends AbstractButton {
 
     @Override
     public void charTyped(char key, int keyCode) {
-        if (SharedConstants.isValidChar(key) && listening) {
+        if (SharedConstants.isValidChar(key)) {
             moduleName = moduleName + key;
         }
     }

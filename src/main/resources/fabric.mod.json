@@ -3,7 +3,7 @@
   "id": "thunderhack",
   "version": "1.4",
   "icon": "icon.png",
-  "name": "ThunderHack",
+  "name": "ThunderHack++",
   "description": "Player Assistance Mod",
   "authors": [
     {
@@ -28,7 +28,7 @@
     ]
   },
   "contact": {
-    "sources": "https://github.com/Pan4ur/ThunderHack-Recode",
+    "sources": "https://github.com/Slieko/ThunderHack-Recode-",
     "homepage": "https://thunderhack.onrender.com",
     "issues": "https://github.com/Pan4ur/ThunderHack-Recode/issues"
   },

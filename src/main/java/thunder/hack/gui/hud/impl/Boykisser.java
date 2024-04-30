@@ -19,13 +19,13 @@ import java.awt.*;
 
 import static thunder.hack.modules.client.ClientSettings.isRu;
 
-public class Paimon extends HudElement {
+public class Boykisser extends HudElement {
 
-    public Paimon() {
-        super("Paimon", 50, 10);
+    public Boykisser() {
+        super("Boykisser", 50, 10);
     }
 
-    private final Identifier PAIMON = new Identifier("textures/paimon.png");
+    private final Identifier Boykisser = new Identifier("textures/cute_furry_boy.png");
 
     public Setting<Integer> scale = new Setting<>("Scale", 50, 0, 100);
 
@@ -49,7 +49,7 @@ public class Paimon extends HudElement {
         }
     }
 
-
+//
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
 
@@ -57,7 +57,7 @@ public class Paimon extends HudElement {
         context.getMatrices().translate((int) getPosX() + 100, (int) getPosY() + 100, 0);
         context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f, 1);
         context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100), 0);
-        context.drawTexture(PAIMON, (int) getPosX(), (int) getPosY(), 0, currentFrame * 200, 200, 200, 200, 10600);
+        context.drawTexture(Boykisser, (int) getPosX(), (int) getPosY(), 0, currentFrame * 128, 130, 128, 130, 6784);
         context.getMatrices().pop();
 
         if (!lastPop.passedMs(2000)) {
@@ -70,7 +70,7 @@ public class Paimon extends HudElement {
             Render2DEngine.popWindow();
         }
 
-        if (frameRate.passedMs(32)) {
+        if (frameRate.passedMs(64)) {
             frameRate.reset();
             currentFrame++;
             if (currentFrame > 52)

@@ -1,19 +1,25 @@
 <p align="center">
-    <img src="https://i.imgur.com/ZiJ0r7y.png" style="width: 69%">
+    <img src="https://i.imgur.com/sXOHjy6.png" style="width: 69%">
 </p>
 
 
-<div align="center">
-<img src="https://cdn.discordapp.com/attachments/934396624111824900/1230019159027617792/furro.gif?ex=6631cb9c&is=661f569c&hm=b6cee2cd9b6ec238f54c80dcfc421f2c8ecd3f750f2f61a62087d1e01d201e4d&" style="width: 69%">
-</div>
-
  
 <div align="center">
-    
+
+   Original Devs Discord:
+
 [![Discord Mine](https://img.shields.io/discord/1140266441082404924?label=discord&logo=discord&logoColor=white)](https://discord.gg/bJajFP3kCX)
 
 </div>
 
+## ThunderHack Recoded++
+  - Just fork with my personal improvements and enchantments. I have nothing to do with the creation of the original "mod"
+  - Don't bite me <img src="https://cdn.discordapp.com/emojis/1090735881222103110.webp?size=44&quality=lossless">
+
+<div align="center">
+
+## Original README
+</div>
 
 ## Information
 - Minecraft version: ```Fabric``` 1.20.4 (or whatever version's the latest)

@@ -115,7 +115,7 @@ public final class Core {
     @EventHandler
     public void onSync(EventSync event) {
         if (fullNullCheck()) return;
-        ModuleManager.timer.onEntitySync(event);
+        thunder.hack.modules.movement.Timer.onEntitySync(event);
     }
 
     public void onRender2D(DrawContext e) {

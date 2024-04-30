@@ -311,7 +311,8 @@ public abstract class Module {
         MOVEMENT("Movement"),
         PLAYER("Player"),
         CLIENT("Client"),
-        HUD("HUD");
+        HUD("HUD"),
+        SLK("Sliekos-Tweaks");
 
         private final String name;
 

@@ -28,6 +28,7 @@ import static thunder.hack.modules.Module.mc;
 
 public class MainMenuScreen extends Screen {
     private static final Identifier TH_TEAM = new Identifier("textures/thteam.png");
+    private static final Identifier FORK_AUTHOR = new Identifier("textures/slk.png");
     private final List<MainMenuButton> buttons = new ArrayList<>();
     public boolean confirm = false;
     public static int ticksActive;
@@ -43,6 +44,7 @@ public class MainMenuScreen extends Screen {
                 .replace(".", ""), () -> mc.setScreen(new OptionsScreen(this, mc.options))));
         buttons.add(new MainMenuButton(4, -29, "CLICKGUI", () -> ModuleManager.clickGui.setGui()));
         buttons.add(new MainMenuButton(-110, 12, I18n.translate("menu.quit").toUpperCase(Locale.ROOT), mc::scheduleStop, true));
+
     }
 
     private static MainMenuScreen INSTANCE = new MainMenuScreen();
@@ -83,6 +85,8 @@ public class MainMenuScreen extends Screen {
 
         Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
         buttons.forEach(b -> b.onRender(context, mouseX, mouseY));
+        Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
+        buttons.forEach(b -> b.onRender(context, mouseX, mouseY));
 
         boolean hoveredLogo = Render2DEngine.isHovered(mouseX, mouseY, (int) (halfOfWidth - 120), (int) (halfOfHeight - 130), 210, 50);
 
@@ -95,6 +99,8 @@ public class MainMenuScreen extends Screen {
 
         RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
         context.drawTexture(TH_TEAM, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40, 0, 0, 40, 40, 40, 40);
+        RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
+        context.drawTexture(FORK_AUTHOR, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40, 0, 0, 40, 40, 40, 40);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         int offsetY = 10;
@@ -138,7 +144,8 @@ public class MainMenuScreen extends Screen {
 
         if (Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40))
             mc.setScreen(CreditsScreen.getInstance());
-
+        if (Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40))
+            Util.getOperatingSystem().open(URI.create("https://github.com/Slieko/ThunderHack-Recode-"));
         if (Render2DEngine.isHovered(mouseX, mouseY, (int) (halfOfWidth - 157), (int) (halfOfHeight - 140), 300, 70))
             Util.getOperatingSystem().open(URI.create("https://thunderhack.onrender.com/"));
 

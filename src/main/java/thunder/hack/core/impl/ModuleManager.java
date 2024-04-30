@@ -18,6 +18,7 @@ import thunder.hack.modules.movement.*;
 import thunder.hack.modules.player.*;
 import thunder.hack.modules.render.*;
 import thunder.hack.modules.render.Particles;
+import thunder.hack.modules.Slk.MeteorSpeedMine;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -206,7 +207,7 @@ public class ModuleManager implements IManager {
     public static AutoSex autoSex = new AutoSex();
     public static Tracers tracers = new Tracers();
     public static Parkour parkour = new Parkour();
-    public static Paimon paimon = new Paimon();
+    public static Boykisser boykisser = new Boykisser();
     public static BowPop bowPop = new BowPop();
     public static XCarry xCarry = new XCarry();
     public static Trails trails = new Trails();
@@ -244,6 +245,7 @@ public class ModuleManager implements IManager {
     public static Aura aura = new Aura();
     public static FOV fov = new FOV();
     public static ESP esp = new ESP();
+    public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
 
     public ModuleManager() {
         if (ThunderHack.isOnWindows())
