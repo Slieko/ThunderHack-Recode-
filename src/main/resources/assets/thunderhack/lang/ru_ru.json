@@ -188,5 +188,7 @@
   "descriptions.render.tunnelesp": "Подсвечивает туннели.",
   "descriptions.render.viewmodel": "Модификация рук.",
   "descriptions.render.voidesp": "Подсвечивает пустоту.",
-  "descriptions.sliekos-tweaks.meteorspeedmine": "Спидмайн как на метеоре (даётся эффект). Никакого копипаста, только позаимствована идея"
+  "descriptions.sliekos-tweaks.meteorspeedmine": "Спидмайн как на метеоре (даётся эффект). Никакого копипаста, только позаимствована идея",
+  "descriptions.sliekos-tweaks.autocrash": "кикает с сервера"
+
 }

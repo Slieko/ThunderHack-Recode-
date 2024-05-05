@@ -1,24 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "thunderhack",
-  "version": "1.4",
-  "icon": "icon.png",
-  "name": "ThunderHack++",
-  "description": "Player Assistance Mod",
+  "id": "th-visuals",
+  "version": "2.3.4",
+  "icon": "assets/thunderhack/icon.png",
+  "name": "LambDynamicLights",
+  "description": "Adds dynamic lights to the game.",
   "authors": [
-    {
-      "name": "pan4ur",
-      "contact": {
-        "discord": "pan4ur"
-      }
-    },
-    {
-      "name": "06ED",
-      "contact": {
-        "discord": "dinner_enjoyer"
-      }
-    }
+    "LambdAurora"
   ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/lambdynamiclights",
+    "sources": "https://github.com/LambdAurora/LambDynamicLights.git",
+    "issues": "https://github.com/LambdAurora/LambDynamicLights/issues"
+  },
   "license": "GNU General Public License v3.0",
   "accessWidener": "thunderhack.accesswidener",
   "environment": "client",
@@ -26,11 +20,6 @@
     "main": [
       "thunder.hack.ThunderHack"
     ]
-  },
-  "contact": {
-    "sources": "https://github.com/Slieko/ThunderHack-Recode-",
-    "homepage": "https://thunderhack.onrender.com",
-    "issues": "https://github.com/Pan4ur/ThunderHack-Recode/issues"
   },
   "mixins": [
     "thunderhack.mixins.json"
@@ -46,6 +35,7 @@
     "lithium": "*",
     "starlight": "*",
     "ias": "*",
-    "viafabricplus": "*"
+    "viafabricplus": "*",
+    "baritone": "*"
   }
 }

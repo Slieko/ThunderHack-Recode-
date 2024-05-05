@@ -195,5 +195,6 @@
   "descriptions.commands.vclip": "Clip vertically.",
   "descriptions.commands.waypoint": "Add waypoint (turn on WayPoints!!!).",
 
-  "descriptions.sliekos-tweaks.meteorspeedmine": "Speedmine from meteor (grant haste effect). No copypaste only idea"
+  "descriptions.sliekos-tweaks.meteorspeedmine": "Speedmine from meteor (grant haste effect). No copypaste only idea",
+  "descriptions.sliekos-tweaks.autocrash": "kicks from server"
 }

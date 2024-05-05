@@ -114,4 +114,5 @@ public class MixinPlayerEntity {
           if(ModuleManager.boatFly.isEnabled() && ModuleManager.boatFly.allowShift.getValue())
             cir.setReturnValue(false);
     }
+
 }

@@ -16,6 +16,10 @@ loom {
 
 repositories {
 	maven {
+		name = "meteor-maven-snapshots"
+		url = "https://maven.meteordev.org/snapshots"
+	}
+	maven {
 		name = "jitpack.io"
 		url = "https://jitpack.io"
 	}
@@ -52,7 +56,8 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+	modCompileOnly  "meteordevelopment:baritone:${project.baritone_version}-SNAPSHOT"
+
 	modImpl("org.ladysnake:satin:${project.satin_version}")
 
 	libImpl("meteordevelopment:orbit:${project.orbit_version}")

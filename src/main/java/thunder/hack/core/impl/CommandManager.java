@@ -22,7 +22,6 @@ public class CommandManager implements IManager {
 
     public CommandManager() {
         add(new HorseSpeedCommand());
-        add(new RpcCommand());
         add(new KitCommand());
         add(new GpsCommand());
         add(new CfgCommand());

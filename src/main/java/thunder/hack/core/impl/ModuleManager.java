@@ -10,6 +10,8 @@ import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.hud.HudElement;
 import thunder.hack.gui.hud.impl.*;
 import thunder.hack.modules.Module;
+
+import thunder.hack.modules.Slk.AutoCrash;
 import thunder.hack.modules.client.*;
 import thunder.hack.modules.combat.*;
 import thunder.hack.modules.misc.*;
@@ -245,13 +247,14 @@ public class ModuleManager implements IManager {
     public static Aura aura = new Aura();
     public static FOV fov = new FOV();
     public static ESP esp = new ESP();
+
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
+    public static AutoCrash autoCrash = new AutoCrash();
+
 
     public ModuleManager() {
         if (ThunderHack.isOnWindows())
-            modules.add(new RPC());
-
-        for (Field field : getClass().getDeclaredFields()) {
+         for (Field field : getClass().getDeclaredFields()) {
             if (Module.class.isAssignableFrom(field.getType())) {
                 field.setAccessible(true);
                 try {
@@ -300,8 +303,6 @@ public class ModuleManager implements IManager {
 
         if (ConfigManager.firstLaunch) {
             ModuleManager.notifications.enable();
-            if (ThunderHack.isOnWindows())
-                RPC.getInstance().enable();
             soundFX.enable();
         }
     }

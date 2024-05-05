@@ -46,8 +46,11 @@ public class Boykisser extends HudElement {
             else
                 message = player.getName().getString() + " popped " + (ThunderHack.combatManager.popList.get(player.getName().getString()) > 1 ? ThunderHack.combatManager.popList.get(player.getName().getString()) + "" + " totems and died EZ LMAO!" : "totem and died EZ LMAO!");
             lastPop.reset();
+
         }
     }
+
+
 
 //
     public void onRender2D(DrawContext context) {

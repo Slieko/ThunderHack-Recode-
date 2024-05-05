@@ -20,11 +20,13 @@ public class MeteorSpeedMine extends Module{
 
   @EventHandler
     public void onEnable(PlayerUpdateEvent e){
+      assert mc.player != null;
       mc.player.setStatusEffect(new StatusEffectInstance(HASTE, -1, amplifier.getValue() -1, false, false, false), null);
 
   }
     @Override
     public void onDisable(){
+        assert mc.player != null;
         mc.player.removeStatusEffect(StatusEffects.HASTE);
     }
 }

@@ -81,7 +81,7 @@ public final class Aura extends Module {
     public final Setting<Boolean> clientLook = new Setting<>("ClientLook", false);
     public final Setting<BooleanParent> oldDelay = new Setting<>("OldDelay", new BooleanParent(false));
     public final Setting<Integer> minCPS = new Setting<>("MinCPS", 7, 1, 20).withParent(oldDelay);
-    public final Setting<Integer> maxCPS = new Setting<>("MaxCPS", 12, 1, 20).withParent(oldDelay);
+    public final Setting<Integer> maxCPS = new Setting<>("MaxCPS", 12, 1, 40).withParent(oldDelay);
     public final Setting<ESP> esp = new Setting<>("ESP", ESP.ThunderHack);
     public final Setting<Sort> sort = new Setting<>("Sort", Sort.LowestDistance);
     public final Setting<Boolean> lockTarget = new Setting<>("LockTarget", true);
