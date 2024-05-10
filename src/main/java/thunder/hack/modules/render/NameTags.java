@@ -8,6 +8,9 @@ import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -21,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import net.minecraft.scoreboard.ReadableScoreboardScore;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -48,8 +52,8 @@ import thunder.hack.utility.render.Render3DEngine;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
+import java.util.*;
 
 import static thunder.hack.utility.render.Render2DEngine.CONTAINER_BACKGROUND;
 
@@ -63,11 +67,14 @@ public class NameTags extends Module {
     private final Setting<Boolean> hp = new Setting<>("HP", true);
     private final Setting<Boolean> distance = new Setting<>("Distance", true);
     private final Setting<Boolean> pops = new Setting<>("TotemPops", true);
-    private final Setting<Boolean> outline = new Setting<>("Outline", true);
+    private final Setting<OutlineColor> outline = new Setting<>("Outline", OutlineColor.None);
+    private final Setting<OutlineColor> friendOutline = new Setting<>("FriendOutline", OutlineColor.None);
+    private final Setting<ColorSetting> outlineColor = new Setting<>("OutlineColor", new ColorSetting(0x80000000));
+    private final Setting<ColorSetting> friendOutlineColor = new Setting<>("FriendOutlineColor", new ColorSetting(0x80000000));
     private final Setting<Boolean> enchantss = new Setting<>("Enchants", true);
     private final Setting<Boolean> onlyHands = new Setting<>("OnlyHands", false, v -> enchantss.getValue());
     private final Setting<Boolean> funtimeHp = new Setting<>("FunTimeHp", false);
-    private final Setting<Boolean> bots = new Setting<>("Bots", false);
+    private final Setting<Boolean> ignoreBots = new Setting<>("IgnoreBots", false);
     private final Setting<Boolean> potions = new Setting<>("Potions", true);
     private final Setting<Boolean> shulkers = new Setting<>("Shulkers", true);
     private final Setting<ColorSetting> fillColorA = new Setting<>("Fill", new ColorSetting(0x80000000));
@@ -75,6 +82,8 @@ public class NameTags extends Module {
     private final Setting<Font> font = new Setting<>("FontMode", Font.Fancy);
     private final Setting<Armor> armorMode = new Setting<>("ArmorMode", Armor.Full);
     private final Setting<Health> health = new Setting<>("Health", Health.Number);
+
+    private final Map<Enchantment, String> encMap = new HashMap<>();
 
     public enum Font {
         Fancy, Fast
@@ -88,15 +97,25 @@ public class NameTags extends Module {
         Number, Hearts, Dots
     }
 
+    private enum OutlineColor {
+        Sync, Custom, None
+    }
 
     public NameTags() {
         super("NameTags", Category.RENDER);
+        encMap.put(Enchantments.BLAST_PROTECTION, "B");
+        encMap.put(Enchantments.PROTECTION, "P");
+        encMap.put(Enchantments.SHARPNESS, "S");
+        encMap.put(Enchantments.EFFICIENCY, "E");
+        encMap.put(Enchantments.UNBREAKING, "U");
+        encMap.put(Enchantments.POWER, "PO");
+        encMap.put(Enchantments.THORNS, "T");
     }
 
     public void onRender2D(DrawContext context) {
         for (PlayerEntity ent : mc.world.getPlayers()) {
             if (ent == mc.player && mc.options.getPerspective().isFirstPerson()) continue;
-            if (getEntityPing(ent) <= 0 && !bots.getValue()) continue;
+            if (getEntityPing(ent) <= 0 && ignoreBots.getValue()) continue;
 
             double x = ent.prevX + (ent.getX() - ent.prevX) * mc.getTickDelta();
             double y = ent.prevY + (ent.getY() - ent.prevY) * mc.getTickDelta();
@@ -191,40 +210,33 @@ public class NameTags extends Module {
                             }
 
                             float enchantmentY = 0;
+                            int index = 0;
 
                             NbtList enchants = armorComponent.getEnchantments();
+
+
                             if (enchantss.getValue()) {
                                 if (!onlyHands.getValue() || (armorComponent == ent.getOffHandStack() || armorComponent == ent.getMainHandStack())) {
-                                    for (int index = 0; index < enchants.size(); ++index) {
-                                        String id = enchants.getCompound(index).getString("id");
-                                        short level = enchants.getCompound(index).getShort("lvl");
-                                        String encName = " ";
 
-                                        switch (id) {
-                                            case "minecraft:blast_protection", "blast_protection" ->
-                                                    encName = "B" + level;
-                                            case "minecraft:protection", "protection" -> encName = "P" + level;
-                                            case "minecraft:thorns", "thorns" -> encName = "T" + level;
-                                            case "minecraft:sharpness", "sharpness" -> encName = "S" + level;
-                                            case "minecraft:efficiency", "efficiency" -> encName = "E" + level;
-                                            case "minecraft:unbreaking", "unbreaking" -> encName = "U" + level;
-                                            case "minecraft:power", "power" -> encName = "PO" + level;
-                                            default -> {
-                                                continue;
+                                    for (Enchantment enchantment : encMap.keySet()) {
+                                        if (!onlyHands.getValue() || (armorComponent == ent.getOffHandStack() || armorComponent == ent.getMainHandStack())) {
+
+                                            String id = enchants.getCompound(index).getString("id");
+                                            short level = enchants.getCompound(index).getShort("lvl");
+                                            String encName = id + level;
+
+                                            if (font.getValue() == Font.Fancy) {
+                                                FontRenderers.sf_bold.drawString(context.getMatrices(), encName, posX - 50 + item_offset, (float) posY - 45 + enchantmentY, -1);
+                                            } else {
+                                                context.getMatrices().push();
+                                                context.getMatrices().translate((posX - 50f + item_offset), (posY - 45f + enchantmentY), 0);
+                                                context.drawText(mc.textRenderer, encName, 0, 0, -1, false);
+                                                context.getMatrices().pop();
                                             }
+                                            enchantmentY -= 8;
+                                            if (maxEnchantY > enchantmentY)
+                                                maxEnchantY = enchantmentY;
                                         }
-
-                                        if (font.getValue() == Font.Fancy) {
-                                            FontRenderers.sf_bold.drawString(context.getMatrices(), encName, posX - 50 + item_offset, (float) posY - 45 + enchantmentY, -1);
-                                        } else {
-                                            context.getMatrices().push();
-                                            context.getMatrices().translate((posX - 50f + item_offset), (posY - 45f + enchantmentY), 0);
-                                            context.drawText(mc.textRenderer, encName, 0, 0, -1, false);
-                                            context.getMatrices().pop();
-                                        }
-                                        enchantmentY -= 8;
-                                        if (maxEnchantY > enchantmentY)
-                                            maxEnchantY = enchantmentY;
                                     }
                                 }
                             }
@@ -236,11 +248,29 @@ public class NameTags extends Module {
 
                 Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (posY - 13f), textWidth + 4, 11, color);
 
-                if (outline.getValue()) {
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, HudEditor.getColor(270));
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
-                    Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+
+                OutlineColor cl = ThunderHack.friendManager.isFriend(ent) ? friendOutline.getValue() : outline.getValue();
+
+                switch (cl) {
+                    case None -> {
+
+                    }
+                    case Sync -> {
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, HudEditor.getColor(270));
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
+                        Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+                    }
+                    case Custom -> {
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1,
+                                ThunderHack.friendManager.isFriend(ent) ?  friendOutlineColor.getValue().getColorObject() : outlineColor.getValue().getColorObject());
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1,
+                                ThunderHack.friendManager.isFriend(ent) ?  friendOutlineColor.getValue().getColorObject() : outlineColor.getValue().getColorObject());
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11,
+                                ThunderHack.friendManager.isFriend(ent) ?  friendOutlineColor.getValue().getColorObject() : outlineColor.getValue().getColorObject());
+                        Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11,
+                                ThunderHack.friendManager.isFriend(ent) ?  friendOutlineColor.getValue().getColorObject() : outlineColor.getValue().getColorObject());
+                    }
                 }
 
                 if (font.getValue() == Font.Fancy) {
@@ -266,8 +296,10 @@ public class NameTags extends Module {
                 if (potions.getValue())
                     renderStatusEffectOverlay(context, (float) posX, (float) (posY + maxEnchantY - 60), ent);
 
+                Item handItem = ent.getMainHandStack().getItem();
+
                 if (shulkers.getValue())
-                    renderShulkerToolTip(context, (int) posX - 90, (int) posY - 120, ent.getMainHandStack());
+                    renderShulkerToolTip(context, (int) posX - 90, (int) posY - 120, (handItem instanceof BlockItem bi) && (bi.getBlock() instanceof ShulkerBoxBlock) ? ent.getMainHandStack() : ent.getOffHandStack());
                 context.getMatrices().pop();
             }
         }
@@ -307,12 +339,25 @@ public class NameTags extends Module {
 
                     Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (posY - 13f), textWidth + 4, 11, fillColorA.getValue().getColorObject());
 
-                    if (outline.getValue()) {
-                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, HudEditor.getColor(270));
-                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
-                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
-                        Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+                    switch (outline.getValue()) {
+                        case None -> {
+
+                        }
+                        case Sync -> {
+                            Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, HudEditor.getColor(270));
+                            Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
+                            Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
+                            Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+                        }
+                        case Custom -> {
+                            Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, outlineColor.getValue().getColorObject());
+                            Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, outlineColor.getValue().getColorObject());
+                            Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, outlineColor.getValue().getColorObject());
+                            Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, outlineColor.getValue().getColorObject());
+                        }
                     }
+
+
                     FontRenderers.sf_bold.drawString(context.getMatrices(), final_string, tagX, (float) posY - 10, -1);
                 }
             }
@@ -355,11 +400,22 @@ public class NameTags extends Module {
 
                 Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (posY - 13f), textWidth + 4, 11, fillColorA.getValue().getColorObject());
 
-                if (outline.getValue()) {
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, HudEditor.getColor(270));
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
-                    Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+                switch (outline.getValue()) {
+                    case None -> {
+
+                    }
+                    case Sync -> {
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, HudEditor.getColor(270));
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
+                        Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+                    }
+                    case Custom -> {
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), textWidth + 6, 1, outlineColor.getValue().getColorObject());
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, outlineColor.getValue().getColorObject());
+                        Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, outlineColor.getValue().getColorObject());
+                        Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, outlineColor.getValue().getColorObject());
+                    }
                 }
                 FontRenderers.sf_bold.drawString(context.getMatrices(), final_string, tagX, (float) posY - 10, -1);
             }
@@ -411,7 +467,8 @@ public class NameTags extends Module {
         } else return ent.getHealth() + ent.getAbsorptionAmount();
     }
 
-    private void renderHealthBar(DrawContext context, PlayerEntity player, float maxHealth, int lastHealth, int absorption) {
+    private void renderHealthBar(DrawContext context, PlayerEntity player, float maxHealth, int lastHealth,
+                                 int absorption) {
         int i = MathHelper.ceil((double) maxHealth / 2.0);
         int j = MathHelper.ceil((double) absorption / 2.0);
         int k = i * 2;
@@ -533,6 +590,8 @@ public class NameTags extends Module {
             NbtCompound compoundTag = stack.getSubNbt("BlockEntityTag");
             DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
             Inventories.readNbt(compoundTag, itemStacks);
+            if (compoundTag == null)
+                return false;
 
             float[] colors = new float[]{1F, 1F, 1F};
             Item focusedItem = stack.getItem();
@@ -552,7 +611,7 @@ public class NameTags extends Module {
         return true;
     }
 
-    private void draw(DrawContext context, DefaultedList<ItemStack> itemStacks, int offsetX, int offsetY, float[] colors) {
+    private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, float[] colors) {
         RenderSystem.disableDepthTest();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 

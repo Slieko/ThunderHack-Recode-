@@ -46,6 +46,7 @@ public abstract class Command {
     public void register(CommandDispatcher<CommandSource> dispatcher) {
         for (String name : names) {
             LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.literal(name);
+
             executeBuild(builder);
             dispatcher.register(builder);
         }

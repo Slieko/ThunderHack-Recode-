@@ -111,7 +111,7 @@ public class ThunderHack implements ModInitializer {
                    | $$   | $$  | $$| $$  | $$| $$  | $$| $$  | $$| $$_____/| $$      | $$  | $$ /$$__  $$| $$      | $$_  $$\s
                    | $$   | $$  | $$|  $$$$$$/| $$  | $$|  $$$$$$$|  $$$$$$$| $$      | $$  | $$|  $$$$$$$|  $$$$$$$| $$ \\  $$
                    |__/   |__/  |__/ \\______/ |__/  |__/ \\_______/ \\_______/|__/      |__/  |__/ \\_______/ \\_______/|__/  \\__/   \s
-                   \n \t\t\t\t\t\tBy\s""" + ThunderUtility.getAuthors() + "\n \t\t\t\t\t\tForked by sl1eko");
+                   \n \t\t\t\t\t\tBy\s""" + "Pan4ur & 06ED" + "\n \t\t\t\t\t\tForked by sl1eko");
 
         LogUtils.getLogger().info("[ThunderHack] Init time: " + (System.currentTimeMillis() - initTime) + " ms.");
 

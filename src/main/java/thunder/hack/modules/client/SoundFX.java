@@ -52,7 +52,7 @@ public final class SoundFX extends Module {
     }
 
     public enum KillSound {
-        SQUIRT, Custom, OFF
+        LENYA, Custom, OFF
     }
 
     public enum ScrollSound {

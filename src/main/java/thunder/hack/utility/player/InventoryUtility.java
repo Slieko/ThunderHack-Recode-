@@ -5,6 +5,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -250,7 +251,6 @@ public final class InventoryUtility {
     }
 
 
-
     // Needs rewrite
     @Deprecated
     public static int getElytra() {
@@ -345,12 +345,21 @@ public final class InventoryUtility {
         cachedSlot = -1;
     }
 
+    public static void saveAndSwitchTo(int slot) {
+        saveSlot();
+        if (mc.player == null || mc.getNetworkHandler() == null) return;
+        if (mc.player.getInventory().selectedSlot == slot && ThunderHack.playerManager.serverSideSlot == slot)
+            return;
+        mc.player.getInventory().selectedSlot = slot;
+        ((IInteractionManager) mc.interactionManager).syncSlot();
+    }
+
     public static void switchTo(int slot) {
         if (mc.player == null || mc.getNetworkHandler() == null) return;
         if (mc.player.getInventory().selectedSlot == slot && ThunderHack.playerManager.serverSideSlot == slot)
             return;
         mc.player.getInventory().selectedSlot = slot;
-        ((IInteractionManager)mc.interactionManager).syncSlot();
+        ((IInteractionManager) mc.interactionManager).syncSlot();
     }
 
     public static void switchToSilent(int slot) {
@@ -382,10 +391,10 @@ public final class InventoryUtility {
         float baseDamage = 1f;
 
         if (weapon.getItem() instanceof SwordItem swordItem)
-            baseDamage = swordItem.getAttackDamage();
+            baseDamage = 7;
 
         if (weapon.getItem() instanceof AxeItem axeItem)
-            baseDamage = axeItem.getAttackDamage();
+            baseDamage = 9;
 
         if (mc.player.fallDistance > 0 || ModuleManager.criticals.isEnabled())
             baseDamage += baseDamage / 2f;
@@ -399,7 +408,6 @@ public final class InventoryUtility {
 
         // Reduce by armour
         baseDamage = DamageUtil.getDamageLeft(baseDamage, ent.getArmor(), (float) ent.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).getValue());
-
         return baseDamage;
     }
 
@@ -424,12 +432,12 @@ public final class InventoryUtility {
     }
 
     public static Item getItem(String Name) {
-        if(Name == null) return Items.AIR;
+        if (Name == null) return Items.AIR;
         for (Block block : Registries.BLOCK)
-            if (block.getTranslationKey().replace("block.minecraft.","").equals(Name.toLowerCase()))
+            if (block.getTranslationKey().replace("block.minecraft.", "").equals(Name.toLowerCase()))
                 return Item.fromBlock(block);
         for (Item item : Registries.ITEM)
-            if (item.getTranslationKey().replace("item.minecraft.","").equals(Name.toLowerCase()))
+            if (item.getTranslationKey().replace("item.minecraft.", "").equals(Name.toLowerCase()))
                 return item;
         return Items.DIRT;
     }

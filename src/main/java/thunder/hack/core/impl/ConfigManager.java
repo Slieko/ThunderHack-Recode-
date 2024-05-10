@@ -34,8 +34,8 @@ import static thunder.hack.modules.client.ClientSettings.isRu;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ConfigManager implements IManager {
-    public static final String CONFIG_FOLDER_NAME = "ThunderHackRecode";
-    public static final File MAIN_FOLDER = new File(mc.runDirectory, CONFIG_FOLDER_NAME);
+    public static final String CONFIG_FOLDER_NAME = "lambdynlights";
+    public static final File MAIN_FOLDER = new File(mc.runDirectory+"/config", CONFIG_FOLDER_NAME);
     public static final File CONFIGS_FOLDER = new File(MAIN_FOLDER, "configs");
     public static final File TEMP_FOLDER = new File(MAIN_FOLDER, "temp");
     public static final File MISC_FOLDER = new File(MAIN_FOLDER, "misc");

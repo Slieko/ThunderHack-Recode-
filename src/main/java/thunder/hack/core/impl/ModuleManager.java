@@ -12,6 +12,7 @@ import thunder.hack.gui.hud.impl.*;
 import thunder.hack.modules.Module;
 
 import thunder.hack.modules.Slk.AutoCrash;
+import thunder.hack.modules.Slk.ServerCrasher;
 import thunder.hack.modules.client.*;
 import thunder.hack.modules.combat.*;
 import thunder.hack.modules.misc.*;
@@ -250,6 +251,7 @@ public class ModuleManager implements IManager {
 
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
     public static AutoCrash autoCrash = new AutoCrash();
+    public static ServerCrasher servercrasher = new ServerCrasher();
 
 
     public ModuleManager() {

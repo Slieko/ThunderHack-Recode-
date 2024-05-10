@@ -83,5 +83,10 @@
     "sounds": [
       "thunderhack:pmsound"
     ]
+  },
+  "lenya": {
+    "sounds": [
+      "thunderhack:lenya"
+    ]
   }
 }

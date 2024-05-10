@@ -1,6 +1,7 @@
 package thunder.hack.core.impl;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
@@ -50,6 +51,7 @@ public class CommandManager implements IManager {
         add(new InvCleanerCommand());
         add(new ChestStealerCommand());
         add(new GarbageCleanerCommand());
+
     }
 
     private void add(@NotNull Command command) {
