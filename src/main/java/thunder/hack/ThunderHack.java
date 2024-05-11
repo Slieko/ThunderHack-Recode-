@@ -21,6 +21,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 
+
 public class ThunderHack implements ModInitializer {
     public static final ModMetadata MOD_META;
     public static final String MOD_ID = "th-visuals";
@@ -82,6 +83,8 @@ public class ThunderHack implements ModInitializer {
         configManager.loadNuker();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if(ModuleManager.unHook.isEnabled())
+                ModuleManager.unHook.disable();
             FriendManager.saveFriends();
             configManager.save(configManager.getCurrentConfig());
             wayPointManager.saveWayPoints();

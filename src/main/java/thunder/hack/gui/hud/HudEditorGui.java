@@ -7,6 +7,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.clickui.AbstractWindow;
 import thunder.hack.gui.clickui.ClickGUI;
 import thunder.hack.gui.clickui.ModuleWindow;
@@ -36,7 +37,7 @@ public class HudEditorGui extends Screen {
     @Override
     protected void init() {
         if (firstOpen) {
-            ModuleWindow window = new ModuleWindow(Module.Category.HUD, ThunderHack.moduleManager.getModulesByCategory(Module.Category.HUD), 20f, 20f, 100f, 18f);
+            ModuleWindow window = new ModuleWindow(Module.Category.HUD, ThunderHack.moduleManager.getModulesByCategory(Module.Category.HUD), mc.getWindow().getScaledWidth() / 2f - 50, 20f, 100f, 18f);
             window.setOpen(true);
             windows.add(window);
             firstOpen = false;
@@ -47,22 +48,23 @@ public class HudEditorGui extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         ClickGUI.anyHovered = false;
-        for (AbstractWindow window : windows) {
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_DOWN)) {
-                window.setY(window.getY() + 2);
-            }
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_UP)) {
-                window.setY(window.getY() - 2);
-            }
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_RIGHT)) {
-                window.setX(window.getX() + 2);
-            }
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT)) {
-                window.setX(window.getX() - 2);
-            }
 
-            if (dWheel != 0) window.setY((float) (window.getY() + dWheel));
-        }
+        if (ModuleManager.clickGui.scrollMode.getValue() == ClickGui.scrollModeEn.Old) {
+            for (AbstractWindow window : windows) {
+                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 264))
+                    window.setY(window.getY() + 2);
+                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 265))
+                    window.setY(window.getY() - 2);
+                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 262))
+                    window.setX(window.getX() + 2);
+                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 263))
+                    window.setX(window.getX() - 2);
+                if (dWheel != 0)
+                    window.setY((float) (window.getY() + dWheel));
+            }
+        } else for (AbstractWindow window : windows)
+            if (dWheel != 0)
+                window.setModuleOffset((float) dWheel, mouseX, mouseY);
 
         dWheel = 0;
 
@@ -112,6 +114,12 @@ public class HudEditorGui extends Screen {
     @Override
     public void removed() {
         ThunderHack.EVENT_BUS.unsubscribe(this);
+    }
+
+    public void hudClicked(Module module) {
+        for (AbstractWindow window : windows) {
+            window.hudClicked(module);
+        }
     }
 
     public static HudEditorGui getInstance() {

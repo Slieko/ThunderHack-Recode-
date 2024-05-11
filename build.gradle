@@ -57,9 +57,9 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modCompileOnly  "meteordevelopment:baritone:${project.baritone_version}-SNAPSHOT"
-
-	modImplementation 'com.github.steveice10:mcprotocollib:1.12.2-2'
-	modImplementation 'com.github.steveice10:packetlib:master'
+// idi nahui
+//	modImplementation 'com.github.steveice10:mcprotocollib:1.12.2-2'
+//	modImplementation 'com.github.steveice10:packetlib:master'
 
 	modImpl("org.ladysnake:satin:${project.satin_version}")
 

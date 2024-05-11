@@ -38,11 +38,10 @@ public class ModuleButton extends AbstractButton {
     public final Module module;
     private boolean open;
     private boolean hovered, prevHovered;
-    private float animation = 0f;
+    private float animation, animation2;
 
-    private Identifier Gear = new Identifier("textures/client.png");
-    private GearAnimation gearAnimation = new GearAnimation();
-
+    private final Identifier Gear = new Identifier("textures/client.png");
+    private final GearAnimation gearAnimation = new GearAnimation();
 
     private boolean binding = false;
     private boolean holdbind = false;
@@ -79,6 +78,7 @@ public class ModuleButton extends AbstractButton {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         hovered = Render2DEngine.isHovered(mouseX, mouseY, x, y, width, height);
         animation = fast(animation, module.isEnabled() ? 1 : 0, 15f);
+        animation2 = fast(animation2, 1f, 10f);
 
         if (hovered) {
             if (!prevHovered)
@@ -177,7 +177,7 @@ public class ModuleButton extends AbstractButton {
             Render2DEngine.drawRect(context.getMatrices(), x + 4f, y + 1f, width - 8, height - 2, Render2DEngine.applyOpacity(HudEditor.plateColor.getValue().getColorObject().darker(), 0.15f));
         else {
 
-            switch (ClickGui.getInstance().gradientMode.getValue()) {
+            switch (ModuleManager.clickGui.gradientMode.getValue()) {
                 case both -> {
                     Render2DEngine.draw2DGradientRect(context.getMatrices(), x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
                             Render2DEngine.applyOpacity(HudEditor.getColor(270), animation * 2f),
@@ -209,15 +209,15 @@ public class ModuleButton extends AbstractButton {
         }
 
         if (binding)
-            FontRenderers.sf_medium_modules.drawString(context.getMatrices(), holdbind ? (Formatting.GRAY + "Toggle / " + Formatting.RESET + "Hold") : (Formatting.RESET + "Toggle " + Formatting.GRAY + "/ Hold"), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth("Toggle/Hold"), iy + 2 + (hovered ? -1 : 0), Color.WHITE.getRGB());
+            FontRenderers.sf_medium_modules.drawString(context.getMatrices(), holdbind ? (Formatting.GRAY + "Toggle / " + Formatting.RESET + "Hold") : (Formatting.RESET + "Toggle " + Formatting.GRAY + "/ Hold"), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth("Toggle/Hold"), iy + 2, Render2DEngine.applyOpacity(Color.WHITE.getRGB(), animation2));
 
         if (hovered && InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_SHIFT)) {
             FontRenderers.sf_medium_modules.drawString(context.getMatrices(), "Drawn " + (module.isDrawn() ? Formatting.GREEN + "TRUE" : Formatting.RED + "FALSE"), ix + 1f, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
         } else {
             if (binding)
-                FontRenderers.sf_medium_modules.drawString(context.getMatrices(), "PressKey", ix, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
+                FontRenderers.sf_medium_modules.drawString(context.getMatrices(), "PressKey", ix, iy + 2, module.isEnabled() ? Render2DEngine.applyOpacity(HudEditor.textColor2.getValue().getColor(), animation2) : Render2DEngine.applyOpacity(HudEditor.textColor.getValue().getColor(), animation2));
             else {
-                if (ClickGui.getInstance().textSide.getValue() == ClickGui.TextSide.Left)
+                if (ModuleManager.clickGui.textSide.getValue() == ClickGui.TextSide.Left)
                     FontRenderers.sf_medium_modules.drawString(context.getMatrices(), module.getName(), ix + 2, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
                 else
                     FontRenderers.sf_medium_modules.drawCenteredString(context.getMatrices(), module.getName(), ix + getWidth() / 2 - 4, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
@@ -294,8 +294,10 @@ public class ModuleButton extends AbstractButton {
                 else ThunderHack.soundManager.playSwipeOut();
 
                 animation = 0.5f;
-            } else if (button == 2)
+            } else if (button == 2) {
+                animation2 = 0;
                 binding = !binding;
+            }
         }
 
         if (open)

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.DiffuseLighting;
@@ -30,6 +31,7 @@ import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.number.StyledNumberFormat;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -117,9 +119,13 @@ public class NameTags extends Module {
             if (ent == mc.player && mc.options.getPerspective().isFirstPerson()) continue;
             if (getEntityPing(ent) <= 0 && ignoreBots.getValue()) continue;
 
+
+
+
             double x = ent.prevX + (ent.getX() - ent.prevX) * mc.getTickDelta();
             double y = ent.prevY + (ent.getY() - ent.prevY) * mc.getTickDelta();
             double z = ent.prevZ + (ent.getZ() - ent.prevZ) * mc.getTickDelta();
+
             Vec3d vector = new Vec3d(x, y + height.getValue(), z);
 
             Vector4d position = null;
@@ -134,10 +140,15 @@ public class NameTags extends Module {
 
             String final_string = "";
 
+            if (mc.player.getName().toString() == "Slieko"){
+                final_string += "֍ ";
+
+            }
             if (ping.getValue()) final_string += getEntityPing(ent) + "ms ";
             if (gamemode.getValue()) final_string += translateGamemode(getEntityGamemode(ent)) + " ";
 
             final_string += (ent.getDisplayName().getString()) + " ";
+
 
             if (hp.getValue() && health.is(Health.Number)) {
                 final_string += getHealthColor(getHealth(ent)) + round2(getHealth(ent)) + " ";
@@ -176,6 +187,8 @@ public class NameTags extends Module {
                 context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f, 0);
                 context.getMatrices().scale(scale.getValue(), scale.getValue(), 1f);
                 context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f), 0);
+
+
 
                 float item_offset = 0;
                 if (armorMode.getValue() != Armor.None)

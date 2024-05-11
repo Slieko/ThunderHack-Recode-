@@ -36,6 +36,7 @@ public class Render2DEngine {
     public static RectangleShader RECTANGLE_SHADER;
     public static MainMenuProgram MAIN_MENU_PROGRAM;
     public static ArcShader ARC_PROGRAM;
+    public static BlurProgram BLUR_PROGRAM;
 
     public static final Identifier star = new Identifier("textures/star.png");
     public static final Identifier heart = new Identifier("textures/heart.png");
@@ -689,9 +690,45 @@ public class Render2DEngine {
     }
 
     public static void drawHudBase(MatrixStack matrices, float x, float y, float width, float height, float radius) {
+        if (HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
+            drawRoundedBlur(matrices, x, y, width, height, radius, HudEditor.blurColor.getValue().getColorObject());
+        } else {
+            preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
+            HUD_SHADER.setParameters(x, y, width, height, radius, HudEditor.alpha.getValue(), HudEditor.alpha.getValue());
+            HUD_SHADER.use();
+            Tessellator.getInstance().draw();
+            endRender();
+        }
+    }
+
+    public static void drawHudBase2(MatrixStack matrices, float x, float y, float width, float height, float radius, float blurStrenth, float blurOpacity) {
+        if (HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
+            drawRoundedBlur(matrices, x, y, width, height, radius, HudEditor.blurColor.getValue().getColorObject(), blurStrenth, blurOpacity);
+        } else {
+            preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
+            HUD_SHADER.setParameters(x, y, width, height, radius, HudEditor.alpha.getValue(), HudEditor.alpha.getValue());
+            HUD_SHADER.use();
+            Tessellator.getInstance().draw();
+            endRender();
+        }
+    }
+
+    public static void drawHudBase(MatrixStack matrices, float x, float y, float width, float height, float radius, boolean hud) {
         preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
-        HUD_SHADER.setParameters(x, y, width, height, radius, 1f, HudEditor.alpha.getValue());
+        HUD_SHADER.setParameters(x, y, width, height, radius, HudEditor.alpha.getValue(), HudEditor.alpha.getValue());
         HUD_SHADER.use();
+        Tessellator.getInstance().draw();
+        endRender();
+    }
+
+    public static void drawRoundedBlur(MatrixStack matrices, float x, float y, float width, float height, float radius, Color c1) {
+        drawRoundedBlur(matrices, x, y, width, height, radius, c1, HudEditor.blurStrength.getValue(), HudEditor.blurOpacity.getValue());
+    }
+
+    public static void drawRoundedBlur(MatrixStack matrices, float x, float y, float width, float height, float radius, Color c1, float blurStrenth, float blurOpacity) {
+        preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
+        BLUR_PROGRAM.setParameters(x, y, width, height, radius, c1, blurStrenth, blurOpacity);
+        BLUR_PROGRAM.use();
         Tessellator.getInstance().draw();
         endRender();
     }
@@ -748,7 +785,7 @@ public class Render2DEngine {
         RenderSystem.setShaderTexture(0, star);
         RenderSystem.setShaderColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f, c.getAlpha() / 255f);
         Render2DEngine.renderGradientTexture(matrices, 0, 0, scale, scale, 0, 0, 128, 128, 128, 128,
-                HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
+                c, c, c, c);
         endRender();
     }
 
@@ -758,7 +795,17 @@ public class Render2DEngine {
         RenderSystem.setShaderTexture(0, heart);
         RenderSystem.setShaderColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f, c.getAlpha() / 255f);
         Render2DEngine.renderGradientTexture(matrices, 0, 0, scale, scale, 0, 0, 128, 128, 128, 128,
-                HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
+                c, c, c, c);
+        endRender();
+    }
+
+    public static void drawBloom(MatrixStack matrices, Color c, float scale) {
+        setupRender();
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+        RenderSystem.setShaderTexture(0, firefly);
+        RenderSystem.setShaderColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f, c.getAlpha() / 255f);
+        Render2DEngine.renderGradientTexture(matrices, 0, 0, scale, scale, 0, 0, 128, 128, 128, 128,
+                c, c, c, c);
         endRender();
     }
 
@@ -795,6 +842,7 @@ public class Render2DEngine {
         TEXTURE_COLOR_PROGRAM = new TextureColorProgram();
         ARC_PROGRAM = new ArcShader();
         RECTANGLE_SHADER = new RectangleShader();
+        BLUR_PROGRAM = new BlurProgram();
     }
 
     public static class BlurredShadow {

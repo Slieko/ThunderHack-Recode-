@@ -28,7 +28,7 @@ public abstract class MixinChatInputSuggestor {
     @Shadow protected abstract void showCommandSuggestions();
 
     @Inject(method = "refresh", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z", remap = false), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onRefresh(CallbackInfo ci, String string, StringReader reader) {
+    public void refreshHook(CallbackInfo ci, String string, StringReader reader) {
         if (reader.canRead(ThunderHack.commandManager.getPrefix().length()) && reader.getString().startsWith(ThunderHack.commandManager.getPrefix(), reader.getCursor())) {
             reader.setCursor(reader.getCursor() + 1);
 

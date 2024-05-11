@@ -81,7 +81,7 @@ public class Boykisser extends HudElement {
         }
 
 
-        setBounds((int) (scale.getValue() * 3f), (int) (scale.getValue() * 3f));
+        setBounds(getPosX(), getPosY(), (scale.getValue() * 3f), (scale.getValue() * 3f));
     }
 
 

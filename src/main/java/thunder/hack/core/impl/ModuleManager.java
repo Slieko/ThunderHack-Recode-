@@ -248,6 +248,7 @@ public class ModuleManager implements IManager {
     public static Aura aura = new Aura();
     public static FOV fov = new FOV();
     public static ESP esp = new ESP();
+    public static ClickTP clicktp = new ClickTP();
 
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
     public static AutoCrash autoCrash = new AutoCrash();
@@ -300,12 +301,20 @@ public class ModuleManager implements IManager {
     }
 
     public void onLoad() {
+        try {
+            ThunderHack.EVENT_BUS.unsubscribe(unHook);
+        } catch (Exception ignored) {
+        }
+        unHook.setEnabled(false);
+
+
         modules.sort(Comparator.comparing(Module::getName));
         modules.stream().filter(Module::listening).forEach(ThunderHack.EVENT_BUS::subscribe);
 
         if (ConfigManager.firstLaunch) {
             ModuleManager.notifications.enable();
             soundFX.enable();
+
         }
     }
 

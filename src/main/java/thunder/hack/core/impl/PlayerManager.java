@@ -26,13 +26,18 @@ import thunder.hack.modules.Module;
 import thunder.hack.modules.combat.Aura;
 import thunder.hack.modules.movement.NoSlow;
 import thunder.hack.utility.Timer;
+import thunder.hack.utility.math.MathUtility;
+
+import java.util.ArrayDeque;
 
 import static net.minecraft.util.math.MathHelper.clamp;
 
 public class PlayerManager implements IManager {
-    public float yaw, pitch, lastYaw, lastPitch, currentPlayerSpeed;
+    public float yaw, pitch, lastYaw, lastPitch, currentPlayerSpeed, averagePlayerSpeed;
     public int ticksElytraFlying, serverSideSlot;
     public final Timer switchTimer = new Timer();
+
+    private final ArrayDeque<Float> speedResult = new ArrayDeque<>(20);
 
     public float bodyYaw, prevBodyYaw;
 
@@ -40,7 +45,7 @@ public class PlayerManager implements IManager {
     // Юзать везде!
     public boolean inInventory;
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onSync(EventSync event) {
         if (Module.fullNullCheck()) return;
 
@@ -57,6 +62,17 @@ public class PlayerManager implements IManager {
     @EventHandler
     public void onTick(EventTick e) {
         currentPlayerSpeed = (float) Math.hypot(mc.player.getX() - mc.player.prevX, mc.player.getZ() - mc.player.prevZ);
+
+        if (speedResult.size() > 20)
+            speedResult.poll();
+
+        speedResult.add(currentPlayerSpeed);
+
+        float average = 0.0f;
+
+        for (Float value : speedResult) average += MathUtility.clamp(value, 0f, 20f);
+
+        averagePlayerSpeed = average / (float) speedResult.size();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -66,8 +82,10 @@ public class PlayerManager implements IManager {
         prevBodyYaw = bodyYaw;
         bodyYaw = getBodyYaw();
 
-        mc.player.setYaw(yaw);
-        mc.player.setPitch(pitch);
+        if(!ModuleManager.rotations.clientLook.getValue()) {
+            mc.player.setYaw(yaw);
+            mc.player.setPitch(pitch);
+        }
 
         ModuleManager.rotations.fixRotation = Float.NaN;
     }
@@ -143,9 +161,9 @@ public class PlayerManager implements IManager {
 
         Vec3d rotationVector = getRotationVector(pitch, yaw).multiply(distance);
         Vec3d endPoint = startPoint.add(rotationVector);
-        
+
         Box entityArea = mc.player.getBoundingBox().stretch(rotationVector).expand(1.0, 1.0, 1.0);
-        
+
         EntityHitResult ehr;
 
         double maxDistance = Math.max(distancePow2, Math.pow(wallDistance, 2));

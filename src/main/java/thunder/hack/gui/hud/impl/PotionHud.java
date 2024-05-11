@@ -6,9 +6,11 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.hud.HudElement;
 import thunder.hack.modules.client.HudEditor;
+import thunder.hack.setting.Setting;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.animation.AnimationUtility;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class PotionHud extends HudElement {
@@ -17,6 +19,8 @@ public class PotionHud extends HudElement {
     }
 
     private float vAnimation, hAnimation;
+
+    private final Setting<Boolean> colored = new Setting<>("Colored", false);
 
     public static String getDuration(StatusEffectInstance pe) {
         if (pe.isInfinite()) {
@@ -68,13 +72,21 @@ public class PotionHud extends HudElement {
         hAnimation = AnimationUtility.fast(hAnimation, max_width, 15);
 
         Render2DEngine.drawHudBase(context.getMatrices(), getPosX(), getPosY(), hAnimation, vAnimation, HudEditor.hudRound.getValue());
-        setBounds((int) max_width, 20 + y_offset1);
 
         int y_offset = 0;
 
-        FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), "Potions", getPosX() + max_width / 2, getPosY() + 4, HudEditor.textColor.getValue().getColor());
-        Render2DEngine.horizontalGradient(context.getMatrices(), getPosX() + 2, getPosY() + 13.7f, getPosX() + 2 + hAnimation / 2, getPosY() + 14, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
-        Render2DEngine.horizontalGradient(context.getMatrices(), getPosX() + 2 + hAnimation / 2, getPosY() + 13.7f, getPosX() + hAnimation - 2, getPosY() + 14, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
+        if(HudEditor.hudStyle.is(HudEditor.HudStyle.Glowing)) {
+            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), "Potions", getPosX() + hAnimation / 2, getPosY() + 4, HudEditor.textColor.getValue().getColorObject());
+        } else {
+            FontRenderers.sf_bold.drawGradientString(context.getMatrices(), "Potions", getPosX() + hAnimation / 7, getPosY() + 4, 10);
+        }
+
+        if(HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
+            Render2DEngine.verticalGradient(context.getMatrices(), getPosX() , getPosY() + 13, getPosX() + hAnimation, getPosY() + 18, new Color(0x7B000000, true), new Color(0x0000000, true));
+        } else {
+            Render2DEngine.horizontalGradient(context.getMatrices(), getPosX() + 2, getPosY() + 13.7f, getPosX() + 2 + hAnimation / 2, getPosY() + 14, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
+            Render2DEngine.horizontalGradient(context.getMatrices(), getPosX() + 2 + hAnimation / 2, getPosY() + 13.7f, getPosX() + hAnimation - 2, getPosY() + 14, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
+        }
 
         Render2DEngine.addWindow(context.getMatrices(), getPosX(), getPosY(), getPosX() + hAnimation, getPosY() + vAnimation, 1f);
         for (StatusEffectInstance potionEffect : effects) {
@@ -91,9 +103,12 @@ public class PotionHud extends HudElement {
             String s = potion.getName().getString() + " " + power;
             String s2 = getDuration(potionEffect) + "";
 
-            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), s + "  " + s2, getPosX() + 5, getPosY() + 20 + y_offset, HudEditor.textColor.getValue().getColor());
+            Color c = new Color(potionEffect.getEffectType().getColor());
+            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), s + "  " + s2, getPosX() + 5, getPosY() + 20 + y_offset, colored.getValue() ? c.getRGB() : HudEditor.textColor.getValue().getColor());
             y_offset += 10;
         }
         Render2DEngine.popWindow();
+
+        setBounds(getPosX(), getPosY(), hAnimation, vAnimation);
     }
 }

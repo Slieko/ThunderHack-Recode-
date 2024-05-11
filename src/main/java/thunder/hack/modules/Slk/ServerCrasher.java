@@ -13,7 +13,7 @@ public class ServerCrasher extends Module {
     @EventHandler
     public void onEnable(PlayerUpdateEvent e){
         assert mc.player != null;
-        mc.player.networkHandler.sendChatMessage("pay * a a");
+        mc.player.networkHandler.sendChatCommand("pay * a a");
         // doesnt work :(
     }
 }
