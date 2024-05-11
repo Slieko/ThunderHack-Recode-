@@ -54,9 +54,9 @@ float noise12(vec2 p) {
     vec2 f = fract(p);
     vec2 u = f * f * (3.0 - 2.0 * f);
     return 1.0 - 2.0 * mix(mix(hash12(i + vec2(0.0, 0.0)),
-    hash12(i + vec2(1.0, 0.0)), u.x),
-    mix(hash12(i + vec2(0.0, 1.0)),
-    hash12(i + vec2(1.0, 1.0)), u.x), u.y);
+                               hash12(i + vec2(1.0, 0.0)), u.x),
+                           mix(hash12(i + vec2(0.0, 1.0)),
+                               hash12(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 
 void main(void) {

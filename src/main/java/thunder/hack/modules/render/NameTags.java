@@ -140,7 +140,7 @@ public class NameTags extends Module {
 
             String final_string = "";
 
-            if (mc.player.getName().toString() == "Slieko"){
+            if (ent.getDisplayName().getString() == "Slieko"){
                 final_string += "֍ ";
 
             }

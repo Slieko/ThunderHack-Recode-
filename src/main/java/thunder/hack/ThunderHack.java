@@ -81,6 +81,7 @@ public class ThunderHack implements ModInitializer {
         configManager.loadInvCleaner();
         configManager.loadSearch();
         configManager.loadNuker();
+        ThunderUtility.parseStarGazer();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if(ModuleManager.unHook.isEnabled())
