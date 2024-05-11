@@ -33,7 +33,7 @@ public abstract class MixinSplashOverlay {
     @Final @Shadow private ResourceReload reload;
     @Final @Shadow private Consumer<Optional<Throwable>> exceptionHandler;
 
-    private static final Identifier TH_LOGO = new Identifier("textures/th.png");
+    private static final Identifier TH_LOGO = new Identifier("thunderhack", "textures/gui/elements/th.png");
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {

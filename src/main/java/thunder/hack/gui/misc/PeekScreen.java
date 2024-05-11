@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Arrays;
 
 public class PeekScreen extends ShulkerBoxScreen {
-    private static final Identifier TEXTURE = new Identifier("textures/container.png");
+    private static final Identifier TEXTURE = new Identifier("thunderhack", "textures/hud/elements/container.png");
 
     private static final ItemStack[] ITEMS = new ItemStack[27];
 

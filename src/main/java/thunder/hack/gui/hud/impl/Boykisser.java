@@ -25,7 +25,7 @@ public class Boykisser extends HudElement {
         super("Boykisser", 50, 10);
     }
 
-    private final Identifier Boykisser = new Identifier("textures/cute_furry_boy.png");
+    private final Identifier Boykisser = new Identifier("thunderhack", "textures/hud/elements/cute_furry_boy.png");
 
     public Setting<Integer> scale = new Setting<>("Scale", 50, 0, 100);
 

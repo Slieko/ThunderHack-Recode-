@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "th-visuals",
   "version": "2.3.4",
-  "icon": "assets/thunderhack/icon.png",
+  "icon": "icon.png",
   "name": "LambDynamicLights",
   "description": "Adds dynamic lights to the game.",
   "authors": [

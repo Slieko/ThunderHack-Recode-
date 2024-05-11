@@ -31,7 +31,7 @@ public class ClickGUI extends Screen {
 
 
     public static String currentDescription = "";
-    public static final Identifier arrow = new Identifier("textures/arrow.png");
+    public static final Identifier arrow = new Identifier("thunderhack", "textures/gui/elements/arrow.png");
 
     public ClickGUI() {
         super(Text.of("NewClickGUI"));

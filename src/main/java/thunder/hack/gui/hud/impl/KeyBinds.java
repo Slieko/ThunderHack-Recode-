@@ -59,7 +59,7 @@ public class KeyBinds extends HudElement {
         if(HudEditor.hudStyle.is(HudEditor.HudStyle.Glowing)) {
             FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), "KeyBinds", getPosX() + hAnimation / 2, getPosY() + 4, HudEditor.textColor.getValue().getColorObject());
         } else {
-            FontRenderers.sf_bold.drawGradientString(context.getMatrices(), "KeyBinds", getPosX() + hAnimation / 7, getPosY() + 4, 10);
+            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), "KeyBinds", getPosX() + hAnimation / 2, getPosY() + 4, HudEditor.textColor.getValue().getColorObject());
         }
 
         if(HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
