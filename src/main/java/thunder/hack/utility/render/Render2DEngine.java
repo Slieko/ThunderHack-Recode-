@@ -14,6 +14,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL40C;
+import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.font.Texture;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.utility.math.MathUtility;
@@ -38,16 +39,17 @@ public class Render2DEngine {
     public static ArcShader ARC_PROGRAM;
     public static BlurProgram BLUR_PROGRAM;
 
-    public static final Identifier star = new Identifier("textures/star.png");
-    public static final Identifier heart = new Identifier("textures/heart.png");
-    public static final Identifier dollar = new Identifier("textures/dollar.png");
-    public static final Identifier snowflake = new Identifier("textures/snowflake.png");
-    public static final Identifier capture = new Identifier("textures/capture.png");
-    public static final Identifier firefly = new Identifier("textures/firefly.png");
-    public static final Identifier arrow = new Identifier("textures/triangle.png");
-    public static final Identifier bubble = new Identifier("textures/hitbubble.png");
-    public static final Identifier default_circle = new Identifier("textures/circle.png");
-    public static final Identifier CONTAINER_BACKGROUND = new Identifier("textures/container.png");
+    public static final Identifier star = new Identifier("thunderhack", "textures/particles/star.png");
+    public static final Identifier heart = new Identifier("thunderhack", "textures/particles/heart.png");
+    public static final Identifier dollar = new Identifier("thunderhack", "textures/particles/dollar.png");
+    public static final Identifier snowflake = new Identifier("thunderhack", "textures/particles/snowflake.png");
+    public static final Identifier firefly = new Identifier("thunderhack", "textures/particles/firefly.png");
+    public static final Identifier arrow = new Identifier("thunderhack", "textures/hud/elements/triangle.png");
+    public static final Identifier capture = new Identifier("thunderhack", "textures/hud/elements/capture.png");
+    public static final Identifier bubble = new Identifier("thunderhack", "textures/particles/hitbubble.png");
+
+    public static final Identifier default_circle = new Identifier("thunderhack", "textures/particles/circle.png");
+    public static final Identifier CONTAINER_BACKGROUND = new Identifier("thunderhack", "textures/hud/elements/container.png");
 
     public static HashMap<Integer, BlurredShadow> shadowCache = new HashMap<>();
     public static HashMap<Integer, BlurredShadow> shadowCache1 = new HashMap<>();

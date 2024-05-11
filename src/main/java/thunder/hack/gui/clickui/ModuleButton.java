@@ -40,7 +40,7 @@ public class ModuleButton extends AbstractButton {
     private boolean hovered, prevHovered;
     private float animation, animation2;
 
-    private final Identifier Gear = new Identifier("textures/client.png");
+    private final Identifier Gear = new Identifier("thunderhack", "textures/gui/headers/client.png");
     private final GearAnimation gearAnimation = new GearAnimation();
 
     private boolean binding = false;
