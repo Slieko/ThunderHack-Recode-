@@ -40,7 +40,9 @@
 - [KiLAB Gaming](https://www.youtube.com/@KiLABGaming) for complete overview
 - [@meteordevelopment](https://github.com/meteordevelopment) for orbit
 - [@ladysnake](https://github.com/ladysnake) for satin
-- [@0x3C50](https://github.com/0x3C50/Renderer) for the renderer
+-
+[@0x3C50](https://github.com/0x3C50/Renderer) for the renderer
+
 -[@LambdAurora — LambDynamicLights](https://github.com/LambdAurora/LambDynamicLights) for fake cfg-folder name
 
 ## Screenshots
