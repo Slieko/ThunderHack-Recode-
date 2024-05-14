@@ -41,8 +41,7 @@
 - [@meteordevelopment](https://github.com/meteordevelopment) for orbit
 - [@ladysnake](https://github.com/ladysnake) for satin
 - [@0x3C50](https://github.com/0x3C50/Renderer) for the renderer
--
-[@LambdAurora - LambDynamicLights](https://github.com/LambdAurora/LambDynamicLights) for fake cfg-folder name
+-[@LambdAurora — LambDynamicLights](https://github.com/LambdAurora/LambDynamicLights) for fake cfg-folder name
 
 ## Screenshots
 ![image](https://media.discordapp.net/attachments/909158122990469150/1223198203906887721/2024-03-29_11.png?ex=6618fb19&is=66068619&hm=6e9f83c686a851f3f1f3bd89f3c828cad0920fbf1cce8bc5842af7bb20edf428&=&format=webp&quality=lossless)
