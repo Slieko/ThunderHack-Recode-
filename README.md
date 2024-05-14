@@ -16,11 +16,6 @@
   - Just fork with my personal improvements and enchantments. I have nothing to do with the creation of the original "mod"
   - Don't bite me <img src="https://cdn.discordapp.com/emojis/1090735881222103110.webp?size=44&quality=lossless">
 
-<div align="center">
-
-## Original README
-</div>
-
 ## Information
 - Minecraft version: ```Fabric``` 1.20.4 (or whatever version's the latest)
 - Default ClickGui keybind - **```P```** (Lies!! Go to the Discord server and ask for the real keybind.)
