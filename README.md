@@ -16,11 +16,6 @@
   - Just fork with my personal improvements and enchantments. I have nothing to do with the creation of the original "mod"
   - Don't bite me <img src="https://cdn.discordapp.com/emojis/1090735881222103110.webp?size=44&quality=lossless">
 
-<div align="center">
-
-## Original README
-</div>
-
 ## Information
 - Minecraft version: ```Fabric``` 1.20.4 (or whatever version's the latest)
 - Default ClickGui keybind - **```P```** (Lies!! Go to the Discord server and ask for the real keybind.)
@@ -41,6 +36,7 @@
 - [@meteordevelopment](https://github.com/meteordevelopment) for orbit
 - [@ladysnake](https://github.com/ladysnake) for satin
 - [@0x3C50](https://github.com/0x3C50/Renderer) for the renderer
+- [@LambdAurora — LambDynamicLights](https://github.com/LambdAurora/LambDynamicLights) for fake cfg-folder name
 
 ## Screenshots
 ![image](https://media.discordapp.net/attachments/909158122990469150/1223198203906887721/2024-03-29_11.png?ex=6618fb19&is=66068619&hm=6e9f83c686a851f3f1f3bd89f3c828cad0920fbf1cce8bc5842af7bb20edf428&=&format=webp&quality=lossless)
