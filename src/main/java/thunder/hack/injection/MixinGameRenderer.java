@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.FriendManager;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.modules.client.ClientSettings;
 import thunder.hack.modules.combat.Aura;
@@ -95,6 +96,11 @@ public abstract class MixinGameRenderer {
             mc.getProfiler().pop();
             info.cancel();
         }
+        if (ModuleManager.noEntityTrace.isEnabled() && (!NoEntityTrace.frienddmg.getValue()))
+            if (mc.cameraEntity instanceof EndCrystalEntity) return;
+            mc.getProfiler().pop();
+            info.cancel();
+        info.cancel();
         if (ModuleManager.aura.isEnabled() && Aura.target != null && mc.player.distanceTo(Aura.target) <= ModuleManager.aura.attackRange.getValue() && ModuleManager.aura.rotationMode.getValue() != Aura.Mode.None) {
             mc.getProfiler().pop();
             info.cancel();

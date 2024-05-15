@@ -4,7 +4,9 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PendingUpdateManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
+import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.injection.accesors.IClientWorldMixin;
 import thunder.hack.utility.math.MathUtility;
@@ -34,14 +36,6 @@ public final class PlayerUtility {
         return (float) (d0 * d0 + d1 * d1 + d2 * d2);
     }
 
-    public static float squaredDistance2d(@NotNull Vec2f point) {
-        if (mc.player == null) return 0f;
-
-        double d = mc.player.getX() - point.x;
-        double f = mc.player.getZ() - point.y;
-        return (float) (d * d + f * f);
-    }
-
     public static ClientPlayerEntity getPlayer() {
         return mc.player;
     }
@@ -65,5 +59,17 @@ public final class PlayerUtility {
         double d = mc.player.getX() - x;
         double f = mc.player.getZ() - z;
         return (float) (d * d + f * f);
+    }
+    public static float getSquaredDistance2D(Vec3d vec) {
+        double d0 = mc.player.getX() - vec.getX();
+        double d2 = mc.player.getZ() - vec.getZ();
+        return (float) (d0 * d0 + d2 * d2);
+    }
+    public static boolean canSee(Vec3d pos) {
+        Vec3d vec3d = new Vec3d(mc.player.getX(), mc.player.getEyeY(), mc.player.getZ());
+        if (pos.distanceTo(vec3d) > 128.0)
+            return false;
+        else
+            return mc.world.raycast(new RaycastContext(vec3d, pos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, mc.player)).getType() == HitResult.Type.MISS;
     }
 }

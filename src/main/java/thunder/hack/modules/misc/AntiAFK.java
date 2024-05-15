@@ -15,6 +15,7 @@ public class AntiAFK extends Module {
         super("AntiAFK", Category.MISC);
     }
 
+
     private final Setting<Mode> mode = new Setting<>("Mode", Mode.Simple);
     private final Setting<Boolean> spin = new Setting<>("Spin", false, v -> mode.getValue() == Mode.Simple);
     private final Setting<Float> speed = new Setting<>("Speed", 5f, 1f, 7f, v -> mode.getValue() == Mode.Simple);
