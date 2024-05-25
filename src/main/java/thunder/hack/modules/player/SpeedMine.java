@@ -52,6 +52,8 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Queue;
 
+// pasted and adapted by sl1eko
+// source getted by qunix
 public final class SpeedMine extends Module {
     public final Setting<Mode> mode = new Setting<>("Mode", Mode.Packet);
     private final Setting<StartMode> startMode = new Setting<>("StartMode", StartMode.StartAbort, v -> mode.getValue() == Mode.Packet);
