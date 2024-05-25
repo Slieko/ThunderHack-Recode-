@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import thunder.hack.ThunderHack;
-import thunder.hack.core.impl.FriendManager;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.modules.client.ClientSettings;
 import thunder.hack.modules.combat.Aura;
@@ -91,16 +90,10 @@ public abstract class MixinGameRenderer {
     @Inject(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;"), cancellable = true)
     private void onUpdateTargetedEntity(float tickDelta, CallbackInfo info) {
         if (ModuleManager.noEntityTrace.isEnabled() && (mc.player.getMainHandStack().getItem() instanceof PickaxeItem || !NoEntityTrace.ponly.getValue())) {
-            if (mc.cameraEntity instanceof EndCrystalEntity) return;
             if (mc.player.getMainHandStack().getItem() instanceof SwordItem && NoEntityTrace.noSword.getValue()) return;
             mc.getProfiler().pop();
             info.cancel();
         }
-        if (ModuleManager.noEntityTrace.isEnabled() && (!NoEntityTrace.frienddmg.getValue()))
-            if (mc.cameraEntity instanceof EndCrystalEntity) return;
-            mc.getProfiler().pop();
-            info.cancel();
-        info.cancel();
         if (ModuleManager.aura.isEnabled() && Aura.target != null && mc.player.distanceTo(Aura.target) <= ModuleManager.aura.attackRange.getValue() && ModuleManager.aura.rotationMode.getValue() != Aura.Mode.None) {
             mc.getProfiler().pop();
             info.cancel();

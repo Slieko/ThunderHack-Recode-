@@ -1,6 +1,9 @@
 package thunder.hack.modules.player;
 
+import com.google.common.collect.EvictingQueue;
+import com.google.common.collect.Queues;
 import meteordevelopment.orbit.EventHandler;
+import meteordevelopment.orbit.EventPriority;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -39,11 +42,15 @@ import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.ExplosionUtility;
 import thunder.hack.utility.math.MathUtility;
 import thunder.hack.utility.player.InventoryUtility;
+import thunder.hack.utility.player.PlayerUtility;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.Render3DEngine;
+import thunder.hack.utility.world.MiningData;
 
 import java.awt.*;
+import java.util.Deque;
 import java.util.Objects;
+import java.util.Queue;
 
 public final class SpeedMine extends Module {
     public final Setting<Mode> mode = new Setting<>("Mode", Mode.Packet);
@@ -64,6 +71,7 @@ public final class SpeedMine extends Module {
     private final Setting<Boolean> abort = new Setting<>("Abort", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
     private final Setting<Boolean> start = new Setting<>("Start", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
     private final Setting<Boolean> stop2 = new Setting<>("Stop2", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
+    private final Setting<Boolean> DoubleMine = new Setting<>("Double Mine", false, v -> mode.getValue() == Mode.Packet).withParent(packets);
 
     private final Setting<BooleanParent> render = new Setting<>("Render", new BooleanParent(false), v -> mode.getValue() != Mode.Damage);
     private final Setting<Boolean> smooth = new Setting<>("Smooth", true, v -> mode.getValue() != Mode.Damage).withParent(render);
@@ -74,27 +82,32 @@ public final class SpeedMine extends Module {
     private final Setting<ColorSetting> startFillColor = new Setting<>("Start Fill Color", new ColorSetting(new Color(255, 0, 0, 120)), v -> mode.getValue() != Mode.Damage).withParent(render);
     private final Setting<ColorSetting> endFillColor = new Setting<>("End Fill Color", new ColorSetting(new Color(47, 255, 0, 120)), v -> mode.getValue() != Mode.Damage).withParent(render);
 
-    private static SpeedMine instance;
     public static BlockPos minePosition;
     private Direction mineFacing;
     private int mineBreaks;
     public static float progress, prevProgress;
     public boolean worth = false;
-
+    private Queue<MiningData> miningQueue = Queues.synchronizedQueue(EvictingQueue.create(2));
     private final Timer attackTimer = new Timer();
+    MiningData data;
 
     public SpeedMine() {
         super("SpeedMine", Category.PLAYER);
-        instance = this;
     }
 
     @Override
     public void onDisable() {
+        this.miningQueue.clear();
         reset();
     }
 
     @Override
     public void onEnable() {
+        if (DoubleMine.getValue()) {
+            this.miningQueue = Queues.synchronizedQueue(EvictingQueue.create(2));
+        } else {
+            this.miningQueue = Queues.synchronizedQueue(EvictingQueue.create(1));
+        }
         reset();
     }
 
@@ -111,8 +124,8 @@ public final class SpeedMine extends Module {
 
         } else if (mode.getValue() == Mode.Packet) {
             if (minePosition != null) {
-                if (mineBreaks >= breakAttempts.getValue() || mc.player.squaredDistanceTo(minePosition.toCenterPos()) > range.getPow2Value()) {
-                    reset();
+                if (mineBreaks >= breakAttempts.getValue() || PlayerUtility.squaredDistanceFromEyes(minePosition.toCenterPos()) > range.getPow2Value()) {
+
                     return;
                 }
                 if (progress == 0 && !mc.world.isAir(minePosition) && attackTimer.passedMs(800)) {
@@ -122,7 +135,7 @@ public final class SpeedMine extends Module {
                 }
             }
 
-            if (minePosition != null && !mc.world.isAir(minePosition)) {
+            if (minePosition != null && miningQueue != null && !mc.world.isAir(minePosition)) {
                 int invPickSlot = getTool(minePosition);
                 int hotBarPickSlot = InventoryUtility.getPickAxeHotbar().slot();
                 int prevSlot = -1;
@@ -139,6 +152,8 @@ public final class SpeedMine extends Module {
                         InventoryUtility.getPickAxeHotbar().switchTo();
                     }
 
+                    if(DoubleMine.getValue() && miningQueue != null)
+                           sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, data.getPos(), data.getDirection()));
                     if (stop.getValue())
                         sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, minePosition, mineFacing));
                     if (abort.getValue())
@@ -180,7 +195,7 @@ public final class SpeedMine extends Module {
             }
         } else if (mode.getValue() == Mode.GrimInstant) {
             if (minePosition != null) {
-                if (mc.player.squaredDistanceTo(minePosition.toCenterPos()) > range.getPow2Value()) {
+                if (PlayerUtility.squaredDistanceFromEyes(minePosition.toCenterPos()) > range.getPow2Value()) {
                     reset();
                     return;
                 }
@@ -201,7 +216,7 @@ public final class SpeedMine extends Module {
                     if (placeCrystal.getValue()) {
                         AutoCrystal.PlaceData placeCrystalData = ModuleManager.autoCrystal.getPlaceData(SpeedMine.minePosition, null);
                         if (placeCrystalData != null) {
-                            ModuleManager.autoCrystal.placeCrystal(placeCrystalData.bhr(), true);
+                            ModuleManager.autoCrystal.placeCrystal(placeCrystalData.bhr(), true );
                             debug("placing..");
                         } else
                             debug("placeCrystalData is null");
@@ -295,7 +310,7 @@ public final class SpeedMine extends Module {
                 );
             }
             case Block -> {
-                Box renderBox = new Box(minePosition);
+                Box renderBox = new Box(data.getPos());
 
                 Render3DEngine.FILLED_QUEUE.add(
                         new Render3DEngine.FillAction(
@@ -322,11 +337,19 @@ public final class SpeedMine extends Module {
                 && !mc.player.getAbilities().creativeMode
                 && (mode.getValue() == Mode.Packet || mode.getValue() == Mode.GrimInstant)
                 && !event.getBlockPos().equals(minePosition)) {
-            addBlockToMine(event.getBlockPos(), event.getEnumFacing(), true);
+
+             addBlockToMine(event.getBlockPos(), event.getEnumFacing(), true);
+
+
+        }
+        if(DoubleMine.getValue() && miningQueue != null) {
+            MiningData miningData = new MiningData(minePosition, mineFacing);
+            this.miningQueue.add(miningData);
+            addBlockToMine(miningData.getPos(), miningData.getDirection(), true);
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     @SuppressWarnings("unused")
     private void onSync(EventSync event) {
         if (rotate.getValue() && progress > 0.95 && minePosition != null && mc.player != null) {
@@ -342,6 +365,11 @@ public final class SpeedMine extends Module {
     private void onPacketSend(PacketEvent.@NotNull SendPost e) {
         if (e.getPacket() instanceof UpdateSelectedSlotC2SPacket && resetOnSwitch.getValue() && !switchMode.is(SwitchMode.Silent) && !mode.is(Mode.GrimInstant)) {
             addBlockToMine(minePosition, mineFacing, true);
+        }
+        if (e.getPacket() instanceof UpdateSelectedSlotC2SPacket && resetOnSwitch.getValue() && !switchMode.is(SwitchMode.Silent) && DoubleMine.getValue()&&!mode.is(Mode.GrimInstant) && miningQueue != null) {
+            MiningData miningData = new MiningData(minePosition, mineFacing);
+            this.miningQueue.add(miningData);
+            addBlockToMine(miningData.getPos(), miningData.getDirection(), true);
         }
     }
 
@@ -381,9 +409,12 @@ public final class SpeedMine extends Module {
             BlockState currentState = mc.world.getBlockState(pos);
             mc.world.removeBlock(pos, false);
             float dmg = ExplosionUtility.getExplosionDamage(pos.toCenterPos(), player, false);
+            float selfDamage = ExplosionUtility.getExplosionDamage(pos.toCenterPos(), mc.player, false);
             mc.world.setBlockState(pos, currentState);
 
-            if (dmg > damage)
+            boolean overrideDamage = ModuleManager.autoCrystal.shouldOverrideDamage(damage, selfDamage);
+
+            if (dmg > damage && ModuleManager.autoCrystal.isSafe(dmg, selfDamage, overrideDamage))
                 return true;
         }
 
@@ -518,10 +549,6 @@ public final class SpeedMine extends Module {
             sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, mineFacing));
             sendPacket(new PlayerActionC2SPacket(startMode.getValue() == StartMode.StartAbort ? PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK : PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, minePosition, mineFacing));
         }
-    }
-
-    public static SpeedMine getInstance() {
-        return instance;
     }
 
     public enum Mode {

@@ -61,6 +61,7 @@ public final class AutoBed extends Module {
     public static final Setting<Float> maxSelfDamage = new Setting<>("MaxSelfDamage", 4f, 0f, 25.0f);
     private final Setting<Boolean> dimCheck = new Setting<>("DimensionCheck", false);
     public final Setting<Boolean> switchToHotbar = new Setting<>("SwitchToHotbar", true);
+    public final Setting<Boolean> oldPlace = new Setting<>("1.12 Place",false);
     public final Setting<Boolean> autoSwap = new Setting<>("AutoSwap", true);
     public final Setting<Boolean> autoCraft = new Setting<>("AutoCraft", true);
     public static final Setting<Integer> minBeds = new Setting<>("MinBeds", 4, 0, 10);
@@ -101,8 +102,10 @@ public final class AutoBed extends Module {
             return;
         }
 
-        if (target == null)
+        if (target != null && (target.isDead() || target.getHealth() < 0)) {
+            target = null;
             return;
+        }
 
         bestBed = findBedToExplode();
         bestPos = findBlockToPlace();
@@ -131,7 +134,7 @@ public final class AutoBed extends Module {
 
     @EventHandler
     public void onPostSync(EventPostSync e) {
-        if (!(mc.player.getMainHandStack().getItem() instanceof BedItem) && autoSwap.getValue()) {
+        if (!(mc.player.getMainHandStack().getItem() instanceof BedItem) && autoSwap.getValue() && bestPos != null) {
             SearchInvResult hotBarResult = InventoryUtility.findBedInHotBar();
             if (hotBarResult.found()) {
                 hotBarResult.switchTo();
@@ -248,8 +251,8 @@ public final class AutoBed extends Module {
                         if (wallCheck != null && wallCheck.getType() == HitResult.Type.BLOCK && wallCheck.getBlockPos() != b)
                             continue;
 
-                        float damage = ExplosionUtility.getExplosionDamage(b.up().toCenterPos().add(0, -0.5, 0), target, true);
-                        float selfDamage = ExplosionUtility.getExplosionDamage(b.up().toCenterPos().add(0, -0.5, 0), mc.player, true);
+                        float damage = ExplosionUtility.getExplosionDamage(b.up().toCenterPos().add(0, -0.5, 0), target, false);
+                        float selfDamage = ExplosionUtility.getExplosionDamage(b.up().toCenterPos().add(0, -0.5, 0), mc.player, false);
 
                         if (damage < minDamage.getValue())
                             continue;
@@ -265,7 +268,7 @@ public final class AutoBed extends Module {
 
 
                         float bestDirdmg = 0;
-                        Direction bestDir = Direction.NORTH;
+                        Direction bestDir = null;
                         for (Direction dir : Direction.values()) {
                             if (dir == Direction.DOWN || dir == Direction.UP)
                                 continue;
@@ -274,15 +277,19 @@ public final class AutoBed extends Module {
                             if(!mc.world.getBlockState(offset).isReplaceable())
                                 continue;
 
-                            float dirdamage = ExplosionUtility.getExplosionDamage(offset.toCenterPos().add(0, -0.5, 0), target, true);
-                            float dirSelfDamage = ExplosionUtility.getExplosionDamage(offset.toCenterPos().add(0, -0.5, 0), mc.player, true);
+                            if(oldPlace.getValue() && mc.world.getBlockState(b.offset(dir)).isReplaceable()){
+                                continue;
+                            }
+
+                            float dirdamage = ExplosionUtility.getExplosionDamage(offset.toCenterPos().add(0, -0.5, 0), target, false);
+                            float dirSelfDamage = ExplosionUtility.getExplosionDamage(offset.toCenterPos().add(0, -0.5, 0), mc.player, false);
                             if (dirdamage > bestDirdmg && dirSelfDamage <= maxSelfDamage.getValue()) {
                                 bestDir = dir;
                                 bestDirdmg = dirdamage;
                             }
                         }
 
-                        bestData = new BedData(bhr, damage, selfDamage, bestDir);
+                        bestData = bestDir == null ? null : new BedData(bhr, damage, selfDamage, bestDir);
                     }
                 }
             }

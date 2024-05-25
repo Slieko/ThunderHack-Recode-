@@ -249,6 +249,9 @@ public class ModuleManager implements IManager {
     public static FOV fov = new FOV();
     public static ESP esp = new ESP();
     public static ClickTP clicktp = new ClickTP();
+    public static KillStats kills = new KillStats();
+    public static StashLogger stashLogger = new StashLogger();
+    public static AutoTrader autoTrader = new AutoTrader();
 
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
     public static AutoCrash autoCrash = new AutoCrash();

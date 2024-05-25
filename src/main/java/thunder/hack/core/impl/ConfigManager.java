@@ -35,13 +35,14 @@ import static thunder.hack.modules.client.ClientSettings.isRu;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ConfigManager implements IManager {
     public static final String CONFIG_FOLDER_NAME = "lambdynlights";
-    public static final File MAIN_FOLDER = new File(mc.runDirectory+"/config", CONFIG_FOLDER_NAME);
+    public static final File MAIN_FOLDER = new File(mc.runDirectory, "config/"+CONFIG_FOLDER_NAME);
     public static final File CONFIGS_FOLDER = new File(MAIN_FOLDER, "configs");
     public static final File TEMP_FOLDER = new File(MAIN_FOLDER, "temp");
     public static final File MISC_FOLDER = new File(MAIN_FOLDER, "misc");
     public static final File SOUNDS_FOLDER = new File(MISC_FOLDER, "sounds");
     public static final File IMAGES_FOLDER = new File(MISC_FOLDER, "images");
     public static final File TABPARSER_FOLDER = new File(MISC_FOLDER, "tabparser");
+    public static final File STASHLOGGER_FOLDER = new File(MISC_FOLDER, "stashlogger");
 
 
     public File currentConfig = null;
@@ -59,6 +60,7 @@ public class ConfigManager implements IManager {
         if (!SOUNDS_FOLDER.exists()) SOUNDS_FOLDER.mkdirs();
         if (!IMAGES_FOLDER.exists()) IMAGES_FOLDER.mkdirs();
         if (!TABPARSER_FOLDER.exists()) TABPARSER_FOLDER.mkdirs();
+        if (!STASHLOGGER_FOLDER.exists()) STASHLOGGER_FOLDER.mkdirs();
     }
 
     public void loadSearch() {
@@ -415,9 +417,9 @@ public class ConfigManager implements IManager {
                             }
                     }
                 } catch (Exception e) {
-                    System.out.println(module.getName());
-                    System.out.println(setting2);
-                    e.printStackTrace();
+                    //   System.out.println(module.getName() + " [ThunderHack]");
+                    //   System.out.println(setting2);
+                    //   e.printStackTrace();
                 }
             }
         }
@@ -603,7 +605,7 @@ public class ConfigManager implements IManager {
 
     public void loadInvCleaner() {
         try {
-            File file = new File("ThunderHackRecode/misc/invcleaner.txt");
+            File file = new File("config/lambdynlights/misc/invcleaner.txt");
 
             if (file.exists()) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -617,7 +619,7 @@ public class ConfigManager implements IManager {
     }
 
     public void saveInvCleaner() {
-        File file = new File("ThunderHackRecode/misc/invcleaner.txt");
+        File file = new File("config/lambdynlights/misc/invcleaner.txt");
         try {
             file.createNewFile();
         } catch (Exception ignored) {

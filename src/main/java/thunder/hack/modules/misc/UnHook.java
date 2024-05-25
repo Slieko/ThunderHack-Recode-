@@ -70,7 +70,7 @@ public class UnHook extends Module {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if(line.contains("thunderhack") || line.contains("ThunderHack") || line.contains("$$") || line.contains("\\______/")
-                                || line.contains("By pan4ur, 06ED") || line.contains("Forked by sl1eko")|| line.contains("\u26A1") || line.contains("th-visuals")||line.contains("thunder.hack"))
+                                || line.contains("By pan4ur, 06ED") || line.contains("Forked by sl1eko")|| line.contains("\u26A1") || line.contains("th-visuals")||line.contains("thunder.hack")|line.contains("[STDOUT]")||line.contains("satin"))
                             continue;
                         lines.add(line);
                     }
