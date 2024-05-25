@@ -4,8 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import static thunder.hack.core.IManager.mc;
-// pasted and adapted by sl1eko
-// source getted by qunix
+// pasted and adapted by sl1eko!
+// source getted by qunix!
 public class MiningData {
         private final BlockPos pos;
         private final Direction direction;
