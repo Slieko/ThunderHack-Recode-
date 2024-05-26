@@ -11,8 +11,6 @@ import thunder.hack.gui.hud.HudElement;
 import thunder.hack.gui.hud.impl.*;
 import thunder.hack.modules.Module;
 
-import thunder.hack.modules.Slk.AutoCrash;
-import thunder.hack.modules.Slk.ServerCrasher;
 import thunder.hack.modules.client.*;
 import thunder.hack.modules.combat.*;
 import thunder.hack.modules.misc.*;
@@ -252,10 +250,9 @@ public class ModuleManager implements IManager {
     public static KillStats kills = new KillStats();
     public static StashLogger stashLogger = new StashLogger();
     public static AutoTrader autoTrader = new AutoTrader();
+    public static AutoBuy autoBuy = new AutoBuy();
 
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
-    public static AutoCrash autoCrash = new AutoCrash();
-    public static ServerCrasher servercrasher = new ServerCrasher();
 
 
     public ModuleManager() {
