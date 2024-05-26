@@ -29,7 +29,7 @@ public class FriendManager implements IManager {
         friends.add(friend);
     }
 
-    public List<String> getFriends() {
+    public static List<String> getFriends() {
         return friends;
     }
 

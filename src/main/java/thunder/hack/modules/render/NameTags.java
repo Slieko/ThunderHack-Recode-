@@ -36,10 +36,13 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector4d;
 import org.lwjgl.opengl.GL11;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.FriendManager;
+import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.hud.impl.PotionHud;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
+import thunder.hack.modules.misc.NameProtect;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
 import thunder.hack.utility.render.Render2DEngine;
@@ -118,7 +121,13 @@ public class NameTags extends Module {
             if (ping.getValue()) final_string += getEntityPing(ent) + "ms ";
             if (gamemode.getValue()) final_string += translateGamemode(getEntityGamemode(ent)) + " ";
 
-            final_string += (ent.getDisplayName().getString()) + " ";
+            if (ModuleManager.nameProtect.isEnabled() && FriendManager.getFriends().contains(ent.getName().getString()) && NameProtect.friendProtect.getValue()) {
+                final_string += NameProtect.getCustomName() + " ";
+            }
+            else {
+                final_string += (ent.getDisplayName().getString()) + " ";
+            }
+
 
             if (hp.getValue() && health.is(Health.Number)) {
                 final_string += getHealthColor(getHealth(ent)) + round2(getHealth(ent)) + " ";
