@@ -25,7 +25,7 @@ public class MixinTextVisitFactory {
         if (string.contains(me)) {
             return string.replace(me, NameProtect.getCustomName());
         }
-
+// by dest4590
         List<String> friends = thunder.hack.core.impl.FriendManager.getFriends();
         for (String friend : friends) {
             if (string.contains(friend)) {

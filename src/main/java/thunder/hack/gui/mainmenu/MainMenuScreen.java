@@ -103,31 +103,6 @@ public class MainMenuScreen extends Screen {
         context.drawTexture(FORK_AUTHOR, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40, 0, 0, 40, 40, 40, 40);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        int offsetY = 10;
-        for (String change : ThunderUtility.changeLog) {
-            String prefix = getPrefix(change);
-            FontRenderers.sf_medium.drawString(context.getMatrices(), prefix, 10, offsetY, Render2DEngine.applyOpacity(-1, 0.4f));
-            offsetY += 10;
-        }
-
-    }
-
-    private static @NotNull String getPrefix(@NotNull String change) {
-        String prefix = "";
-        if (change.contains("[+]")) {
-            change = change.replace("[+] ", "");
-            prefix = Formatting.GREEN + "[+] " + Formatting.RESET;
-        } else if (change.contains("[-]")) {
-            change = change.replace("[-] ", "");
-            prefix = Formatting.RED + "[-] " + Formatting.RESET;
-        } else if (change.contains("[/]")) {
-            change = change.replace("[/] ", "");
-            prefix = Formatting.LIGHT_PURPLE + "[/] " + Formatting.RESET;
-        } else if (change.contains("[*]")) {
-            change = change.replace("[*] ", "");
-            prefix = Formatting.GOLD + "[*] " + Formatting.RESET;
-        }
-        return prefix + change;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class NameProtect extends Module {
         return ModuleManager.nameProtect.isEnabled() ? newName.getValue().replaceAll("&", "\u00a7") : mc.getGameProfile().getName();
     }
     public static String getCustomFriendsName() {
-        return ModuleManager.nameProtect.isEnabled() && NameProtect.friendProtect.getValue() ? friendName.getValue().replaceAll("&", "\u00a7") : mc.getGameProfile().getName();
+        return ModuleManager.nameProtect.isEnabled() && NameProtect.friendProtect.getValue() ? friendName.getValue().replaceAll("&", "\u00a7") : mc.getName();
     }
 
 }
