@@ -95,6 +95,7 @@ public final class SpeedMine extends Module {
 
     public SpeedMine() {
         super("SpeedMine", Category.PLAYER);
+        data = new MiningData(minePosition, mineFacing);
     }
 
     @Override
@@ -105,6 +106,7 @@ public final class SpeedMine extends Module {
 
     @Override
     public void onEnable() {
+        data = new MiningData(minePosition, mineFacing);
         if (DoubleMine.getValue()) {
             this.miningQueue = Queues.synchronizedQueue(EvictingQueue.create(2));
         } else {
@@ -344,10 +346,16 @@ public final class SpeedMine extends Module {
 
 
         }
+
+
         if(DoubleMine.getValue() && miningQueue != null) {
             MiningData miningData = new MiningData(minePosition, mineFacing);
             this.miningQueue.add(miningData);
-            addBlockToMine(miningData.getPos(), miningData.getDirection(), true);
+            if (miningData.getPos() != null && miningData.getDirection() != null) {
+                addBlockToMine(miningData.getPos(), miningData.getDirection(), true);
+            }else {
+                System.out.println("MiningData pos is null");
+            }
         }
     }
 

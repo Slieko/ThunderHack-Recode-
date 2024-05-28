@@ -122,7 +122,7 @@ public class NameTags extends Module {
             if (gamemode.getValue()) final_string += translateGamemode(getEntityGamemode(ent)) + " ";
 
             if (ModuleManager.nameProtect.isEnabled() && FriendManager.getFriends().contains(ent.getName().getString()) && NameProtect.friendProtect.getValue()) {
-                final_string += NameProtect.getCustomName() + " ";
+                final_string += NameProtect.getCustomFriendsName() + " ";
             }
             else {
                 final_string += (ent.getDisplayName().getString()) + " ";

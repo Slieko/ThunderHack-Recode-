@@ -3,6 +3,7 @@ package thunder.hack.modules.misc;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.item.Items;
+import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
@@ -37,6 +38,7 @@ public class ChatUtils extends Module {
     private final Setting<PMSound> pmSound = new Setting<>("PMSound", PMSound.Default);
     private final Setting<Boolean> zov = new Setting<>("ZOV", false);
     private final Setting<Boolean> antiCoordLeak = new Setting<>("AntiCoordLeak", false);
+    private final Setting<Boolean> secToMins = new Setting<>("Seconds To Minutes", true);
 
     private final Timer timer = new Timer();
     private final Timer antiSpam = new Timer();
@@ -137,7 +139,6 @@ public class ChatUtils extends Module {
         if (prefix.getValue() == Prefix.Global) return "!";
         return "";
     }
-
     public boolean antiBot(@NotNull String s) {
         if (s.contains("soon_") || s.contains("_npc") || s.contains("CIT-")) {
             return true;

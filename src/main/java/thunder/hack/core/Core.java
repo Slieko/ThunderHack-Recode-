@@ -81,7 +81,7 @@ public final class Core {
                 InteractionUtility.awaiting.remove(bp);
         });
 
-        if(autoSave.every(600000)) {
+        if(autoSave.every(60000)) {
             FriendManager.saveFriends();
             ThunderHack.configManager.save(ThunderHack.configManager.getCurrentConfig());
             ThunderHack.wayPointManager.saveWayPoints();
@@ -142,7 +142,7 @@ public final class Core {
         if(e.getPacket() instanceof PlayerPositionLookS2CPacket) {
             setBackTimer.reset();
 
-            if(autoSave.every(200000)) {
+            if(autoSave.every(60000)) {
                 FriendManager.saveFriends();
                 ThunderHack.configManager.save(ThunderHack.configManager.getCurrentConfig());
                 ThunderHack.wayPointManager.saveWayPoints();
