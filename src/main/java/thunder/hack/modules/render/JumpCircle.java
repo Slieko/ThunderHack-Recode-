@@ -51,7 +51,7 @@ public class JumpCircle extends Module {
             try {
                 custom = ThunderUtility.getCustomImg("circle");
             } catch (Exception e) {
-                sendMessage(".minecraft -> ThunderHackRecode -> misc -> images -> circle.png");
+                sendMessage(".minecraft -> config -> lambdynlights -> misc -> images -> circle.png");
             }
         }
 

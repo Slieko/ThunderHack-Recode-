@@ -10,20 +10,24 @@ import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.hud.HudElement;
 import thunder.hack.gui.hud.impl.*;
 import thunder.hack.modules.Module;
-
+import thunder.hack.modules.Slk.MeteorSpeedMine;
 import thunder.hack.modules.client.*;
 import thunder.hack.modules.combat.*;
 import thunder.hack.modules.misc.*;
 import thunder.hack.modules.movement.Timer;
 import thunder.hack.modules.movement.*;
 import thunder.hack.modules.player.*;
-import thunder.hack.modules.render.*;
 import thunder.hack.modules.render.Particles;
-import thunder.hack.modules.Slk.MeteorSpeedMine;
+import thunder.hack.modules.render.*;
+import thunder.hack.utility.render.Render2DEngine;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import static thunder.hack.modules.Module.mc;
 
 @SuppressWarnings("unused")
 public class ModuleManager implements IManager {
@@ -77,6 +81,7 @@ public class ModuleManager implements IManager {
     public static TotemCounter totemCounter = new TotemCounter();
     public static PerfectDelay perfectDelay = new PerfectDelay();
     public static ChestCounter chestCounter = new ChestCounter();
+    public static StashLogger stashLogger = new StashLogger();
     public static FastLatency fastLatency = new FastLatency();
     public static PearlChaser pearlChaser = new PearlChaser();
     public static WorldTweaks worldTweaks = new WorldTweaks();
@@ -121,6 +126,9 @@ public class ModuleManager implements IManager {
     public static AntiAttack antiAttack = new AntiAttack();
     public static GapplesHud gapplesHud = new GapplesHud();
     public static HitBubbles hitBubbles = new HitBubbles();
+    public static AutoTrader autoTrader = new AutoTrader();
+    public static KillStats killStats = new KillStats();
+    public static AutoAnvil autoAnvil = new AutoAnvil();
     public static CandleHud candleHud = new CandleHud();
     public static AntiCrash antiCrash = new AntiCrash();
     public static Particles particles = new Particles();
@@ -181,6 +189,7 @@ public class ModuleManager implements IManager {
     public static KillFeed killFeed = new KillFeed();
     public static AutoWalk autoWalk = new AutoWalk();
     public static AutoSign autoSign = new AutoSign();
+    public static Windows windows = new Windows();
     public static Breaker breaker = new Breaker();
     public static AutoEat autoEat = new AutoEat();
     public static AntiAFK antiAFK = new AntiAFK();
@@ -208,7 +217,8 @@ public class ModuleManager implements IManager {
     public static AutoSex autoSex = new AutoSex();
     public static Tracers tracers = new Tracers();
     public static Parkour parkour = new Parkour();
-    public static Boykisser boykisser = new Boykisser();
+    public static ClickTP clickTP = new ClickTP();
+    public static Boykisser paimon = new Boykisser();
     public static BowPop bowPop = new BowPop();
     public static XCarry xCarry = new XCarry();
     public static Trails trails = new Trails();
@@ -246,18 +256,12 @@ public class ModuleManager implements IManager {
     public static Aura aura = new Aura();
     public static FOV fov = new FOV();
     public static ESP esp = new ESP();
-    public static ClickTP clicktp = new ClickTP();
-    public static KillStats kills = new KillStats();
-    public static StashLogger stashLogger = new StashLogger();
-    public static AutoTrader autoTrader = new AutoTrader();
-    public static AutoBuy autoBuy = new AutoBuy();
 
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
-
+    public static QunixNew1 qunixnew1 = new QunixNew1();
 
     public ModuleManager() {
-        if (ThunderHack.isOnWindows())
-         for (Field field : getClass().getDeclaredFields()) {
+        for (Field field : getClass().getDeclaredFields()) {
             if (Module.class.isAssignableFrom(field.getType())) {
                 field.setAccessible(true);
                 try {
@@ -307,14 +311,12 @@ public class ModuleManager implements IManager {
         }
         unHook.setEnabled(false);
 
-
         modules.sort(Comparator.comparing(Module::getName));
         modules.stream().filter(Module::listening).forEach(ThunderHack.EVENT_BUS::subscribe);
 
         if (ConfigManager.firstLaunch) {
             ModuleManager.notifications.enable();
             soundFX.enable();
-
         }
     }
 
@@ -326,7 +328,7 @@ public class ModuleManager implements IManager {
     public void onRender2D(DrawContext context) {
         HudElement.anyHovered = false;
         modules.stream().filter(Module::isEnabled).forEach(module -> module.onRender2D(context));
-        if(!HudElement.anyHovered && !ClickGUI.anyHovered)
+        if (!HudElement.anyHovered && !ClickGUI.anyHovered)
             GLFW.glfwSetCursor(mc.getWindow().getHandle(), GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR));
         ThunderHack.core.onRender2D(context);
     }

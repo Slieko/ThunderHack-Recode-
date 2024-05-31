@@ -2,6 +2,7 @@ package thunder.hack.modules.misc;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import thunder.hack.core.impl.ConfigManager;
 import thunder.hack.events.impl.EventDeath;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.modules.Module;
@@ -50,7 +51,7 @@ public final class AutoEZ extends Module {
 
     public static void loadEZ() {
         try {
-            File file = new File("ThunderHackRecode/misc/AutoEZ.txt");
+            File file = new File(ConfigManager.MAIN_FOLDER + "misc/AutoEZ.txt");
             if (!file.exists()) file.createNewFile();
             new Thread(() -> {
                 try {

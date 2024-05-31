@@ -3,6 +3,7 @@ package thunder.hack.modules.misc;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.NotNull;
+import thunder.hack.core.impl.ConfigManager;
 import thunder.hack.events.impl.EventAttack;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
@@ -83,7 +84,7 @@ public class EbatteSratte extends Module {
 
     public void loadEZ() {
         try {
-            File file = new File("ThunderHackRecode/misc/EbatteSratte.txt");
+            File file = new File(ConfigManager.MAIN_FOLDER +"misc/EbatteSratte.txt");
             if (!file.exists() && !file.createNewFile())
                 sendMessage("Error with creating file");
 

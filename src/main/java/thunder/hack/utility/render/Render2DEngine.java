@@ -6,6 +6,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
@@ -160,6 +161,28 @@ public class Render2DEngine {
         bufferBuilder.vertex(matrix, x + width, y + height, 0.0F).color(c.getRGB()).next();
         bufferBuilder.vertex(matrix, x + width, y, 0.0F).color(c.getRGB()).next();
         bufferBuilder.vertex(matrix, x, y, 0.0F).color(c.getRGB()).next();
+        Tessellator.getInstance().draw();
+        endRender();
+    }
+
+    public static void drawRectWithOutline(MatrixStack matrices, float x, float y, float width, float height, Color c, Color c2) {
+        Matrix4f matrix = matrices.peek().getPositionMatrix();
+        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+        setupRender();
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        bufferBuilder.vertex(matrix, x, y + height, 0.0F).color(c.getRGB()).next();
+        bufferBuilder.vertex(matrix, x + width, y + height, 0.0F).color(c.getRGB()).next();
+        bufferBuilder.vertex(matrix, x + width, y, 0.0F).color(c.getRGB()).next();
+        bufferBuilder.vertex(matrix, x, y, 0.0F).color(c.getRGB()).next();
+        Tessellator.getInstance().draw();
+
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+        bufferBuilder.vertex(matrix, x, y + height, 0.0F).color(c2.getRGB()).next();
+        bufferBuilder.vertex(matrix, x + width, y + height, 0.0F).color(c2.getRGB()).next();
+        bufferBuilder.vertex(matrix, x + width, y, 0.0F).color(c2.getRGB()).next();
+        bufferBuilder.vertex(matrix, x, y, 0.0F).color(c2.getRGB()).next();
+        bufferBuilder.vertex(matrix, x, y + height, 0.0F).color(c2.getRGB()).next();
         Tessellator.getInstance().draw();
         endRender();
     }
@@ -338,18 +361,23 @@ public class Render2DEngine {
 
     public static void renderGradientTexture(MatrixStack matrices, double x0, double y0, double width, double height, float u, float v, double regionWidth, double regionHeight, double textureWidth, double textureHeight,
                                              Color c1, Color c2, Color c3, Color c4) {
+        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        renderGradientTextureInternal(bufferBuilder, matrices, x0, y0, width,height, u, v, regionWidth, regionHeight, textureWidth, textureHeight, c1, c2, c3, c4);
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+    }
+
+    public static void renderGradientTextureInternal(BufferBuilder buff, MatrixStack matrices, double x0, double y0, double width, double height, float u, float v, double regionWidth, double regionHeight, double textureWidth, double textureHeight,
+                                                     Color c1, Color c2, Color c3, Color c4) {
         double x1 = x0 + width;
         double y1 = y0 + height;
         double z = 0;
         Matrix4f matrix = matrices.peek().getPositionMatrix();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-        bufferBuilder.vertex(matrix, (float) x0, (float) y1, (float) z).texture((u) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).color(c1.getRGB()).next();
-        bufferBuilder.vertex(matrix, (float) x1, (float) y1, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).color(c2.getRGB()).next();
-        bufferBuilder.vertex(matrix, (float) x1, (float) y0, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v) / (float) textureHeight).color(c3.getRGB()).next();
-        bufferBuilder.vertex(matrix, (float) x0, (float) y0, (float) z).texture((u) / (float) textureWidth, (v + 0.0F) / (float) textureHeight).color(c4.getRGB()).next();
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        buff.vertex(matrix, (float) x0, (float) y1, (float) z).texture((u) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).color(c1.getRGB()).next();
+        buff.vertex(matrix, (float) x1, (float) y1, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).color(c2.getRGB()).next();
+        buff.vertex(matrix, (float) x1, (float) y0, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v) / (float) textureHeight).color(c3.getRGB()).next();
+        buff.vertex(matrix, (float) x0, (float) y0, (float) z).texture((u) / (float) textureWidth, (v + 0.0F) / (float) textureHeight).color(c4.getRGB()).next();
     }
 
     public static void renderRoundedGradientRect(MatrixStack matrices, Color color1, Color color2, Color color3, Color color4, float x, float y, float width, float height, float Radius) {
@@ -820,6 +848,16 @@ public class Render2DEngine {
         Render2DEngine.renderGradientTexture(matrices, -scale / 2, -scale / 2, scale, scale, 0, 0, 128, 128, 128, 128,
                 applyOpacity(HudEditor.getColor(270), 1f - factor), applyOpacity(HudEditor.getColor(0), 1f - factor), applyOpacity(HudEditor.getColor(180), 1f - factor), applyOpacity(HudEditor.getColor(90), 1f - factor));
         endRender();
+    }
+
+    public static void drawLine(float x, float y, float x1, float y1, int color) {
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
+        bufferBuilder.vertex(x, y, 0f).color(color).next();
+        bufferBuilder.vertex(x1, y1, 0f).color(color).next();
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
 
     //http://www.java2s.com/example/java/2d-graphics/check-if-a-color-is-more-dark-than-light.html

@@ -21,6 +21,7 @@ public abstract class AbstractElement {
         this.small = small;
     }
 
+
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         hovered = Render2DEngine.isHovered(mouseX, mouseY, x, y, width, height);
     }

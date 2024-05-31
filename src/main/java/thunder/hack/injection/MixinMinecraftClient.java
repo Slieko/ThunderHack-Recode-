@@ -149,7 +149,7 @@ public abstract class MixinMinecraftClient {
             MacWindowUtil.setApplicationIconImage(icons.getMacIcon(resourcePack));
             return;
         }
-        setWindowIcon(ThunderHack.class.getResourceAsStream("/icon.png"), ThunderHack.class.getResourceAsStream("/icon.png"));
+        setWindowIcon(ThunderHack.class.getResourceAsStream("/img.png"), ThunderHack.class.getResourceAsStream("/img.png"));
     }
 
     public void setWindowIcon(InputStream img16x16, InputStream img32x32) {

@@ -17,7 +17,7 @@ public class MacroManager implements IManager {
     public void onLoad() {
         macros = new CopyOnWriteArrayList<>();
         try {
-            File file = new File(ConfigManager.CONFIG_FOLDER_NAME + "/misc/macro.txt");
+            File file = new File(ConfigManager.MAIN_FOLDER + "/misc/macro.txt");
 
             if (file.exists()) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -37,9 +37,9 @@ public class MacroManager implements IManager {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void saveMacro() {
-        File file = new File(ConfigManager.CONFIG_FOLDER_NAME + "/misc/macro.txt");
+        File file = new File(ConfigManager.MAIN_FOLDER + "/misc/macro.txt");
         try {
-            if (new File(ConfigManager.CONFIG_FOLDER_NAME).mkdirs()) {
+            if (new File(mc.runDirectory + "config/"+ConfigManager.CONFIG_FOLDER_NAME).mkdirs()) {
                 file.createNewFile();
             }
         } catch (Exception ignored) {
@@ -68,7 +68,40 @@ public class MacroManager implements IManager {
         return null;
     }
 
-    public record Macro(String name, String text, int bind) {
+    public static class Macro {
+        private String name, text;
+        private int bind;
+
+        public Macro(String name, String text, int bind) {
+            this.name = name;
+            this.text = text;
+            this.bind = bind;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public int getBind() {
+            return bind;
+        }
+
+        public void setBind(int bind) {
+            this.bind = bind;
+        }
+
         public void runMacro() {
             if (mc.player == null) return;
             if (text.contains("/")) mc.player.networkHandler.sendChatCommand(text.replace("/", ""));

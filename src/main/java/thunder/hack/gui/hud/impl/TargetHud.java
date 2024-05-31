@@ -101,7 +101,7 @@ public class TargetHud extends HudElement {
         try {
             custom = ThunderUtility.getCustomImg("thud");
         } catch (Exception e) {
-            sendMessage(".minecraft -> ThunderHackRecode -> misc -> images -> thud.png");
+            sendMessage(".minecraft -> config -> lambdynlights -> misc -> images -> thud.png");
         }
     }
 

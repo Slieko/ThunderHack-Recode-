@@ -3,6 +3,7 @@ package thunder.hack.injection;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.MovementType;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
@@ -147,4 +148,6 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         if(ModuleManager.portalInventory.isEnabled())
             ci.cancel();
     }
+
+
 }

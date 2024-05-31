@@ -11,6 +11,7 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.cmd.Command;
+import thunder.hack.core.impl.ConfigManager;
 import thunder.hack.core.impl.ModuleManager;
 
 import java.io.*;
@@ -20,7 +21,7 @@ import static thunder.hack.modules.client.ClientSettings.isRu;
 
 public class KitCommand extends Command {
 
-    final static private String PATH = "ThunderHackRecode/misc/AutoGear.json";
+    final static private String PATH = ConfigManager.MAIN_FOLDER + "/misc/AutoGear.json";
 
     public KitCommand() {
         super("kit");

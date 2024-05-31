@@ -1,13 +1,12 @@
 package thunder.hack.injection;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.scoreboard.ScoreboardObjective;
-import org.spongepowered.asm.mixin.Unique;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.hud.impl.Hotbar;
-import thunder.hack.modules.client.ClickGui;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public abstract class MixinInGameHud {
+
 
     @Inject(at = @At(value = "HEAD"), method = "render")
     public void renderHook(DrawContext context, float tickDelta, CallbackInfo ci) {

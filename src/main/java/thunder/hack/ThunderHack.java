@@ -148,7 +148,7 @@ public class ThunderHack implements ModInitializer {
     }
 
     public static boolean isOnWindows() {
-        return System.getProperty("os.name").startsWith("Windows");
+        return System.getProperty("os.name").startsWith("thunder.hack.modules.client.Windows");
     }
 
     public static boolean isFuturePresent() {

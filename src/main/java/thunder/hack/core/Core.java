@@ -65,6 +65,7 @@ public final class Core {
 
         if (ModuleManager.clickGui.getBind().getKey() == -1) {
             Command.sendMessage(Formatting.RED + "Default clickgui keybind --> P");
+            Command.sendMessage(Formatting.RED + "You can get pre built config using command -> @cfg cloudlist");
             ModuleManager.clickGui.setBind(InputUtil.fromTranslationKey("key.keyboard.p").getCode(), false, false);
         }
 
@@ -81,13 +82,11 @@ public final class Core {
                 InteractionUtility.awaiting.remove(bp);
         });
 
-        if(autoSave.every(60000)) {
+        if(autoSave.every(600000)) {
             FriendManager.saveFriends();
             ThunderHack.configManager.save(ThunderHack.configManager.getCurrentConfig());
             ThunderHack.wayPointManager.saveWayPoints();
             ThunderHack.macroManager.saveMacro();
-            ThunderHack.configManager.saveChestStealer();
-            ThunderHack.configManager.saveInvCleaner();
             ThunderHack.notificationManager.publicity("AutoSave", isRu() ? "Сохраняю конфиг.." : "Saving config..", 3, Notification.Type.INFO);
         }
     }
@@ -115,7 +114,7 @@ public final class Core {
     @EventHandler
     public void onSync(EventSync event) {
         if (fullNullCheck()) return;
-        thunder.hack.modules.movement.Timer.onEntitySync(event);
+        ModuleManager.timer.onEntitySync(event);
     }
 
     public void onRender2D(DrawContext e) {
@@ -142,13 +141,11 @@ public final class Core {
         if(e.getPacket() instanceof PlayerPositionLookS2CPacket) {
             setBackTimer.reset();
 
-            if(autoSave.every(60000)) {
+            if(autoSave.every(200000)) {
                 FriendManager.saveFriends();
                 ThunderHack.configManager.save(ThunderHack.configManager.getCurrentConfig());
                 ThunderHack.wayPointManager.saveWayPoints();
                 ThunderHack.macroManager.saveMacro();
-                ThunderHack.configManager.saveChestStealer();
-                ThunderHack.configManager.saveInvCleaner();
                 ThunderHack.notificationManager.publicity("AutoSave", isRu() ? "Сохраняю конфиг.." : "Saving config..", 3, Notification.Type.INFO);
             }
         }
@@ -200,11 +197,9 @@ public final class Core {
     @EventHandler
     public void onKeyPress(EventKeyPress event) {
         if (event.getKey() == -1) return;
-        for (MacroManager.Macro m : ThunderHack.macroManager.getMacros()) {
-            if (m.bind() == event.getKey()) {
+        for (MacroManager.Macro m : ThunderHack.macroManager.getMacros())
+            if (m.getBind() == event.getKey())
                 m.runMacro();
-            }
-        }
     }
 
     @EventHandler

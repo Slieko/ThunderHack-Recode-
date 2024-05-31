@@ -56,6 +56,8 @@ public final class SoundManager {
     public SoundEvent ALERT_SOUNDEVENT = SoundEvent.of(ALERT_SOUND);
     public final Identifier PM_SOUND = new Identifier("thunderhack:pmsound");
     public SoundEvent PM_SOUNDEVENT = SoundEvent.of(PM_SOUND);
+    public final Identifier LENYA = new Identifier("thunderhack:lenya");
+    public SoundEvent LENYA_SOUNDEVENT = SoundEvent.of(LENYA);
 
     private final Timer scrollTimer = new Timer();
 
@@ -77,6 +79,7 @@ public final class SoundManager {
         Registry.register(Registries.SOUND_EVENT, SWIPEOUT_SOUND, SWIPEOUT_SOUNDEVENT);
         Registry.register(Registries.SOUND_EVENT, ALERT_SOUND, ALERT_SOUNDEVENT);
         Registry.register(Registries.SOUND_EVENT, PM_SOUND, PM_SOUNDEVENT);
+        Registry.register(Registries.SOUND_EVENT, LENYA, LENYA_SOUNDEVENT);
     }
 
     public void playHitSound(SoundFX.HitSound value) {
@@ -93,6 +96,7 @@ public final class SoundManager {
                 };
                 playSound(sound);
             }
+
             case CUSTOM -> playSound("hit");
         }
     }

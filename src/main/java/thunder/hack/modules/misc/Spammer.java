@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.io.IOUtils;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.ConfigManager;
 import thunder.hack.gui.hud.impl.StaffBoard;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.ClientSettings;
@@ -34,7 +35,7 @@ public class Spammer extends Module {
 
     public static void loadSpammer() {
         try {
-            File file = new File("ThunderHackRecode/misc/spammer.txt");
+            File file = new File(ConfigManager.MAIN_FOLDER + "misc/spammer.txt");
 
             if (!file.exists()) file.createNewFile();
             new Thread(() -> {
