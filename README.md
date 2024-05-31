@@ -39,6 +39,6 @@
 - [@LambdAurora — LambDynamicLights](https://github.com/LambdAurora/LambDynamicLights) for fake cfg-folder name
 
 ## Screenshots
-![image](https://github.com/Slieko/ThunderHack-Recode-/assets/69030112/088e8b8e-08ed-40bc-9990-46ca9e372216&=&format=webp&quality=lossless)
-![изображение](https://github.com/Slieko/ThunderHack-Recode-/assets/69030112/af7efd7a-5b35-48e0-98ef-5268f403e1e5&=&format=webp&quality=lossless)
+![image](https://i.imgur.com/ZCBQOvB.png)
+![image](https://i.imgur.com/yqZF9Cu.png)
 
