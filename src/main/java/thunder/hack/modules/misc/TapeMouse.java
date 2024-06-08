@@ -19,7 +19,7 @@ public class TapeMouse extends Module {
 
     private final Setting<Integer> delay = new Setting<>("Delay", 600, 0, 10000);
     private final Setting<BooleanParent> randomize = new Setting<>("Randomize", new BooleanParent(false));
-    private final Setting<Integer> randomizeValue = new Setting<>("Value", 600, 0, 10000).withParent(randomize);
+    private final Setting<Integer> randomizeValue = new Setting<>("Value", 600, 0, 10000).addToGroup(randomize);
     private final Setting<Mode> mode = new Setting<>("Mode", Mode.Left);
     private final Setting<Boolean> legit = new Setting<>("Legit", false, v -> mode.getValue() == Mode.Left);
 

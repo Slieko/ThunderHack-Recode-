@@ -38,19 +38,19 @@ public class LegitHelper extends Module {
 
 
     private final Setting<BooleanParent> anchors = new Setting<>("Anchors", new BooleanParent(true));
-    private final Setting<Integer> anchorDelay = new Setting<>("AnchorDelay", 50, 5, 250).withParent(anchors);
-    private final Setting<Bind> anchorBind = new Setting<>("AnchorBind", new Bind(GLFW.GLFW_KEY_Y, false, false)).withParent(anchors);
+    private final Setting<Integer> anchorDelay = new Setting<>("AnchorDelay", 50, 5, 250).addToGroup(anchors);
+    private final Setting<Bind> anchorBind = new Setting<>("AnchorBind", new Bind(GLFW.GLFW_KEY_Y, false, false)).addToGroup(anchors);
 
     private final Setting<BooleanParent> crystals = new Setting<>("Crystals", new BooleanParent(true));
-    private final Setting<Integer> crystalDelay = new Setting<>("CrystalDelay", 50, 5, 250).withParent(crystals);
-    private final Setting<Bind> crystalBind = new Setting<>("CrystalBind", new Bind(GLFW.GLFW_KEY_U, false, false)).withParent(crystals);
-    private final Setting<Boolean> changePitch = new Setting<>("ChangePitch", false).withParent(crystals);
-    private final Setting<Boolean> crystalOptimizer = new Setting<>("CrystalOptimizer", false).withParent(crystals);
-    private final Setting<Boolean> switchBack = new Setting<>("SwitchBack", false).withParent(crystals);
+    private final Setting<Integer> crystalDelay = new Setting<>("CrystalDelay", 50, 5, 250).addToGroup(crystals);
+    private final Setting<Bind> crystalBind = new Setting<>("CrystalBind", new Bind(GLFW.GLFW_KEY_U, false, false)).addToGroup(crystals);
+    private final Setting<Boolean> changePitch = new Setting<>("ChangePitch", false).addToGroup(crystals);
+    private final Setting<Boolean> crystalOptimizer = new Setting<>("CrystalOptimizer", false).addToGroup(crystals);
+    private final Setting<Boolean> switchBack = new Setting<>("SwitchBack", false).addToGroup(crystals);
 
     private final Setting<BooleanParent> shieldBreaker = new Setting<>("ShieldBreaker", new BooleanParent(false));
-    private final Setting<Integer> breakerDelay = new Setting<>("BreakerDelay", 50, 5, 250).withParent(shieldBreaker);
-    private final Setting<Boolean> swapBack = new Setting<>("SwapBack", true).withParent(shieldBreaker);
+    private final Setting<Integer> breakerDelay = new Setting<>("BreakerDelay", 50, 5, 250).addToGroup(shieldBreaker);
+    private final Setting<Boolean> swapBack = new Setting<>("SwapBack", true).addToGroup(shieldBreaker);
 
 
     private Timer timer = new Timer();

@@ -17,7 +17,7 @@
 @if "%DEBUG%"=="" @echo off
 @rem ##########################################################################
 @rem
-@rem  Gradle startup script for Windows
+@rem  Gradle startup script for thunder.hack.modules.client.Windows
 @rem
 @rem ##########################################################################
 

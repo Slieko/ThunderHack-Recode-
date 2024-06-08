@@ -47,7 +47,7 @@ public class MiddleClick extends Module {
     private final Setting<Boolean> inventory = new Setting<>("Inventory", true);
     private final Setting<Integer> swapDelay = new Setting<>("SwapDelay", 100, 0, 1000, v -> !silent.getValue());
     private final Setting<BooleanParent> antiWaste = new Setting<>("AntiWaste",new BooleanParent(true));
-    private final Setting<Integer> durability = new Setting<>("StopOn", 90, 0, 100).withParent(antiWaste);
+    private final Setting<Integer> durability = new Setting<>("StopOn", 90, 0, 100).addToGroup(antiWaste);
     public final Setting<Boolean> antiPickUp = new Setting<>("AntiPickUp", true);
     private final Setting<Boolean> feetExp = new Setting<>("FeetXP", false);
 

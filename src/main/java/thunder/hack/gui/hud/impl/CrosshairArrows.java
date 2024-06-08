@@ -31,7 +31,7 @@ public class CrosshairArrows extends HudElement {
     public static Setting<Boolean> glow = new Setting<>("Glow", false);
     private final Setting<Float> width = new Setting<>("Height", 2.28f, 0.1f, 5f);
     private final Setting<BooleanParent> down = new Setting<>("Down", new BooleanParent(false));
-    private final Setting<Float> downHeight = new Setting<>("DownHeight", 3.63f, 0.1F, 20.0F).withParent(down);
+    private final Setting<Float> downHeight = new Setting<>("DownHeight", 3.63f, 0.1F, 20.0F).addToGroup(down);
     private final Setting<Float> tracerWidth = new Setting<>("Width", 0.44F, 0.0F, 8.0F);
     private final Setting<Integer> xOffset = new Setting<>("TracerRadius", 68, 20, 100);
     private final Setting<Integer> pitchLock = new Setting<>("PitchLock", 42, 0, 90);

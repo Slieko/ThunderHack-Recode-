@@ -183,7 +183,7 @@ public class ModuleWindow extends AbstractWindow {
             if (button instanceof ModuleButton mb && SearchBar.listening && !mb.module.getName().toLowerCase().contains(SearchBar.moduleName)) {
                 continue;
             }
-            button.setOffsetY(offsetY);
+            button.setOffset(offsetY);
             if (button instanceof ModuleButton mbutton) {
                 if (mbutton.isOpen()) {
                     for (AbstractElement element : mbutton.getElements()) {

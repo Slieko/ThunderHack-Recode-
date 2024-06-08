@@ -7,6 +7,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.FriendManager;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.events.impl.EventEntityRemoved;
 import thunder.hack.events.impl.EventEntitySpawn;
@@ -15,6 +16,8 @@ import thunder.hack.gui.notification.Notification;
 import thunder.hack.setting.Setting;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class VisualRange extends Module {
     private static final ArrayList<String> entities = new ArrayList<>();
@@ -55,7 +58,7 @@ public class VisualRange extends Module {
         if (ThunderHack.friendManager.isFriend(entity.getName().getString()))
             message = Formatting.AQUA + entity.getName().getString();
         else message = Formatting.GRAY + entity.getName().getString();
-        if(ModuleManager.nameProtect.isEnabled() && NameProtect.friendProtect.getValue()){
+        if(ModuleManager.nameProtect.isEnabled() && NameProtect.friendProtect.getValue() && ThunderHack.friendManager.isFriend(entity.getName().getString())){
                 message = Formatting.AQUA + NameProtect.friendName.getValue();
             }
 

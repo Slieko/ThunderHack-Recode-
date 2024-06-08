@@ -45,10 +45,10 @@ public final class AutoWeb extends Module {
     private final Setting<InteractionUtility.PlaceMode> placeMode = new Setting<>("PlaceMode", InteractionUtility.PlaceMode.Normal);
     private final Setting<Boolean> rotate = new Setting<>("Rotate", true);
     private final Setting<Parent> renderCategory = new Setting<>("Render", new Parent(false, 0));
-    private final Setting<RenderMode> renderMode = new Setting<>("Render Mode", RenderMode.Fade).withParent(renderCategory);
-    private final Setting<ColorSetting> renderFillColor = new Setting<>("Render Fill Color", new ColorSetting(HudEditor.getColor(0))).withParent(renderCategory);
-    private final Setting<ColorSetting> renderLineColor = new Setting<>("Render Line Color", new ColorSetting(HudEditor.getColor(0))).withParent(renderCategory);
-    private final Setting<Integer> renderLineWidth = new Setting<>("Render Line Width", 2, 1, 5).withParent(renderCategory);
+    private final Setting<RenderMode> renderMode = new Setting<>("Render Mode", RenderMode.Fade).addToGroup(renderCategory);
+    private final Setting<ColorSetting> renderFillColor = new Setting<>("Render Fill Color", new ColorSetting(HudEditor.getColor(0))).addToGroup(renderCategory);
+    private final Setting<ColorSetting> renderLineColor = new Setting<>("Render Line Color", new ColorSetting(HudEditor.getColor(0))).addToGroup(renderCategory);
+    private final Setting<Integer> renderLineWidth = new Setting<>("Render Line Width", 2, 1, 5).addToGroup(renderCategory);
 
     private final ArrayList<BlockPos> sequentialBlocks = new ArrayList<>();
     public static Timer inactivityTimer = new Timer();

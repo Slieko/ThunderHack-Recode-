@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import thunder.hack.ThunderHack;
 import thunder.hack.cmd.Command;
 import thunder.hack.cmd.args.ModuleArgumentType;
+import thunder.hack.cmd.args.SettingArgumentType;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
@@ -50,11 +51,17 @@ public class ModuleCommand extends Command {
                     }
 
                     return SINGLE_SUCCESS;
-                })).then(arg("setting", StringArgumentType.word())
+                })).then(arg("setting", SettingArgumentType.create())
                         .then(arg("settingValue", StringArgumentType.greedyString()).executes(context -> {
                             Module module = context.getArgument("module", Module.class);
-                            Setting setting = module.getSettingByName(context.getArgument("setting", String.class));
+                            String settingName = context.getArgument("setting", String.class);
                             String settingValue = context.getArgument("settingValue", String.class);
+                            Setting setting = null;
+
+                            for(Setting set : module.getSettings()) {
+                                if(Objects.equals(set.getName(), settingName))
+                                    setting = set;
+                            }
 
                             if (setting == null) {
                                 sendMessage("No such setting");
@@ -62,7 +69,7 @@ public class ModuleCommand extends Command {
                             }
 
                             JsonParser jp = new JsonParser();
-                            if (setting.getType().equalsIgnoreCase("String")) {
+                            if (setting.getValue().getClass().toString().equalsIgnoreCase("String")) {
                                 setting.setValue(settingValue);
                                 sendMessage(Formatting.DARK_GRAY + module.getName() + " " + setting.getName() + (isRu() ? " был выставлен " : " has been set to ") + settingValue);
                                 return SINGLE_SUCCESS;
@@ -78,7 +85,7 @@ public class ModuleCommand extends Command {
                                 }
                                 setCommandValue(module, setting, jp.parse(settingValue));
                             } catch (Exception e) {
-                                sendMessage((isRu() ? "Неверное значение! Эта настройка требует тип: " : "Bad Value! This setting requires a: ") + setting.getType());
+                                sendMessage((isRu() ? "Неверное значение! Эта настройка требует тип: " : "Bad Value! This setting requires a: ") + setting.getValue().getClass());
                                 return SINGLE_SUCCESS;
                             }
 
@@ -111,8 +118,8 @@ public class ModuleCommand extends Command {
         String str;
         for (Setting checkSetting : feature.getSettings()) {
             if (Objects.equals(setting.getName(), checkSetting.getName())) {
-                switch (checkSetting.getType()) {
-                    case "Parent", "Bind" -> {
+                switch (checkSetting.getClass().toString()) {
+                    case "SettingGroup", "Bind" -> {
                         return;
                     }
                     case "Boolean" -> {

@@ -4,8 +4,15 @@ import com.mojang.logging.LogUtils;
 import meteordevelopment.orbit.EventBus;
 import meteordevelopment.orbit.IEventBus;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import thunder.hack.core.Core;
 import thunder.hack.core.impl.*;
@@ -20,6 +27,7 @@ import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import static thunder.hack.core.IManager.mc;
 
 
 public class ThunderHack implements ModInitializer {
@@ -120,6 +128,7 @@ public class ThunderHack implements ModInitializer {
         LogUtils.getLogger().info("[ThunderHack] Init time: " + (System.currentTimeMillis() - initTime) + " ms.");
 
         initTime = System.currentTimeMillis();
+
     }
 
 

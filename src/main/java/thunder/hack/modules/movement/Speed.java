@@ -4,9 +4,11 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.item.ArmorStandItem;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.screen.slot.SlotActionType;
@@ -23,13 +25,11 @@ import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.interfaces.IEntity;
 import thunder.hack.utility.math.MathUtility;
-import thunder.hack.utility.player.InteractionUtility;
 import thunder.hack.utility.player.InventoryUtility;
 import thunder.hack.utility.player.MovementUtility;
 import thunder.hack.utility.player.SearchInvResult;
 
 import static thunder.hack.modules.client.ClientSettings.isRu;
-import static thunder.hack.modules.movement.Timer.violation;
 import static thunder.hack.utility.player.MovementUtility.isMoving;
 
 public class Speed extends Module {
@@ -48,7 +48,9 @@ public class Speed extends Module {
     public final Setting<Integer> shiftTicks = new Setting<>("ShiftTicks", 0, 0, 10, v -> mode.is(Mode.MatrixDamage));
     public final Setting<Integer> fireWorkSlot = new Setting<>("FireSlot", 1, 1, 9, v -> mode.getValue() == Mode.FireWork);
     public final Setting<Integer> delay = new Setting<>("Delay", 8, 1, 20, v -> mode.getValue() == Mode.FireWork);
-    public final Setting<Boolean> strict = new Setting<>("Strict", false, v -> mode.is(Mode.GrimIce) || mode.is(Mode.GrimCombo));
+    public final Setting<Boolean> strict = new Setting<>("Strict", false, v -> mode.is(Mode.GrimIce));
+    public final Setting<Float> matrixJBSpeed = new Setting<>("TimerSpeed", 1.088f, 1f, 2f, v -> mode.is(Mode.MatrixJB));
+    public final Setting<Boolean> armorStands = new Setting<>("ArmorStands", false, v -> mode.is(Mode.GrimCombo) || mode.is(Mode.GrimEntity2));
 
     public double baseSpeed;
     private int stage, ticks, prevSlot;
@@ -94,7 +96,7 @@ public class Speed extends Module {
                 mc.player.setOnGround(true);
                 mc.player.jump();
             } else if (mc.player.fallDistance > 0 && useTimer.getValue()) {
-                ThunderHack.TICK_TIMER = 1.088f;
+                ThunderHack.TICK_TIMER = matrixJBSpeed.getValue();
                 mc.player.addVelocity(0f, -0.003f, 0f);
             }
         }
@@ -117,7 +119,7 @@ public class Speed extends Module {
         if ((mode.is(Mode.GrimEntity2)|| mode.is(Mode.GrimCombo)) && !e.isPre() && ThunderHack.core.getSetBackTime() > 1000 && MovementUtility.isMoving()) {
             int collisions = 0;
             for (Entity ent : mc.world.getEntities())
-                if (ent != mc.player && (ent instanceof LivingEntity || ent instanceof BoatEntity) && mc.player.getBoundingBox().expand(1.0).intersects(ent.getBoundingBox()))
+                if (ent != mc.player && (!(ent instanceof ArmorStandEntity) || armorStands.getValue()) && (ent instanceof LivingEntity || ent instanceof BoatEntity) && mc.player.getBoundingBox().expand(1.0).intersects(ent.getBoundingBox()))
                     collisions++;
 
             double[] motion = MovementUtility.forward(0.08 * collisions);
@@ -131,13 +133,13 @@ public class Speed extends Module {
         if ((mode.is(Mode.GrimIce) || mode.is(Mode.GrimCombo)) && mc.player.isOnGround()) {
             BlockPos pos = ((IEntity) mc.player).thunderHack_Recode$getVelocityBP();
             SearchInvResult result = InventoryUtility.findBlockInHotBar(Blocks.ICE, Blocks.PACKED_ICE, Blocks.BLUE_ICE);
-            if (mc.world.isAir(pos) || !result.found() || !mc.options.jumpKey.isPressed())
+            if(mc.world.isAir(pos) || !result.found() || !mc.options.jumpKey.isPressed())
                 return;
 
             prevSlot = mc.player.getInventory().selectedSlot;
             result.switchTo();
             sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), 90, mc.player.isOnGround()));
-            
+
             if (strict.getValue()) {
                 sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, Direction.UP));
                 sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, pos, Direction.UP));
@@ -229,7 +231,7 @@ public class Speed extends Module {
                     MovementUtility.setMotion(0.448f * boostFactor.getValue());
                 }
 
-                if (shiftTicks.getValue() > 0 && (MathUtility.clamp((int) (100 - Math.min(violation, 100)), 0, 100) > 90)) {
+                if (shiftTicks.getValue() > 0) {
                     event.cancel();
                     event.setIterations(shiftTicks.getValue());
                 }

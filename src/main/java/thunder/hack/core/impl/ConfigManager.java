@@ -35,7 +35,7 @@ import static thunder.hack.modules.client.ClientSettings.isRu;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ConfigManager implements IManager {
     public static final String CONFIG_FOLDER_NAME = "lambdynlights";
-    public static final File MAIN_FOLDER = new File(mc.runDirectory, "config/"+CONFIG_FOLDER_NAME);
+    public static final File MAIN_FOLDER = new File(mc.runDirectory+"/config", CONFIG_FOLDER_NAME);
     public static final File CONFIGS_FOLDER = new File(MAIN_FOLDER, "configs");
     public static final File TEMP_FOLDER = new File(MAIN_FOLDER, "temp");
     public static final File MISC_FOLDER = new File(MAIN_FOLDER, "misc");
@@ -356,70 +356,52 @@ public class ConfigManager implements IManager {
                 .findFirst()
                 .orElse(null);
 
-        if(!Objects.equals(category, "none") && !module.getCategory().getName().toLowerCase().equals(category))
+        if (!Objects.equals(category, "none") && !module.getCategory().getName().toLowerCase().equals(category))
             return;
 
         if (module != null) {
             JsonObject mobject = object.getAsJsonObject(module.getName());
 
-            for (Setting setting2 : module.getSettings()) {
+            for (Setting setting : module.getSettings()) {
                 try {
-                    switch (setting2.getType()) {
-                        case "Parent":
-                            continue;
-                        case "Boolean": {
-                            setting2.setValue(mobject.getAsJsonPrimitive(setting2.getName()).getAsBoolean());
-                            continue;
+                    if (setting.getValue() instanceof SettingGroup) {
+
+                    } else if (setting.getValue() instanceof Boolean) {
+                        setting.setValue(mobject.getAsJsonPrimitive(setting.getName()).getAsBoolean());
+                    } else if (setting.getValue() instanceof Float) {
+                        setting.setValue(mobject.getAsJsonPrimitive(setting.getName()).getAsFloat());
+                    } else if (setting.getValue() instanceof Integer) {
+                        setting.setValue(mobject.getAsJsonPrimitive(setting.getName()).getAsInt());
+                    } else if (setting.getValue() instanceof String) {
+                        setting.setValue(mobject.getAsJsonPrimitive(setting.getName()).getAsString().replace("%%", " ").replace("++", "/"));
+                    } else if (setting.getValue() instanceof Bind) {
+                        JsonArray array = mobject.getAsJsonArray(setting.getName());
+                        if (array.get(0).getAsString().contains("M")) {
+                            setting.setValue(new Bind(Integer.parseInt(array.get(0).getAsString().replace("M", "")), true, array.get(1).getAsBoolean()));
+                        } else {
+                            setting.setValue(new Bind(Integer.parseInt(array.get(0).getAsString()), false, array.get(1).getAsBoolean()));
                         }
-                        case "Double":
-                            setting2.setValue(mobject.getAsJsonPrimitive(setting2.getName()).getAsDouble());
-                            continue;
-                        case "Float":
-                            setting2.setValue(mobject.getAsJsonPrimitive(setting2.getName()).getAsFloat());
-                            continue;
-                        case "Integer":
-                            setting2.setValue(mobject.getAsJsonPrimitive(setting2.getName()).getAsInt());
-                            continue;
-                        case "String":
-                            setting2.setValue(mobject.getAsJsonPrimitive(setting2.getName()).getAsString().replace("_", " ").replace("++", "/"));
-                            continue;
-                        case "Bind":
-                            try {
-                                JsonArray bindArray = mobject.getAsJsonArray(setting2.getName());
-                                if (bindArray.get(0).getAsString().contains("M")) {
-                                    setting2.setValue(new Bind(Integer.parseInt(bindArray.get(0).getAsString().replace("M", "")), true, bindArray.get(1).getAsBoolean()));
-                                } else {
-                                    setting2.setValue(new Bind(Integer.parseInt(bindArray.get(0).getAsString()), false, bindArray.get(1).getAsBoolean()));
-                                }
-                            } catch (Exception ignored) {
-                            }
-                            continue;
-                        case "ColorSetting":
-                            JsonArray array = mobject.getAsJsonArray(setting2.getName());
-                            ((ColorSetting) setting2.getValue()).setColor(array.get(0).getAsInt());
-                            ((ColorSetting) setting2.getValue()).setRainbow(array.get(1).getAsBoolean());
-                            ((ColorSetting) setting2.getValue()).setGlobalOffset(array.get(2).getAsInt());
-                            continue;
-                        case "PositionSetting":
-                            JsonArray array3 = mobject.getAsJsonArray(setting2.getName());
-                            ((PositionSetting) setting2.getValue()).setX(array3.get(0).getAsFloat());
-                            ((PositionSetting) setting2.getValue()).setY(array3.get(1).getAsFloat());
-                            continue;
-                        case "BooleanParent":
-                            ((BooleanParent) setting2.getValue()).setEnabled(mobject.getAsJsonPrimitive(setting2.getName()).getAsBoolean());
-                            continue;
-                        case "Enum":
-                            try {
-                                EnumConverter converter = new EnumConverter(((Enum) setting2.getValue()).getClass());
-                                Enum value = converter.doBackward(mobject.getAsJsonPrimitive(setting2.getName()));
-                                setting2.setValue((value == null) ? setting2.getDefaultValue() : value);
-                            } catch (Exception ignored) {
-                            }
+                    } else if (setting.getValue() instanceof ColorSetting colorSetting) {
+                        JsonArray array = mobject.getAsJsonArray(setting.getName());
+                        colorSetting.setColor(array.get(0).getAsInt());
+                        colorSetting.setRainbow(array.get(1).getAsBoolean());
+                        colorSetting.setGlobalOffset(array.get(2).getAsInt());
+                    } else if (setting.getValue() instanceof PositionSetting posSetting) {
+                        JsonArray array = mobject.getAsJsonArray(setting.getName());
+                        posSetting.setX(array.get(0).getAsFloat());
+                        posSetting.setY(array.get(1).getAsFloat());
+                    } else if (setting.getValue() instanceof BooleanSettingGroup bGroup) {
+                        bGroup.setEnabled(mobject.getAsJsonPrimitive(setting.getName()).getAsBoolean());
+                    } else if (setting.getValue() instanceof ItemSelectSetting iSetting) {
+                        JsonArray array = mobject.getAsJsonArray(setting.getName());
+                        for (int i = 0; i < array.size(); i++)
+                            iSetting.getItemsById().add(array.get(i).getAsString());
+                    } else if (setting.getValue().getClass().isEnum()) {
+                        Enum value = new EnumConverter(((Enum) setting.getValue()).getClass()).doBackward(mobject.getAsJsonPrimitive(setting.getName()));
+                        setting.setValue((value == null) ? setting.getDefaultValue() : value);
                     }
                 } catch (Exception e) {
-                    //   System.out.println(module.getName() + " [ThunderHack]");
-                    //   System.out.println(setting2);
-                    //   e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }
@@ -438,59 +420,44 @@ public class ConfigManager implements IManager {
         JsonParser jp = new JsonParser();
 
         for (Setting setting : m.getSettings()) {
-            if (setting.isColorSetting()) {
+            if (setting.getValue() instanceof ColorSetting color) {
                 JsonArray array = new JsonArray();
-                array.add(new JsonPrimitive(((ColorSetting) setting.getValue()).getRawColor()));
-                array.add(new JsonPrimitive(((ColorSetting) setting.getValue()).isRainbow()));
-                array.add(new JsonPrimitive(((ColorSetting) setting.getValue()).getGlobalOffset()));
+                array.add(new JsonPrimitive(color.getRawColor()));
+                array.add(new JsonPrimitive(color.isRainbow()));
+                array.add(new JsonPrimitive(color.getGlobalOffset()));
                 attribs.add(setting.getName(), array);
-                continue;
-            }
-            if (setting.isPositionSetting()) {
+            } else if (setting.getValue() instanceof PositionSetting pos) {
                 JsonArray array = new JsonArray();
-                float num2 = ((PositionSetting) setting.getValue()).getX();
-                float num1 = ((PositionSetting) setting.getValue()).getY();
-                array.add(new JsonPrimitive(num2));
-                array.add(new JsonPrimitive(num1));
-
+                array.add(new JsonPrimitive(pos.getX()));
+                array.add(new JsonPrimitive(pos.getY()));
                 attribs.add(setting.getName(), array);
-                continue;
-            }
-            if (setting.isBooleanParent()) {
-                attribs.add(setting.getName(), jp.parse(String.valueOf(((BooleanParent) setting.getValue()).isEnabled())));
-                continue;
-            }
-            if (setting.isBindSetting()) {
-                Bind b = (Bind) setting.getValue();
+            } else if (setting.getValue() instanceof BooleanSettingGroup bGroup) {
+                attribs.add(setting.getName(), jp.parse(String.valueOf(bGroup.isEnabled())));
+            } else if (setting.getValue() instanceof Bind b) {
                 JsonArray array = new JsonArray();
-                boolean hold = ((Bind) setting.getValue()).isHold();
                 if (b.isMouse())
                     array.add(jp.parse(b.getBind()));
                 else
                     array.add(new JsonPrimitive(b.getKey()));
-                array.add(new JsonPrimitive(hold));
+                array.add(new JsonPrimitive(b.isHold()));
                 attribs.add(setting.getName(), array);
-                continue;
-            }
-            if (setting.isStringSetting()) {
-                String str = (String) setting.getValue();
-
+            } else if (setting.getValue() instanceof String str) {
                 try {
-                    attribs.add(setting.getName(), jp.parse(str.replace(" ", "_").replace("/", "++")));
+                    attribs.add(setting.getName(), jp.parse(str.replace(" ", "%%").replace("/", "++")));
                 } catch (Exception exception) {
-                    LogUtils.getLogger().info(m.getName() + " " + setting.getName() + " " + str);
-                    exception.printStackTrace();
                 }
-                continue;
-            }
-            if (setting.isEnumSetting()) {
-                EnumConverter converter = new EnumConverter(((Enum) setting.getValue()).getClass());
-                attribs.add(setting.getName(), converter.doForward((Enum) setting.getValue()));
-                continue;
-            }
-            try {
-                attribs.add(setting.getName(), jp.parse(setting.getValueAsString()));
-            } catch (Exception ignored) {
+            } else if (setting.getValue() instanceof ItemSelectSetting iSelect) {
+                JsonArray array = new JsonArray();
+                for (String id : iSelect.getItemsById())
+                    array.add(new JsonPrimitive(id));
+                attribs.add(setting.getName(), array);
+            } else if (setting.isEnumSetting()) {
+                attribs.add(setting.getName(), new EnumConverter(((Enum) setting.getValue()).getClass()).doForward((Enum) setting.getValue()));
+            } else {
+                try {
+                    attribs.add(setting.getName(), jp.parse(setting.getValue().toString()));
+                } catch (Exception ignored) {
+                }
             }
         }
 

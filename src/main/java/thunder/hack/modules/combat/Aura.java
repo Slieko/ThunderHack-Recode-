@@ -21,7 +21,6 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ShulkerBulletEntity;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.*;
-import net.minecraft.network.packet.s2c.common.CommonPingS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.screen.slot.SlotActionType;
@@ -40,8 +39,8 @@ import thunder.hack.injection.accesors.ILivingEntity;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.interfaces.IOtherClientPlayerEntity;
 import thunder.hack.utility.math.MathUtility;
@@ -53,9 +52,9 @@ import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.Render3DEngine;
 import thunder.hack.utility.render.animation.CaptureMark;
 
-import javax.sound.midi.Track;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static net.minecraft.util.UseAction.BLOCK;
@@ -66,72 +65,72 @@ import static thunder.hack.utility.math.MathUtility.random;
 public final class Aura extends Module {
     public final Setting<Float> attackRange = new Setting<>("Range", 3.1f, 1f, 6.0f);
     public final Setting<Float> wallRange = new Setting<>("ThroughWallsRange", 3.1f, 0f, 6.0f);
-    public final Setting<Boolean> wallsBypass = new Setting<>("WallsBypass", false, v -> wallRange.getValue() > 0);
+    public final Setting<WallsBypass> wallsBypass = new Setting<>("WallsBypass", WallsBypass.Off, v -> wallRange.getValue() > 0);
     public final Setting<Integer> fov = new Setting<>("FOV", 180, 1, 180);
     public final Setting<Mode> rotationMode = new Setting<>("RotationMode", Mode.Track);
     public final Setting<Integer> interactTicks = new Setting<>("InteractTicks", 3, 1, 10, v -> rotationMode.getValue() == Mode.Interact);
     public final Setting<Switch> switchMode = new Setting<>("AutoWeapon", Switch.None);
     public final Setting<Boolean> onlyWeapon = new Setting<>("OnlyWeapon", false, v -> switchMode.getValue() != Switch.Silent);
-    public final Setting<BooleanParent> smartCrit = new Setting<>("SmartCrit", new BooleanParent(true));
-    public final Setting<Boolean> onlySpace = new Setting<>("OnlyCrit", false).withParent(smartCrit);
-    public final Setting<Boolean> autoJump = new Setting<>("AutoJump", false).withParent(smartCrit);
+    public final Setting<BooleanSettingGroup> smartCrit = new Setting<>("SmartCrit", new BooleanSettingGroup(true));
+    public final Setting<Boolean> onlySpace = new Setting<>("OnlyCrit", false).addToGroup(smartCrit);
+    public final Setting<Boolean> autoJump = new Setting<>("AutoJump", false).addToGroup(smartCrit);
     public final Setting<Boolean> shieldBreaker = new Setting<>("ShieldBreaker", true);
     public final Setting<Boolean> pauseWhileEating = new Setting<>("PauseWhileEating", false);
     public final Setting<Boolean> tpsSync = new Setting<>("TPSSync", false);
     public final Setting<Boolean> clientLook = new Setting<>("ClientLook", false);
-    public final Setting<BooleanParent> oldDelay = new Setting<>("OldDelay", new BooleanParent(false));
-    public final Setting<Integer> minCPS = new Setting<>("MinCPS", 7, 1, 20).withParent(oldDelay);
-    public final Setting<Integer> maxCPS = new Setting<>("MaxCPS", 12, 1, 40).withParent(oldDelay);
+    public final Setting<BooleanSettingGroup> oldDelay = new Setting<>("OldDelay", new BooleanSettingGroup(false));
+    public final Setting<Integer> minCPS = new Setting<>("MinCPS", 7, 1, 20).addToGroup(oldDelay);
+    public final Setting<Integer> maxCPS = new Setting<>("MaxCPS", 12, 1, 20).addToGroup(oldDelay);
     public final Setting<ESP> esp = new Setting<>("ESP", ESP.ThunderHack);
     public final Setting<Sort> sort = new Setting<>("Sort", Sort.LowestDistance);
     public final Setting<Boolean> lockTarget = new Setting<>("LockTarget", true);
 
     /*   ADVANCED   */
-    public final Setting<Parent> advanced = new Setting<>("Advanced", new Parent(false, 0));
-    public final Setting<Float> aimRange = new Setting<>("AimRange", 3.1f, 0f, 6.0f).withParent(advanced);
-    public final Setting<RandomHitDelay> randomHitDelay = new Setting<>("RandomHitTiming", RandomHitDelay.Off).withParent(advanced);
-    public final Setting<Boolean> pauseInInventory = new Setting<>("PauseInInventory", true).withParent(advanced);
-    public final Setting<Boolean> dropSprint = new Setting<>("DropSprint", true).withParent(advanced);
-    public final Setting<Boolean> returnSprint = new Setting<>("ReturnSprint", true, v-> dropSprint.getValue()).withParent(advanced);
-    public final Setting<RayTrace> rayTrace = new Setting<>("RayTrace", RayTrace.OnlyTarget).withParent(advanced);
-    public final Setting<Boolean> grimRayTrace = new Setting<>("GrimRayTrace", true).withParent(advanced);
-    public final Setting<Boolean> unpressShield = new Setting<>("UnpressShield", true).withParent(advanced);
-    public final Setting<Boolean> deathDisable = new Setting<>("DisableOnDeath", true).withParent(advanced);
-    public final Setting<Boolean> tpDisable = new Setting<>("TPDisable", false).withParent(advanced);
-    public final Setting<Boolean> pullDown = new Setting<>("FastFall", false).withParent(advanced);
-    public final Setting<Boolean> onlyJumpBoost = new Setting<>("OnlyJumpBoost", false, v-> pullDown.getValue()).withParent(advanced);
-    public final Setting<Float> pullValue = new Setting<>("PullValue", 3f, 0f, 20f, v -> pullDown.getValue()).withParent(advanced);
-    public final Setting<AttackHand> attackHand = new Setting<>("AttackHand", AttackHand.MainHand).withParent(advanced);
-    public final Setting<Resolver> resolver = new Setting<>("Resolver", Resolver.Advantage).withParent(advanced);
-    public final Setting<Integer> backTicks = new Setting<>("BackTicks", 4, 1, 20, v -> resolver.is(Resolver.BackTrack)).withParent(advanced);
-    public final Setting<Boolean> resolverVisualisation = new Setting<>("ResolverVisualisation", false, v -> !resolver.is(Resolver.Off)).withParent(advanced);
-    public final Setting<AccelerateOnHit> accelerateOnHit = new Setting<>("AccelerateOnHit", AccelerateOnHit.Off).withParent(advanced);
-    public final Setting<Integer> minYawStep = new Setting<>("MinYawStep", 65, 1, 180).withParent(advanced);
-    public final Setting<Integer> maxYawStep = new Setting<>("MaxYawStep", 75, 1, 180).withParent(advanced);
-    public final Setting<Float> aimedPitchStep = new Setting<>("AimedPitchStep", 1f, 0f, 90f).withParent(advanced);
-    public final Setting<Float> maxPitchStep = new Setting<>("MaxPitchStep", 8f, 1f, 90f).withParent(advanced);
-    public final Setting<Float> pitchAccelerate = new Setting<>("PitchAccelerate", 1.65f, 1f, 10f).withParent(advanced);
-    public final Setting<Float> attackCooldown = new Setting<>("AttackCooldown", 0.9f, 0.5f, 1f).withParent(advanced);
-    public final Setting<Float> attackBaseTime = new Setting<>("AttackBaseTime", 0.5f, 0f, 2f).withParent(advanced);
-    public final Setting<Integer> attackTickLimit = new Setting<>("AttackTickLimit", 11, 0, 20).withParent(advanced);
-    public final Setting<Float> critFallDistance = new Setting<>("CritFallDistance", 0f, 0f, 1f).withParent(advanced);
+    public final Setting<SettingGroup> advanced = new Setting<>("Advanced", new SettingGroup(false, 0));
+    public final Setting<Float> aimRange = new Setting<>("AimRange", 3.1f, 0f, 6.0f).addToGroup(advanced);
+    public final Setting<RandomHitDelay> randomHitDelay = new Setting<>("RandomHitTiming", RandomHitDelay.Off).addToGroup(advanced);
+    public final Setting<Boolean> pauseInInventory = new Setting<>("PauseInInventory", true).addToGroup(advanced);
+    public final Setting<Boolean> dropSprint = new Setting<>("DropSprint", true).addToGroup(advanced);
+    public final Setting<Boolean> returnSprint = new Setting<>("ReturnSprint", true, v -> dropSprint.getValue()).addToGroup(advanced);
+    public final Setting<RayTrace> rayTrace = new Setting<>("RayTrace", RayTrace.OnlyTarget).addToGroup(advanced);
+    public final Setting<Boolean> grimRayTrace = new Setting<>("GrimRayTrace", true).addToGroup(advanced);
+    public final Setting<Boolean> unpressShield = new Setting<>("UnpressShield", true).addToGroup(advanced);
+    public final Setting<Boolean> deathDisable = new Setting<>("DisableOnDeath", true).addToGroup(advanced);
+    public final Setting<Boolean> tpDisable = new Setting<>("TPDisable", false).addToGroup(advanced);
+    public final Setting<Boolean> pullDown = new Setting<>("FastFall", false).addToGroup(advanced);
+    public final Setting<Boolean> onlyJumpBoost = new Setting<>("OnlyJumpBoost", false, v -> pullDown.getValue()).addToGroup(advanced);
+    public final Setting<Float> pullValue = new Setting<>("PullValue", 3f, 0f, 20f, v -> pullDown.getValue()).addToGroup(advanced);
+    public final Setting<AttackHand> attackHand = new Setting<>("AttackHand", AttackHand.MainHand).addToGroup(advanced);
+    public final Setting<Resolver> resolver = new Setting<>("Resolver", Resolver.Advantage).addToGroup(advanced);
+    public final Setting<Integer> backTicks = new Setting<>("BackTicks", 4, 1, 20, v -> resolver.is(Resolver.BackTrack)).addToGroup(advanced);
+    public final Setting<Boolean> resolverVisualisation = new Setting<>("ResolverVisualisation", false, v -> !resolver.is(Resolver.Off)).addToGroup(advanced);
+    public final Setting<AccelerateOnHit> accelerateOnHit = new Setting<>("AccelerateOnHit", AccelerateOnHit.Off).addToGroup(advanced);
+    public final Setting<Integer> minYawStep = new Setting<>("MinYawStep", 65, 1, 180).addToGroup(advanced);
+    public final Setting<Integer> maxYawStep = new Setting<>("MaxYawStep", 75, 1, 180).addToGroup(advanced);
+    public final Setting<Float> aimedPitchStep = new Setting<>("AimedPitchStep", 1f, 0f, 90f).addToGroup(advanced);
+    public final Setting<Float> maxPitchStep = new Setting<>("MaxPitchStep", 8f, 1f, 90f).addToGroup(advanced);
+    public final Setting<Float> pitchAccelerate = new Setting<>("PitchAccelerate", 1.65f, 1f, 10f).addToGroup(advanced);
+    public final Setting<Float> attackCooldown = new Setting<>("AttackCooldown", 0.9f, 0.5f, 1f).addToGroup(advanced);
+    public final Setting<Float> attackBaseTime = new Setting<>("AttackBaseTime", 0.5f, 0f, 2f).addToGroup(advanced);
+    public final Setting<Integer> attackTickLimit = new Setting<>("AttackTickLimit", 11, 0, 20).addToGroup(advanced);
+    public final Setting<Float> critFallDistance = new Setting<>("CritFallDistance", 0f, 0f, 1f).addToGroup(advanced);
 
 
     /*   TARGETS   */
-    public final Setting<Parent> targets = new Setting<>("Targets", new Parent(false, 0));
-    public final Setting<Boolean> Players = new Setting<>("Players", true).withParent(targets);
-    public final Setting<Boolean> Mobs = new Setting<>("Mobs", true).withParent(targets);
-    public final Setting<Boolean> Animals = new Setting<>("Animals", true).withParent(targets);
-    public final Setting<Boolean> Villagers = new Setting<>("Villagers", true).withParent(targets);
-    public final Setting<Boolean> Slimes = new Setting<>("Slimes", true).withParent(targets);
-    public final Setting<Boolean> hostiles = new Setting<>("Hostiles", true).withParent(targets);
-    public final Setting<Boolean> onlyAngry = new Setting<>("OnlyAngryHostiles", true, v -> hostiles.getValue()).withParent(targets);
-    public final Setting<Boolean> Projectiles = new Setting<>("Projectiles", true).withParent(targets);
-    public final Setting<Boolean> ignoreInvisible = new Setting<>("IgnoreInvisibleEntities", false).withParent(targets);
-    public final Setting<Boolean> ignoreTeam = new Setting<>("IgnoreTeam", false).withParent(targets);
-    public final Setting<Boolean> ignoreCreative = new Setting<>("IgnoreCreative", true).withParent(targets);
-    public final Setting<Boolean> ignoreNaked = new Setting<>("IgnoreNaked", false).withParent(targets);
-    public final Setting<Boolean> ignoreShield = new Setting<>("AttackShieldingEntities", true).withParent(targets);
+    public final Setting<SettingGroup> targets = new Setting<>("Targets", new SettingGroup(false, 0));
+    public final Setting<Boolean> Players = new Setting<>("Players", true).addToGroup(targets);
+    public final Setting<Boolean> Mobs = new Setting<>("Mobs", true).addToGroup(targets);
+    public final Setting<Boolean> Animals = new Setting<>("Animals", true).addToGroup(targets);
+    public final Setting<Boolean> Villagers = new Setting<>("Villagers", true).addToGroup(targets);
+    public final Setting<Boolean> Slimes = new Setting<>("Slimes", true).addToGroup(targets);
+    public final Setting<Boolean> hostiles = new Setting<>("Hostiles", true).addToGroup(targets);
+    public final Setting<Boolean> onlyAngry = new Setting<>("OnlyAngryHostiles", true, v -> hostiles.getValue()).addToGroup(targets);
+    public final Setting<Boolean> Projectiles = new Setting<>("Projectiles", true).addToGroup(targets);
+    public final Setting<Boolean> ignoreInvisible = new Setting<>("IgnoreInvisibleEntities", false).addToGroup(targets);
+    public final Setting<Boolean> ignoreTeam = new Setting<>("IgnoreTeam", false).addToGroup(targets);
+    public final Setting<Boolean> ignoreCreative = new Setting<>("IgnoreCreative", true).addToGroup(targets);
+    public final Setting<Boolean> ignoreNaked = new Setting<>("IgnoreNaked", false).addToGroup(targets);
+    public final Setting<Boolean> ignoreShield = new Setting<>("AttackShieldingEntities", true).addToGroup(targets);
 
 
     public static Entity target;
@@ -232,7 +231,7 @@ public final class Aura extends Module {
         if (sprint && dropSprint.getValue())
             disableSprint();
 
-        if(rotationMode.is(Mode.Grim))
+        if (rotationMode.is(Mode.Grim))
             sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotationYaw, rotationPitch, mc.player.isOnGround()));
 
         return new boolean[]{blocking, sprint};
@@ -245,7 +244,7 @@ public final class Aura extends Module {
         if (block && unpressShield.getValue())
             sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(Hand.OFF_HAND, id));
 
-        if(rotationMode.is(Mode.Grim))
+        if (rotationMode.is(Mode.Grim))
             sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround()));
     }
 
@@ -395,7 +394,7 @@ public final class Aura extends Module {
         if (getAttackCooldown() < attackCooldown.getValue() && !oldDelay.getValue().isEnabled())
             return false;
 
-        if(ModuleManager.criticals.isEnabled() && ModuleManager.criticals.mode.is(Criticals.Mode.Grim))
+        if (ModuleManager.criticals.isEnabled() && ModuleManager.criticals.mode.is(Criticals.Mode.Grim))
             return true;
 
         boolean mergeWithTargetStrafe = !ModuleManager.targetStrafe.isEnabled() || !ModuleManager.targetStrafe.jump.getValue();
@@ -504,14 +503,14 @@ public final class Aura extends Module {
         pitchAcceleration = ThunderHack.playerManager.checkRtx(rotationYaw, rotationPitch, attackRange.getValue() + aimRange.getValue(), attackRange.getValue() + aimRange.getValue(), rayTrace.getValue())
                 ? aimedPitchStep.getValue() : pitchAcceleration < maxPitchStep.getValue() ? pitchAcceleration * pitchAccelerate.getValue() : maxPitchStep.getValue();
 
-        float delta_yaw = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(targetVec.z - mc.player.getZ(), (targetVec.x - mc.player.getX()))) - 90) - rotationYaw);
+        float delta_yaw = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(targetVec.z - mc.player.getZ(), (targetVec.x - mc.player.getX()))) - 90) - rotationYaw) + (wallsBypass.is(WallsBypass.V2) && !ready && !mc.player.canSee(target) ? 20 : 0);
         float delta_pitch = ((float) (-Math.toDegrees(Math.atan2(targetVec.y - (mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((targetVec.x - mc.player.getX()), 2) + Math.pow(targetVec.z - mc.player.getZ(), 2))))) - rotationPitch);
 
         float yawStep = rotationMode.getValue() != Mode.Track ? 360f : random(minYawStep.getValue(), maxYawStep.getValue());
         float pitchStep = rotationMode.getValue() != Mode.Track ? 180f : pitchAcceleration + random(-1f, 1f);
 
         if (ready)
-            switch(accelerateOnHit.getValue()) {
+            switch (accelerateOnHit.getValue()) {
                 case Off -> {
                 }
                 case Yaw -> {
@@ -546,7 +545,7 @@ public final class Aura extends Module {
             rotationPitch = mc.player.getPitch();
         }
 
-        if(!rotationMode.is(Mode.Grim))
+        if (!rotationMode.is(Mode.Grim))
             ModuleManager.rotations.fixRotation = rotationYaw;
         lookingAtHitbox = ThunderHack.playerManager.checkRtx(rotationYaw, rotationPitch, attackRange.getValue(), wallRange.getValue(), rayTrace.getValue());
     }
@@ -640,9 +639,12 @@ public final class Aura extends Module {
         // Добавляем джиттер
         rotationPoint.add(random(-0.03f, 0.03f), 0f, random(-0.03f, 0.03f));
 
-        // Если мы используем обход ударов через стену и наша цель за стеной, то целимся в верхушку хитбокса т.к. матриксу поебать
-        if (!mc.player.canSee(target) && wallsBypass.getValue())
-            return target.getPos().add(random(-0.15, 0.15), lenghtY, random(-0.15, 0.15));
+        if (!mc.player.canSee(target)) {
+            // Если мы используем обход ударов через стену V1 и наша цель за стеной, то целимся в верхушку хитбокса т.к. матриксу поебать
+            if (Objects.requireNonNull(wallsBypass.getValue()) == WallsBypass.V1) {
+                return target.getPos().add(random(-0.15, 0.15), lenghtY, random(-0.15, 0.15));
+            }
+        }
 
         float[] rotation;
 
@@ -882,5 +884,9 @@ public final class Aura extends Module {
 
     public enum AccelerateOnHit {
         Off, Yaw, Pitch, Both
+    }
+
+    public enum WallsBypass {
+        Off, V1, V2
     }
 }

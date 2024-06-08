@@ -23,13 +23,12 @@ public abstract class MixinPlayerEntityRenderer {
 
     @Inject(method = "scale(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     private void modifyPlayerScale(AbstractClientPlayerEntity player, MatrixStack matrixStack, float tickDelta, CallbackInfo ci) {
-        if (ModuleManager.qunixnew1.isEnabled()) {
+        QunixNew1 module = ModuleManager.qunixnew1;
+        if (module != null && module.isEnabled()) {
             long time = System.currentTimeMillis();
             float scaleFactorX = 1.0f + QunixNew1.factor.getValue() * (float) Math.sin((double) time / QunixNew1.speed.getValue());
             float scaleFactorY = 1.0f - QunixNew1.factor.getValue() * (float) Math.sin((double) time / QunixNew1.speed.getValue());
-            float scaleFactorZ = 1.0f;
-            matrixStack.scale(scaleFactorX, scaleFactorY, scaleFactorZ);
-            ci.cancel();
+            matrixStack.scale(scaleFactorX, scaleFactorY, 1.0f);
         }
     }
 }

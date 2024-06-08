@@ -12,7 +12,9 @@ import thunder.hack.gui.thundergui.components.*;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.ThunderHackGui;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
+import thunder.hack.setting.impl.ColorSetting;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.animation.BetterAnimation;
 
@@ -159,7 +161,8 @@ public class ThunderGui extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (Module.fullNullCheck()) renderBackground(context, mouseX, mouseY, delta);
+        if (Module.fullNullCheck())
+            renderBackground(context, mouseX, mouseY, delta);
         context.getMatrices().push();
         mouse_x = mouseX;
         mouse_y = mouseY;
@@ -271,19 +274,19 @@ public class ThunderGui extends Screen {
 
             if (selected_plate != null) {
                 for (Setting<?> setting : selected_plate.getModule().getSettings()) {
-                    if (setting.getValue() instanceof Parent) {
+                    if (setting.getValue() instanceof SettingGroup) {
                         settings.add(new ParentComponent(setting));
                     }
                     if (setting.getValue() instanceof Boolean && !setting.getName().equals("Enabled") && !setting.getName().equals("Drawn")) {
                         settings.add(new BooleanComponent(setting));
                     }
-                    if (setting.isBooleanParent()) {
+                    if (setting.getValue() instanceof BooleanSettingGroup) {
                         settings.add(new BooleanParentComponent(setting));
                     }
-                    if (setting.isEnumSetting()) {
+                    if (setting.getValue().getClass().isEnum()) {
                         settings.add(new ModeComponent(setting));
                     }
-                    if (setting.isColorSetting()) {
+                    if (setting.getValue() instanceof ColorSetting) {
                         settings.add(new ColorPickerComponent(setting));
                     }
                     if (setting.isNumberSetting() && setting.hasRestriction()) {
@@ -471,7 +474,7 @@ public class ThunderGui extends Screen {
         }
         if (isHoveringItem(main_posX + 105, main_posY + 14, 11, 11, (float) mouseX, (float) mouseY)) {
             try {
-                net.minecraft.util.Util.getOperatingSystem().open(new File("lambdynlights/configs/").toURI());
+                net.minecraft.util.Util.getOperatingSystem().open(new File("ThunderHackRecode/configs/").toURI());
             } catch (Exception e) {
                 Command.sendMessage("Не удалось открыть проводник!");
             }

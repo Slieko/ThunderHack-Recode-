@@ -21,7 +21,7 @@ public class NameProtect extends Module {
     public static Setting<String> newName = new Setting<>("name", "Hell_Raider");
     // friends name protect by dest4590 (https://github.com/dest4590/ThunderHack-Recode/commit/c77e0b9a71afcaec41d88793f12e9cb51328f051#diff-34f70393f6b4a9eebb6ef8909815d48f52849a9860bb19fe7fe1203d68f663a0)
     public static Setting<Boolean> friendProtect = new Setting<>("Friend Protect", Boolean.TRUE);
-    public static Setting<String> friendName = new Setting<>("Friend Name", "Hell_Raider").withParent(friendProtect);
+    public static Setting<String> friendName = new Setting<>("Friend Name", "Hell_Raider").addToGroup(friendProtect);
 
     public static String getCustomName() {
         return ModuleManager.nameProtect.isEnabled() ? newName.getValue().replaceAll("&", "\u00a7") : mc.getGameProfile().getName();

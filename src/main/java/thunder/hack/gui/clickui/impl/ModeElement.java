@@ -51,11 +51,11 @@ public class ModeElement extends AbstractElement {
 
         matrixStack.pop();
 
-        if(setting.parent != null)
+        if(setting.group != null)
             Render2DEngine.drawRect(context.getMatrices(), x + 4, y, 1f, 17, HudEditor.getColor(1));
 
 
-        FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.getName(), (setting.parent != null ? 2f : 0f) + (int) (x + 6), (int) (y + wheight / 2 - (6 / 2f)) + 3, new Color(-1).getRGB());
+        FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.getName(), (setting.group != null ? 2f : 0f) + (int) (x + 6), (int) (y + wheight / 2 - (6 / 2f)) + 3, new Color(-1).getRGB());
         FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.currentEnumName(), (int) (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(setting.currentEnumName())), 3 + (int) (y + wheight / 2 - 3f), new Color(-1).getRGB());
 
 

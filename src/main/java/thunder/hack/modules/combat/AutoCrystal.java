@@ -67,7 +67,7 @@ public class AutoCrystal extends Module {
     private final Setting<Timing> timing = new Setting<>("Timing", Timing.NORMAL, v -> page.getValue() == Pages.Main);
     private final Setting<Boolean> rotate = new Setting<>("Rotate", true, v -> page.getValue() == Pages.Main);
     private final Setting<BooleanParent> yawStep = new Setting<>("YawStep", new BooleanParent(false), v -> rotate.getValue() && page.getValue() == Pages.Main);
-    private final Setting<Float> yawAngle = new Setting<>("YawAngle", 180.0f, 1.0f, 180.0f, v -> rotate.getValue() && page.getValue() == Pages.Main).withParent(yawStep);
+    private final Setting<Float> yawAngle = new Setting<>("YawAngle", 180.0f, 1.0f, 180.0f, v -> rotate.getValue() && page.getValue() == Pages.Main).addToGroup(yawStep);
     private final Setting<CombatManager.TargetBy> targetLogic = new Setting<>("TargetLogic", CombatManager.TargetBy.Distance, v -> page.getValue() == Pages.Main);
     private final Setting<Float> targetRange = new Setting<>("TargetRange", 10.0f, 1.0f, 15f, v -> page.getValue() == Pages.Main);
     public static final Setting<Integer> selfPredictTicks = new Setting<>("SelfPredictTicks", 3, 0, 20, v -> page.getValue() == Pages.Main);
@@ -81,7 +81,7 @@ public class AutoCrystal extends Module {
     private final Setting<Boolean> oldVer = new Setting<>("1.12", false, v -> page.getValue() == Pages.Place);
     private final Setting<Boolean> ccPlace = new Setting<>("CC", true, v -> page.getValue() == Pages.Place);
     private final Setting<BooleanParent> instantPlace = new Setting<>("InstantPlace", new BooleanParent(true), v -> page.getValue() == Pages.Place);
-    private final Setting<Recalc> recalculate = new Setting<>("Recalc", Recalc.FAST, v -> page.getValue() == Pages.Place).withParent(instantPlace);
+    private final Setting<Recalc> recalculate = new Setting<>("Recalc", Recalc.FAST, v -> page.getValue() == Pages.Place).addToGroup(instantPlace);
     private final Setting<Integer> placeDelay = new Setting<>("PlaceDelay", 0, 0, 1000, v -> page.getValue() == Pages.Place);
     private final Setting<Integer> lowPlaceDelay = new Setting<>("LowPlaceDelay", 550, 0, 1000, v -> page.getValue() == Pages.Place);
     private final Setting<Float> placeRange = new Setting<>("PlaceRange", 5f, 1.0f, 6f, v -> page.getValue() == Pages.Place);
@@ -104,7 +104,7 @@ public class AutoCrystal extends Module {
     private final Setting<Boolean> middleClick = new Setting<>("MiddleClick", true, v -> page.getValue() == Pages.Pause);
     private final Setting<Float> pauseHP = new Setting<>("HP", 8.0f, 2.0f, 10f, v -> page.getValue() == Pages.Pause);
     private final Setting<BooleanParent> switchPause = new Setting<>("SwitchPause", new BooleanParent(true), v -> page.getValue() == Pages.Pause);
-    private final Setting<Integer> switchDelay = new Setting<>("SwitchDelay", 100, 0, 1000, v -> page.getValue() == Pages.Pause).withParent(switchPause);
+    private final Setting<Integer> switchDelay = new Setting<>("SwitchDelay", 100, 0, 1000, v -> page.getValue() == Pages.Pause).addToGroup(switchPause);
 
     /*   DAMAGES   */
     public final Setting<Sort> sort = new Setting<>("Sort", Sort.DAMAGE, v -> page.getValue() == Pages.Damages);
@@ -117,7 +117,7 @@ public class AutoCrystal extends Module {
     private final Setting<Boolean> overrideSelfDamage = new Setting<>("OverrideSelfDamage", true, v -> page.getValue() == Pages.Damages);
     private final Setting<Float> lethalMultiplier = new Setting<>("LethalMultiplier", 1.0f, 0.0f, 5f, v -> page.getValue() == Pages.Damages);
     private final Setting<BooleanParent> armorBreaker = new Setting<>("ArmorBreaker", new BooleanParent(true), v -> page.getValue() == Pages.Damages);
-    private final Setting<Float> armorScale = new Setting<>("Armor %", 5.0f, 0.0f, 40f, v -> page.getValue() == Pages.Damages).withParent(armorBreaker);
+    private final Setting<Float> armorScale = new Setting<>("Armor %", 5.0f, 0.0f, 40f, v -> page.getValue() == Pages.Damages).addToGroup(armorBreaker);
     private final Setting<Float> facePlaceHp = new Setting<>("FacePlaceHp", 5.0f, 0.0f, 20f, v -> page.getValue() == Pages.Damages);
     private final Setting<Bind> facePlaceButton = new Setting<>("FacePlaceBtn", new Bind(GLFW.GLFW_KEY_LEFT_SHIFT, false, false), v -> page.getValue() == Pages.Damages);
 

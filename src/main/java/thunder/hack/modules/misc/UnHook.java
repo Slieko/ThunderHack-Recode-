@@ -4,6 +4,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Icons;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.util.Formatting;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.CommandManager;

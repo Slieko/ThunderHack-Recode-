@@ -28,7 +28,6 @@ import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.core.impl.PlayerManager;
 import thunder.hack.events.impl.EventAttackBlock;
-import thunder.hack.events.impl.EventSetBlockState;
 import thunder.hack.events.impl.EventSync;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.injection.accesors.IInteractionManager;
@@ -48,7 +47,6 @@ import thunder.hack.utility.render.Render3DEngine;
 import thunder.hack.utility.world.MiningData;
 
 import java.awt.*;
-import java.util.Deque;
 import java.util.Objects;
 import java.util.Queue;
 
@@ -69,20 +67,20 @@ public final class SpeedMine extends Module {
     private final Setting<Integer> breakAttempts = new Setting<>("BreakAttempts", 10, 1, 50, v -> mode.getValue() == Mode.Packet);
 
     private final Setting<Parent> packets = new Setting<>("Packets", new Parent(false, 0), v -> mode.getValue() == Mode.Packet);
-    private final Setting<Boolean> stop = new Setting<>("Stop", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
-    private final Setting<Boolean> abort = new Setting<>("Abort", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
-    private final Setting<Boolean> start = new Setting<>("Start", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
-    private final Setting<Boolean> stop2 = new Setting<>("Stop2", true, v -> mode.getValue() == Mode.Packet).withParent(packets);
-    private final Setting<Boolean> DoubleMine = new Setting<>("Double Mine", false, v -> mode.getValue() == Mode.Packet).withParent(packets);
+    private final Setting<Boolean> stop = new Setting<>("Stop", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
+    private final Setting<Boolean> abort = new Setting<>("Abort", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
+    private final Setting<Boolean> start = new Setting<>("Start", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
+    private final Setting<Boolean> stop2 = new Setting<>("Stop2", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
+    private final Setting<Boolean> DoubleMine = new Setting<>("Double Mine", false, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
 
     private final Setting<BooleanParent> render = new Setting<>("Render", new BooleanParent(false), v -> mode.getValue() != Mode.Damage);
-    private final Setting<Boolean> smooth = new Setting<>("Smooth", true, v -> mode.getValue() != Mode.Damage).withParent(render);
-    private final Setting<RenderMode> renderMode = new Setting<>("Render Mode", RenderMode.Shrink, v -> mode.getValue() != Mode.Damage).withParent(render);
-    private final Setting<ColorSetting> startLineColor = new Setting<>("Start Line Color", new ColorSetting(new Color(255, 0, 0, 200)), v -> mode.getValue() != Mode.Damage).withParent(render);
-    private final Setting<ColorSetting> endLineColor = new Setting<>("End Line Color", new ColorSetting(new Color(47, 255, 0, 200)), v -> mode.getValue() != Mode.Damage).withParent(render);
-    private final Setting<Integer> lineWidth = new Setting<>("Line Width", 2, 1, 10, v -> mode.getValue() != Mode.Damage).withParent(render);
-    private final Setting<ColorSetting> startFillColor = new Setting<>("Start Fill Color", new ColorSetting(new Color(255, 0, 0, 120)), v -> mode.getValue() != Mode.Damage).withParent(render);
-    private final Setting<ColorSetting> endFillColor = new Setting<>("End Fill Color", new ColorSetting(new Color(47, 255, 0, 120)), v -> mode.getValue() != Mode.Damage).withParent(render);
+    private final Setting<Boolean> smooth = new Setting<>("Smooth", true, v -> mode.getValue() != Mode.Damage).addToGroup(render);
+    private final Setting<RenderMode> renderMode = new Setting<>("Render Mode", RenderMode.Shrink, v -> mode.getValue() != Mode.Damage).addToGroup(render);
+    private final Setting<ColorSetting> startLineColor = new Setting<>("Start Line Color", new ColorSetting(new Color(255, 0, 0, 200)), v -> mode.getValue() != Mode.Damage).addToGroup(render);
+    private final Setting<ColorSetting> endLineColor = new Setting<>("End Line Color", new ColorSetting(new Color(47, 255, 0, 200)), v -> mode.getValue() != Mode.Damage).addToGroup(render);
+    private final Setting<Integer> lineWidth = new Setting<>("Line Width", 2, 1, 10, v -> mode.getValue() != Mode.Damage).addToGroup(render);
+    private final Setting<ColorSetting> startFillColor = new Setting<>("Start Fill Color", new ColorSetting(new Color(255, 0, 0, 120)), v -> mode.getValue() != Mode.Damage).addToGroup(render);
+    private final Setting<ColorSetting> endFillColor = new Setting<>("End Fill Color", new ColorSetting(new Color(47, 255, 0, 120)), v -> mode.getValue() != Mode.Damage).addToGroup(render);
 
     public static BlockPos minePosition;
     private Direction mineFacing;
@@ -95,7 +93,11 @@ public final class SpeedMine extends Module {
 
     public SpeedMine() {
         super("SpeedMine", Category.PLAYER);
-        data = new MiningData(minePosition, mineFacing);
+        if (minePosition != null && mineFacing != null) {
+            data = new MiningData(minePosition, mineFacing);
+        } else {
+            data = null;
+        }
     }
 
     @Override
@@ -156,8 +158,9 @@ public final class SpeedMine extends Module {
                         InventoryUtility.getPickAxeHotbar().switchTo();
                     }
 
-                    if(DoubleMine.getValue() && miningQueue != null)
-                           sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, data.getPos(), data.getDirection()));
+                    if (data != null && data.getPos() != null) {
+                        sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, data.getPos(), data.getDirection()));
+                    }
                     if (stop.getValue())
                         sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, minePosition, mineFacing));
                     if (abort.getValue())
@@ -314,21 +317,23 @@ public final class SpeedMine extends Module {
                 );
             }
             case Block -> {
-                Box renderBox = new Box(data.getPos());
+                if (data != null && data.getPos() != null) {
+                    Box renderBox = new Box(data.getPos());
 
-                Render3DEngine.FILLED_QUEUE.add(
-                        new Render3DEngine.FillAction(
-                                renderBox,
-                                getColor(startFillColor.getValue().getColorObject(), endFillColor.getValue().getColorObject(), progress)
-                        )
-                );
-                Render3DEngine.OUTLINE_QUEUE.add(
-                        new Render3DEngine.OutlineAction(
-                                renderBox,
-                                getColor(startLineColor.getValue().getColorObject(), endLineColor.getValue().getColorObject(), progress),
-                                lineWidth.getValue()
-                        )
-                );
+                    Render3DEngine.FILLED_QUEUE.add(
+                            new Render3DEngine.FillAction(
+                                    renderBox,
+                                    getColor(startFillColor.getValue().getColorObject(), endFillColor.getValue().getColorObject(), progress)
+                            )
+                    );
+                    Render3DEngine.OUTLINE_QUEUE.add(
+                            new Render3DEngine.OutlineAction(
+                                    renderBox,
+                                    getColor(startLineColor.getValue().getColorObject(), endLineColor.getValue().getColorObject(), progress),
+                                    lineWidth.getValue()
+                            )
+                    );
+                }
             }
         }
     }
@@ -343,18 +348,14 @@ public final class SpeedMine extends Module {
                 && !event.getBlockPos().equals(minePosition)) {
 
              addBlockToMine(event.getBlockPos(), event.getEnumFacing(), true);
-
-
         }
-
-
         if(DoubleMine.getValue() && miningQueue != null) {
             MiningData miningData = new MiningData(minePosition, mineFacing);
             this.miningQueue.add(miningData);
-            if (miningData.getPos() != null && miningData.getDirection() != null) {
+            if (miningData.getPos() != null && miningData.getDirection() != null && miningQueue != null && fullNullCheck()) {
                 addBlockToMine(miningData.getPos(), miningData.getDirection(), true);
             }else {
-                System.out.println("MiningData pos is null");
+                addBlockToMine(event.getBlockPos(), event.getEnumFacing(), true);
             }
         }
     }

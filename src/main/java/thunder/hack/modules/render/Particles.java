@@ -32,8 +32,8 @@ public class Particles extends Module {
     // Фабос, чекнул сурс - сдох отец, спастишь - сдохнет мать
 
     private final Setting<BooleanParent> FireFlies = new Setting<>("FireFlies", new BooleanParent(true));
-    private final Setting<Integer> ffcount = new Setting<>("FFCount", 30, 20, 200).withParent(FireFlies);
-    private final Setting<Float> ffsize = new Setting<>("FFSize", 1f, 0.1f, 2.0f).withParent(FireFlies);
+    private final Setting<Integer> ffcount = new Setting<>("FFCount", 30, 20, 200).addToGroup(FireFlies);
+    private final Setting<Float> ffsize = new Setting<>("FFSize", 1f, 0.1f, 2.0f).addToGroup(FireFlies);
     private final Setting<Mode> mode = new Setting<>("Mode", Mode.SnowFlake);
     private final Setting<Integer> count = new Setting<>("Count", 100, 20, 800);
     private final Setting<Float> size = new Setting<>("Size", 1f, 0.1f, 6.0f);
