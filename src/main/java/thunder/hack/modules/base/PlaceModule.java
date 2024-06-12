@@ -17,9 +17,9 @@ import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.modules.combat.AutoCrystal;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.setting.impl.ColorSetting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.ExplosionUtility;
 import thunder.hack.utility.player.InteractionUtility;
@@ -38,13 +38,13 @@ public abstract class PlaceModule extends Module {
     protected final Setting<Boolean> rotate = new Setting<>("Rotate", true);
     protected final Setting<Boolean> swing = new Setting<>("Swing", false);
 
-    protected final Setting<BooleanParent> crystalBreaker = new Setting<>("Crystal Breaker", new BooleanParent(false));
+    protected final Setting<BooleanSettingGroup> crystalBreaker = new Setting<>("Crystal Breaker", new BooleanSettingGroup(false));
     protected final Setting<Integer> breakDelay = new Setting<>("Break Delay", 100, 1, 1000).addToGroup(crystalBreaker);
     protected final Setting<Boolean> remove = new Setting<>("Remove", false).addToGroup(crystalBreaker);
     protected final Setting<InteractMode> breakCrystalMode = new Setting<>("Break Mode", InteractMode.Normal).addToGroup(crystalBreaker);
     protected final Setting<Boolean> antiWeakness = new Setting<>("Anti Weakness", false).addToGroup(crystalBreaker);
 
-    protected final Setting<Parent> blocks = new Setting<>("Blocks", new Parent(false, 0));
+    protected final Setting<SettingGroup> blocks = new Setting<>("Blocks", new SettingGroup(false, 0));
     protected final Setting<Boolean> obsidian = new Setting<>("Obsidian", true).addToGroup(blocks);
     protected final Setting<Boolean> anchor = new Setting<>("Anchor", false).addToGroup(blocks);
     protected final Setting<Boolean> enderChest = new Setting<>("EnderChest", true).addToGroup(blocks);
@@ -52,11 +52,11 @@ public abstract class PlaceModule extends Module {
     protected final Setting<Boolean> cryingObsidian = new Setting<>("Crying Obsidian", true).addToGroup(blocks);
     protected final Setting<Boolean> dirt = new Setting<>("Dirt", false).addToGroup(blocks);
 
-    protected final Setting<Parent> pause = new Setting<>("Pause", new Parent(false, 0));
+    protected final Setting<SettingGroup> pause = new Setting<>("Pause", new SettingGroup(false, 0));
     protected final Setting<Boolean> eatPause = new Setting<>("On Eat", false).addToGroup(pause);
     protected final Setting<Boolean> breakPause = new Setting<>("On Break", false).addToGroup(pause);
 
-    protected final Setting<BooleanParent> render = new Setting<>("Render", new BooleanParent(true));
+    protected final Setting<BooleanSettingGroup> render = new Setting<>("Render", new BooleanSettingGroup(true));
     protected final Setting<BlockAnimationUtility.BlockRenderMode> renderMode = new Setting<>("Render Mode", BlockAnimationUtility.BlockRenderMode.All).addToGroup(render);
     protected final Setting<BlockAnimationUtility.BlockAnimationMode> animationMode = new Setting<>("Animation Mode", BlockAnimationUtility.BlockAnimationMode.Fade).addToGroup(render);
     protected final Setting<ColorSetting> renderFillColor = new Setting<>("Fill Color", new ColorSetting(HudEditor.getColor(0))).addToGroup(render);

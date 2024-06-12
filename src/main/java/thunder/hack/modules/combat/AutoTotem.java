@@ -31,8 +31,8 @@ import thunder.hack.modules.Module;
 import thunder.hack.modules.movement.Blink;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.Bind;
-import thunder.hack.setting.impl.BooleanParent;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.ExplosionUtility;
 import thunder.hack.utility.math.PredictUtility;
@@ -42,7 +42,7 @@ import thunder.hack.utility.player.SearchInvResult;
 public final class AutoTotem extends Module {
     private final Setting<Mode> mode = new Setting<>("Mode", Mode.Matrix);
     private final Setting<OffHand> offhand = new Setting<>("Item", OffHand.Totem);
-    private final Setting<BooleanParent> bindSwap = new Setting<>("BindSwap", new BooleanParent(false), v -> offhand.is(OffHand.Totem));
+    private final Setting<BooleanSettingGroup> bindSwap = new Setting<>("BindSwap", new BooleanSettingGroup(false), v -> offhand.is(OffHand.Totem));
     private final Setting<Bind> swapButton = new Setting<>("SwapButton", new Bind(GLFW.GLFW_KEY_CAPS_LOCK, false, false)).addToGroup(bindSwap);
     private final Setting<Swap> swapMode = new Setting<>("Swap", Swap.GappleShield).addToGroup(bindSwap);
     private final Setting<Float> healthF = new Setting<>("HP", 16f, 0f, 36f);
@@ -50,7 +50,7 @@ public final class AutoTotem extends Module {
     private final Setting<Boolean> calcAbsorption = new Setting<>("CalcAbsorption", true);
     private final Setting<Boolean> stopMotion = new Setting<>("StopMotion", false);
     private final Setting<Boolean> resetAttackCooldown = new Setting<>("ResetAttackCooldown", false);
-    private final Setting<Parent> safety = new Setting<>("Safety", new Parent(false, 0));
+    private final Setting<SettingGroup> safety = new Setting<>("Safety", new SettingGroup(false, 0));
     private final Setting<Boolean> hotbarFallBack = new Setting<>("HotbarFallback", false).addToGroup(safety);
     private final Setting<Boolean> fallBackCalc = new Setting<>("FallBackCalc", true, v -> hotbarFallBack.getValue()).addToGroup(safety);
     private final Setting<Boolean> onElytra = new Setting<>("OnElytra", true).addToGroup(safety);

@@ -15,19 +15,17 @@ import thunder.hack.events.impl.EventAfterRotate;
 import thunder.hack.events.impl.EventPostSync;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.utility.Timer;
-import thunder.hack.utility.player.PlayerUtility;
 
-import javax.lang.model.element.ModuleElement;
 
 public final class AutoBuff extends Module {
     private final Setting<Boolean> strength = new Setting<>("Strength", true);
     private final Setting<Boolean> speed = new Setting<>("Speed", true);
     private final Setting<Boolean> fire = new Setting<>("FireResistance", true);
-    private final Setting<BooleanParent> heal = new Setting<>("InstantHealing", new BooleanParent(true));
+    private final Setting<BooleanSettingGroup> heal = new Setting<>("InstantHealing", new BooleanSettingGroup(true));
     private final Setting<Integer> healthH = new Setting<>("Health", 8, 0, 20).addToGroup(heal);
-    private final Setting<BooleanParent> regen = new Setting<>("Regeneration", new BooleanParent(true));
+    private final Setting<BooleanSettingGroup> regen = new Setting<>("Regeneration", new BooleanSettingGroup(true));
     private final Setting<TriggerOn> triggerOn = new Setting<>("Trigger", TriggerOn.LackOfRegen).addToGroup(regen);
     private final Setting<Integer> healthR = new Setting<>("HP", 8, 0, 20, v-> triggerOn.is(TriggerOn.Health)).addToGroup(regen);
     private final Setting<Boolean> onDaGround = new Setting<>("OnlyOnGround", true);

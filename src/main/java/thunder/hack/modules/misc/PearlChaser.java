@@ -25,11 +25,10 @@ import thunder.hack.events.impl.EventPostSync;
 import thunder.hack.events.impl.EventSync;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.MathUtility;
 import thunder.hack.utility.player.MovementUtility;
-import thunder.hack.utility.player.PlayerUtility;
 
 import java.util.Comparator;
 
@@ -43,7 +42,7 @@ public class PearlChaser extends Module {
         super("PearlChaser", Category.MISC);
     }
 
-    private final Setting<BooleanParent> stopMotion = new Setting<>("StopMotion", new BooleanParent(false));
+    private final Setting<BooleanSettingGroup> stopMotion = new Setting<>("StopMotion", new BooleanSettingGroup(false));
     private final Setting<Boolean> legitStop = new Setting<>("LegitStop", false).addToGroup(stopMotion);
     private final Setting<Boolean> pauseAura = new Setting<>("PauseAura", false);
     private final Setting<Boolean> onlyOnGround = new Setting<>("OnlyOnGround", false);

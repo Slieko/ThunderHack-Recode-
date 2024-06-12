@@ -29,6 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.UUID;
 
+import static thunder.hack.modules.client.ClientSettings.isRu;
+
 public class ChatUtils extends Module {
     private final Setting<Welcomer> welcomer = new Setting<>("Welcomer", Welcomer.Off);
     private final Setting<Prefix> prefix = new Setting<>("Prefix", Prefix.None);
@@ -38,7 +40,7 @@ public class ChatUtils extends Module {
     private final Setting<PMSound> pmSound = new Setting<>("PMSound", PMSound.Default);
     private final Setting<Boolean> zov = new Setting<>("ZOV", false);
     private final Setting<Boolean> antiCoordLeak = new Setting<>("AntiCoordLeak", false);
-    private final Setting<Boolean> secToMins = new Setting<>("Seconds To Minutes", true);
+    //  public final Setting<Boolean> timeConventer = new Setting<>("Seconds To Minutes", true);
 
     private final Timer timer = new Timer();
     private final Timer antiSpam = new Timer();
@@ -66,6 +68,11 @@ public class ChatUtils extends Module {
             }
             timer.reset();
         }
+    }
+    @Override
+    public void onEnable(){
+   //     if(timeConventer.getValue())
+   //         sendMessage(isRu() ? "Преобразователь времени работает только на фанике и спуки" : "Time Converter works only on funtime and spookytime");
     }
 
     @EventHandler

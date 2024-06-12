@@ -27,7 +27,7 @@ import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.Render3DEngine;
 
@@ -58,7 +58,7 @@ public class ESP extends Module {
     private final Setting<ColorSetting> dizorentColor = new Setting<>("DizorentColor", new ColorSetting(new Color(0xB300F1CC, true)), v -> dizorentRadius.getValue());
 
 
-    private final Setting<Parent> boxEsp = new Setting<>("Box", new Parent(false, 0));
+    private final Setting<SettingGroup> boxEsp = new Setting<>("Box", new SettingGroup(false, 0));
     private final Setting<Boolean> players = new Setting<>("Players", true).addToGroup(boxEsp);
     private final Setting<Boolean> friends = new Setting<>("Friends", true).addToGroup(boxEsp);
     private final Setting<Boolean> crystals = new Setting<>("Crystals", true).addToGroup(boxEsp);
@@ -71,7 +71,7 @@ public class ESP extends Module {
     private final Setting<Boolean> renderHealth = new Setting<>("renderHealth", true).addToGroup(boxEsp);
 
 
-    private final Setting<Parent> boxColors = new Setting<>("BoxColors", new Parent(false, 0));
+    private final Setting<SettingGroup> boxColors = new Setting<>("BoxColors", new SettingGroup(false, 0));
     private final Setting<ColorSetting> playersC = new Setting<>("PlayersC", new ColorSetting(new Color(0xFF9200))).addToGroup(boxColors);
     private final Setting<ColorSetting> friendsC = new Setting<>("FriendsC", new ColorSetting(new Color(0x30FF00))).addToGroup(boxColors);
     private final Setting<ColorSetting> crystalsC = new Setting<>("CrystalsC", new ColorSetting(new Color(0x00BBFF))).addToGroup(boxColors);

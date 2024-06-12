@@ -3,8 +3,10 @@ package thunder.hack.gui.clickui.impl;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.StringHelper;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.StringHelperUpdated;
 import thunder.hack.gui.clickui.AbstractElement;
 import thunder.hack.gui.clickui.ClickGUI;
 import thunder.hack.gui.font.FontRenderers;
@@ -16,8 +18,8 @@ import java.awt.*;
 import static thunder.hack.modules.Module.mc;
 
 public class StringElement extends AbstractElement {
-    public StringElement(Setting setting, boolean small) {
-        super(setting, small);
+    public StringElement(Setting setting) {
+        super(setting);
     }
 
     public boolean listening;
@@ -26,13 +28,9 @@ public class StringElement extends AbstractElement {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        if(!isSmall()) {
-            Render2DEngine.drawRect(context.getMatrices(), getX() + 5, getY() + 2, getWidth() - 11f, 10, new Color(0x94000000, true));
-            FontRenderers.getSettingsRenderer().drawString(context.getMatrices(), listening ? currentString + (mc.player == null || mc.player.age % 5 == 0 ? "_" : "") : (String) setting.getValue(), x + 6, y + height / 2, -1);
-        } else {
-            Render2DEngine.drawRect(context.getMatrices(), getX() + 5, getY() + 2, getWidth() - 11f, 10, new Color(0x94000000, true));
-            FontRenderers.sf_medium_mini.drawString(context.getMatrices(), listening ? currentString + (mc.player == null || mc.player.age % 5 == 0 ? "_" : "") : (String) setting.getValue(), x + 6, y + height / 2, -1);
-        }
+
+        Render2DEngine.drawRect(context.getMatrices(), getX() + 5, getY() + 2, getWidth() - 11f, 10, new Color(0x94000000, true));
+        FontRenderers.sf_medium_mini.drawString(context.getMatrices(), listening ? currentString + (mc.player == null || mc.player.age % 5 == 0 ? "_" : "") : (String) setting.getValue(), x + 6, y + height / 2, -1);
 
         if(Render2DEngine.isHovered(mouseX, mouseY, getX() + 5, getY() + 2, getWidth() - 11f, 10)) {
             GLFW.glfwSetCursor(mc.getWindow().getHandle(),
@@ -54,7 +52,7 @@ public class StringElement extends AbstractElement {
 
     @Override
     public void charTyped(char key, int keyCode) {
-        if (SharedConstants.isValidChar(key)) {
+        if (StringHelperUpdated.isValidChar(key)) {
             currentString = currentString + key;
         }
     }

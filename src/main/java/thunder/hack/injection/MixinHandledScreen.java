@@ -80,13 +80,6 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             }
         }
     }
-    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", at = @At("TAIL"))
-    protected void drawSlotHook(DrawContext context, Slot slot, CallbackInfo ci) {
-        if (ModuleManager.fTHelper.isEnabled() && ModuleManager.fTHelper.aucHelper.getValue())
-            ModuleManager.fTHelper.onRenderChest(context, slot);
-    }
-
-
 
     private boolean shit() {
         return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344);
@@ -162,7 +155,11 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             }
         }
     }
-
+    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", at = @At("TAIL"))
+    protected void drawSlotHook(DrawContext context, Slot slot, CallbackInfo ci) {
+        if (ModuleManager.fTHelper.isEnabled() && ModuleManager.fTHelper.aucHelper.getValue())
+            ModuleManager.fTHelper.onRenderChest(context, slot);
+    }
     public boolean renderShulkerToolTip(DrawContext context, int offsetX, int offsetY, int mouseX, int mouseY, ItemStack stack) {
         try {
             NbtCompound compoundTag = stack.getSubNbt("BlockEntityTag");

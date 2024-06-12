@@ -249,29 +249,35 @@ public final class Aura extends Module {
     }
 
     private void disableSprint() {
+        assert mc.player != null;
         mc.player.setSprinting(false);
         mc.options.sprintKey.setPressed(false);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
     }
 
     private void enableSprint() {
+        assert mc.player != null;
         mc.player.setSprinting(true);
         mc.options.sprintKey.setPressed(true);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
     }
 
     public void resolvePlayers() {
-        if (resolver.getValue() != Resolver.Off)
+        if (resolver.getValue() != Resolver.Off) {
+            assert mc.world != null;
             for (PlayerEntity player : mc.world.getPlayers())
                 if (player instanceof OtherClientPlayerEntity)
                     ((IOtherClientPlayerEntity) player).resolve(resolver.getValue());
+        }
     }
 
     public void restorePlayers() {
-        if (resolver.getValue() != Resolver.Off)
+        if (resolver.getValue() != Resolver.Off) {
+
             for (PlayerEntity player : mc.world.getPlayers())
                 if (player instanceof OtherClientPlayerEntity)
                     ((IOtherClientPlayerEntity) player).releaseResolver();
+        }
     }
 
     public void handleKill() {

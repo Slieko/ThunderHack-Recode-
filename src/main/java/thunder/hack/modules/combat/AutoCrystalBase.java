@@ -21,7 +21,7 @@ import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.gui.notification.Notification;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.setting.impl.ColorSetting;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.ExplosionUtility;
@@ -47,7 +47,7 @@ public class AutoCrystalBase extends Module {
     private final Setting<Boolean> notification = new Setting<>("Notification", true);
     private final Setting<Boolean> disableNoObby = new Setting<>("DisableNoObby", false);
 
-    private final Setting<BooleanParent> render = new Setting<>("Render", new BooleanParent(true));
+    private final Setting<BooleanSettingGroup> render = new Setting<>("Render", new BooleanSettingGroup(true));
     private final Setting<BlockAnimationUtility.BlockRenderMode> renderMode = new Setting<>("RenderMode", BlockAnimationUtility.BlockRenderMode.All).addToGroup(render);
     private final Setting<BlockAnimationUtility.BlockAnimationMode> animationMode = new Setting<>("AnimationMode", BlockAnimationUtility.BlockAnimationMode.Fade).addToGroup(render);
     private final Setting<ColorSetting> renderFillColor = new Setting<>("RenderFillColor", new ColorSetting(HudEditor.getColor(0))).addToGroup(render);

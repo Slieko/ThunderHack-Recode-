@@ -51,7 +51,7 @@ public class CommandManager implements IManager {
         add(new InvCleanerCommand());
         add(new ChestStealerCommand());
         add(new GarbageCleanerCommand());
-
+        add(new RctCommand());
     }
 
     private void add(@NotNull Command command) {

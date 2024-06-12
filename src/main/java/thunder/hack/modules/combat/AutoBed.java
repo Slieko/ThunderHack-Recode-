@@ -35,7 +35,7 @@ import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.ExplosionUtility;
 import thunder.hack.utility.math.MathUtility;
@@ -66,7 +66,7 @@ public final class AutoBed extends Module {
     public final Setting<Boolean> autoCraft = new Setting<>("AutoCraft", true);
     public static final Setting<Integer> minBeds = new Setting<>("MinBeds", 4, 0, 10);
     public static final Setting<Integer> bedsPerCraft = new Setting<>("BedsPerCraft", 8, 1, 27);
-    private final Setting<Parent> renderCategory = new Setting<>("Render", new Parent(false, 0));
+    private final Setting<SettingGroup> renderCategory = new Setting<>("Render", new SettingGroup(false, 0));
     private final Setting<Boolean> render = new Setting<>("Render", true).addToGroup(renderCategory);
     private final Setting<Boolean> rselfDamage = new Setting<>("SelfDamage", true).addToGroup(renderCategory);
     private final Setting<Boolean> drawDamage = new Setting<>("RenderDamage", true).addToGroup(renderCategory);

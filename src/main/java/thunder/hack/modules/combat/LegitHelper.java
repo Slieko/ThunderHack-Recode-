@@ -22,7 +22,7 @@ import thunder.hack.injection.accesors.IMinecraftClient;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.Bind;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.player.InteractionUtility;
 import thunder.hack.utility.player.InventoryUtility;
@@ -37,18 +37,18 @@ public class LegitHelper extends Module {
     }
 
 
-    private final Setting<BooleanParent> anchors = new Setting<>("Anchors", new BooleanParent(true));
+    private final Setting<BooleanSettingGroup> anchors = new Setting<>("Anchors", new BooleanSettingGroup(true));
     private final Setting<Integer> anchorDelay = new Setting<>("AnchorDelay", 50, 5, 250).addToGroup(anchors);
     private final Setting<Bind> anchorBind = new Setting<>("AnchorBind", new Bind(GLFW.GLFW_KEY_Y, false, false)).addToGroup(anchors);
 
-    private final Setting<BooleanParent> crystals = new Setting<>("Crystals", new BooleanParent(true));
+    private final Setting<BooleanSettingGroup> crystals = new Setting<>("Crystals", new BooleanSettingGroup(true));
     private final Setting<Integer> crystalDelay = new Setting<>("CrystalDelay", 50, 5, 250).addToGroup(crystals);
     private final Setting<Bind> crystalBind = new Setting<>("CrystalBind", new Bind(GLFW.GLFW_KEY_U, false, false)).addToGroup(crystals);
     private final Setting<Boolean> changePitch = new Setting<>("ChangePitch", false).addToGroup(crystals);
     private final Setting<Boolean> crystalOptimizer = new Setting<>("CrystalOptimizer", false).addToGroup(crystals);
     private final Setting<Boolean> switchBack = new Setting<>("SwitchBack", false).addToGroup(crystals);
 
-    private final Setting<BooleanParent> shieldBreaker = new Setting<>("ShieldBreaker", new BooleanParent(false));
+    private final Setting<BooleanSettingGroup> shieldBreaker = new Setting<>("ShieldBreaker", new BooleanSettingGroup(false));
     private final Setting<Integer> breakerDelay = new Setting<>("BreakerDelay", 50, 5, 250).addToGroup(shieldBreaker);
     private final Setting<Boolean> swapBack = new Setting<>("SwapBack", true).addToGroup(shieldBreaker);
 

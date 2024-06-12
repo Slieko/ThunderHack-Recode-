@@ -5,13 +5,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
-import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.clickui.AbstractElement;
 import thunder.hack.gui.clickui.ClickGUI;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.utility.render.Render2DEngine;
 
 import java.awt.*;
@@ -21,10 +20,10 @@ import static thunder.hack.gui.clickui.ClickGUI.arrow;
 import static thunder.hack.utility.render.animation.AnimationUtility.fast;
 
 public class BooleanParentElement extends AbstractElement {
-    private final Setting<BooleanParent> parentSetting;
+    private final Setting<BooleanSettingGroup> parentSetting;
 
-    public BooleanParentElement(Setting setting, boolean small) {
-        super(setting, small);
+    public BooleanParentElement(Setting setting) {
+        super(setting);
         this.parentSetting = setting;
     }
 
@@ -55,9 +54,9 @@ public class BooleanParentElement extends AbstractElement {
         Render2DEngine.drawRound(context.getMatrices(), x + width - 35f + paddingX, y + height / 2 - 3, 6, 6, 1, new Color(-1));
 
         if (7f * animation > 4) {
-            FontRenderers.sf_medium_mini.drawString(context.getMatrices(), "v", x + width - 33.5f, y + height / 2 - 1f, new Color(-1).getRGB());
+            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "v", x + width - 34f, y + height / 2 - 2f, new Color(-1).getRGB());
         } else {
-            FontRenderers.sf_medium_mini.drawString(context.getMatrices(), "x", x + width - 26f, y + height / 2 - 1f, new Color(-1).getRGB());
+            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "x", x + width - 27f, y + height / 2 - 2f, new Color(-1).getRGB());
         }
 
         if(Render2DEngine.isHovered(mouseX, mouseY, x + width - 36, y + height / 2 - 4, 15, 8)) {
@@ -85,7 +84,7 @@ public class BooleanParentElement extends AbstractElement {
         super.mouseClicked(mouseX, mouseY, button);
     }
 
-    public Setting<BooleanParent> getParentSetting() {
+    public Setting<BooleanSettingGroup> getParentSetting() {
         return parentSetting;
     }
 }

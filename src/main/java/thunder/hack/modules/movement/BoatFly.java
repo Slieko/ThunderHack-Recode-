@@ -22,7 +22,7 @@ import thunder.hack.events.impl.EventPlayerTravel;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.player.MovementUtility;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class BoatFly extends Module {
     private final Setting<Float> yspeed = new Setting<>("YSpeed", 1f, 0.0f, 10f);
 
     // For pro players
-    public final Setting<Parent> advanced = new Setting<>("Advanced", new Parent(false, 0));
+    public final Setting<SettingGroup> advanced = new Setting<>("Advanced", new SettingGroup(false, 0));
     private final Setting<Float> glidespeed = new Setting<>("GlideSpeed", 0f, 0f, 10f).addToGroup(advanced);
     private final Setting<Boolean> slotClick = new Setting<>("ClickSlot", false).addToGroup(advanced);
     private final Setting<Boolean> limit = new Setting<>("Limit", true).addToGroup(advanced);

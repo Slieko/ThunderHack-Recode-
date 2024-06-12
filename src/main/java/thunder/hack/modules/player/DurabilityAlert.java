@@ -24,7 +24,7 @@ public class DurabilityAlert extends Module {
     private final Setting<Boolean> friends = new Setting<>("Friend message", true);
     private final Setting<Integer> percent = new Setting<>("Percent", 20, 1, 100);
 
-    private final Identifier ICON = new Identifier("textures/broken_shield.png");
+    private final Identifier ICON = new Identifier("thunderhack", "textures/hud/elements/broken_shield.png");
     private boolean need_alert = false;
     private final Timer timer = new Timer();
 
@@ -47,7 +47,7 @@ public class DurabilityAlert extends Module {
 
         boolean flag = false;
         for (ItemStack stack : mc.player.getInventory().armor) {
-            if (stack.isEmpty()) continue;
+            if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem)) continue;
             if (getDurability(stack) < percent.getValue()) {
                 need_alert = true;
                 flag = true;

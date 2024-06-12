@@ -14,7 +14,7 @@ import static net.minecraft.entity.effect.StatusEffects.HASTE;
 
 public class MeteorSpeedMine extends Module{
     public MeteorSpeedMine() {
-        super("MeteorSpeedMine", Module.Category.SLK);
+        super("MeteorSpeedMine", Category.PLAYER);
     }
     public static final Setting<Integer> amplifier = new Setting<>("Effect Level", 1, 1, 5);
 

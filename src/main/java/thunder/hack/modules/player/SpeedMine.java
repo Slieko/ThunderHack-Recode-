@@ -34,9 +34,9 @@ import thunder.hack.injection.accesors.IInteractionManager;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.combat.AutoCrystal;
 import thunder.hack.setting.Setting;
-import thunder.hack.setting.impl.BooleanParent;
+import thunder.hack.setting.impl.BooleanSettingGroup;
 import thunder.hack.setting.impl.ColorSetting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.SettingGroup;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.ExplosionUtility;
 import thunder.hack.utility.math.MathUtility;
@@ -66,14 +66,14 @@ public final class SpeedMine extends Module {
     private final Setting<Boolean> resetOnSwitch = new Setting<>("ResetOnSwitch", true, v -> mode.getValue() != Mode.Damage);
     private final Setting<Integer> breakAttempts = new Setting<>("BreakAttempts", 10, 1, 50, v -> mode.getValue() == Mode.Packet);
 
-    private final Setting<Parent> packets = new Setting<>("Packets", new Parent(false, 0), v -> mode.getValue() == Mode.Packet);
+    private final Setting<SettingGroup> packets = new Setting<>("Packets", new SettingGroup(false, 0), v -> mode.getValue() == Mode.Packet);
     private final Setting<Boolean> stop = new Setting<>("Stop", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
     private final Setting<Boolean> abort = new Setting<>("Abort", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
     private final Setting<Boolean> start = new Setting<>("Start", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
     private final Setting<Boolean> stop2 = new Setting<>("Stop2", true, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
     private final Setting<Boolean> DoubleMine = new Setting<>("Double Mine", false, v -> mode.getValue() == Mode.Packet).addToGroup(packets);
 
-    private final Setting<BooleanParent> render = new Setting<>("Render", new BooleanParent(false), v -> mode.getValue() != Mode.Damage);
+    private final Setting<BooleanSettingGroup> render = new Setting<>("Render", new BooleanSettingGroup(false), v -> mode.getValue() != Mode.Damage);
     private final Setting<Boolean> smooth = new Setting<>("Smooth", true, v -> mode.getValue() != Mode.Damage).addToGroup(render);
     private final Setting<RenderMode> renderMode = new Setting<>("Render Mode", RenderMode.Shrink, v -> mode.getValue() != Mode.Damage).addToGroup(render);
     private final Setting<ColorSetting> startLineColor = new Setting<>("Start Line Color", new ColorSetting(new Color(255, 0, 0, 200)), v -> mode.getValue() != Mode.Damage).addToGroup(render);
@@ -349,7 +349,7 @@ public final class SpeedMine extends Module {
 
              addBlockToMine(event.getBlockPos(), event.getEnumFacing(), true);
         }
-        if(DoubleMine.getValue() && miningQueue != null) {
+        if(DoubleMine.getValue() && miningQueue != null && fullNullCheck()) {
             MiningData miningData = new MiningData(minePosition, mineFacing);
             this.miningQueue.add(miningData);
             if (miningData.getPos() != null && miningData.getDirection() != null && miningQueue != null && fullNullCheck()) {

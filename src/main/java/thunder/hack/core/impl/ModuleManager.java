@@ -214,7 +214,7 @@ public class ModuleManager implements IManager {
     public static Tracers tracers = new Tracers();
     public static Parkour parkour = new Parkour();
     public static ClickTP clickTP = new ClickTP();
-    public static Companion paimon = new Companion();
+    public static Companion companion = new Companion();
     public static BowPop bowPop = new BowPop();
     public static XCarry xCarry = new XCarry();
     public static Trails trails = new Trails();
@@ -255,6 +255,7 @@ public class ModuleManager implements IManager {
 
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
     public static QunixNew1 qunixnew1 = new QunixNew1();
+
 
     public ModuleManager() {
         for (Field field : getClass().getDeclaredFields()) {

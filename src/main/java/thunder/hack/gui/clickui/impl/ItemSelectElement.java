@@ -17,8 +17,8 @@ import static thunder.hack.core.IManager.mc;
 public class ItemSelectElement extends AbstractElement {
     private final Setting<ItemSelectSetting> setting;
 
-    public ItemSelectElement(Setting setting, boolean small, Setting<ItemSelectSetting> setting1) {
-        super(setting, small);
+    public ItemSelectElement(Setting setting) {
+        super(setting);
         this.setting = setting;
     }
 

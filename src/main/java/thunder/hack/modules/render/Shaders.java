@@ -9,7 +9,7 @@ import thunder.hack.core.impl.ShaderManager;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
-import thunder.hack.setting.impl.Parent;
+import thunder.hack.setting.impl.SettingGroup;
 
 public class Shaders extends Module {
     public Shaders() {
@@ -18,7 +18,7 @@ public class Shaders extends Module {
 
     //Thanks to @0x3C50 for Shader rendering example
 
-    private final Setting<Parent> select = new Setting<>("Select", new Parent(false, 0));
+    private final Setting<SettingGroup> select = new Setting<>("Select", new SettingGroup(false, 0));
     private final Setting<Boolean> hands = new Setting<>("Hands", true).addToGroup(select);
     private final Setting<Boolean> players = new Setting<>("Players", true).addToGroup(select);
     private final Setting<Boolean> self = new Setting<>("Self", true,v -> players.getValue()).addToGroup(select);
@@ -43,7 +43,7 @@ public class Shaders extends Module {
     public final Setting<Integer> fillAlpha = new Setting<>("FillAlpha", 170, 0, 255);
     public final Setting<Boolean> glow = new Setting<>("SmokeGlow", true);
 
-    private final Setting<Parent> colors = new Setting<>("Colors", new Parent(false, 0));
+    private final Setting<SettingGroup> colors = new Setting<>("Colors", new SettingGroup(false, 0));
     public final Setting<ColorSetting> outlineColor = new Setting<>("Outline", new ColorSetting(0x8800FF00)).addToGroup(colors);
     public final Setting<ColorSetting> outlineColor1 = new Setting<>("SmokeOutline", new ColorSetting(0x8800FF00)).addToGroup(colors);
     public final Setting<ColorSetting> outlineColor2 = new Setting<>("SmokeOutline2", new ColorSetting(0x8800FF00)).addToGroup(colors);

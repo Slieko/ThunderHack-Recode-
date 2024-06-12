@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static thunder.hack.modules.client.ClientSettings.isRu;
+import static thunder.hack.modules.client.ClientSettings.prefix;
 
 public class FTHelper extends Module {
 
@@ -147,7 +148,7 @@ public class FTHelper extends Module {
     }
 
     public int getPrice(ItemStack stack) {
-        if (stack.getName().toString() == null) return 999999999;
+        if (stack.getItem().getTooltipData(stack).toString() == null) return 999999999;
 
         String string2 = StringUtils.substringBetween(stack.getName().toString(), "\"text\":\" $", "\"}]");
 
