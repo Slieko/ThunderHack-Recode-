@@ -1,7 +1,6 @@
 package thunder.hack.core.impl;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.command.CommandSource;
@@ -40,7 +39,7 @@ public class CommandManager implements IManager {
         add(new FriendCommand());
         add(new ModuleCommand());
         add(new PrefixCommand());
-        add(new SearchCommand());
+        add(new BlockESPCommand());
         add(new TrackerCommand());
         add(new DropAllCommand());
         add(new TreasureCommand());

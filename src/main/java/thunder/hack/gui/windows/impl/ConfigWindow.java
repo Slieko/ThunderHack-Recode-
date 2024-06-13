@@ -3,6 +3,7 @@ package thunder.hack.gui.windows.impl;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.StringHelper;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.StringHelperUpdated;
@@ -10,8 +11,10 @@ import thunder.hack.gui.clickui.ClickGUI;
 import thunder.hack.gui.clickui.impl.SliderElement;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.windows.WindowBase;
+import thunder.hack.gui.windows.WindowsScreen;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.utility.render.Render2DEngine;
+import thunder.hack.utility.render.animation.AnimationUtility;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -59,7 +62,6 @@ public class ConfigWindow extends WindowBase {
         if (configPlates.isEmpty()) {
             FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), isRu() ? "Тут пока пусто" : "It's empty here yet",
                     getX() + getWidth() / 2f, getY() + getHeight() / 2f, new Color(0xBDBDBD).getRGB());
-            return;
         }
 
         String blink = (System.currentTimeMillis() / 240) % 2 == 0 ? "" : "   <<<<";
@@ -81,6 +83,7 @@ public class ConfigWindow extends WindowBase {
         Render2DEngine.horizontalGradient(context.getMatrices(), getX() + 2, getY() + 33f, getX() + 2 + getWidth() / 2f - 2, getY() + 33.5f, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
         Render2DEngine.horizontalGradient(context.getMatrices(), getX() + 2 + getWidth() / 2f - 2, getY() + 33f, getX() + 2 + getWidth() - 4, getY() + 33.5f, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
 
+        Render2DEngine.addWindow(context.getMatrices(), getX(), getY() + 38, getX() + getWidth(), getY() + getHeight() - 1, 1f);
         int id = 0;
         for (ConfigPlate configPlate : configPlates) {
             id++;
@@ -103,6 +106,8 @@ public class ConfigWindow extends WindowBase {
             FontRenderers.icons.drawString(context.getMatrices(), "w", getX() + getWidth() - 15, configPlate.offset + getY() + 40 + getScrollOffset(), -1);
             FontRenderers.sf_medium_mini.drawString(context.getMatrices(), id + ".", getX() + 3, configPlate.offset + getY() + 41 + getScrollOffset(), textColor);
         }
+        setMaxElementsHeight(configPlates.size() * 20);
+        Render2DEngine.popWindow();
     }
 
     @Override

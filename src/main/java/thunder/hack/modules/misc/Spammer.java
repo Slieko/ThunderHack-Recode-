@@ -35,7 +35,7 @@ public class Spammer extends Module {
 
     public static void loadSpammer() {
         try {
-            File file = new File(ConfigManager.MAIN_FOLDER + "misc/spammer.txt");
+            File file = new File(ConfigManager.MISC_FOLDER + "spammer.txt");
 
             if (!file.exists()) file.createNewFile();
             new Thread(() -> {

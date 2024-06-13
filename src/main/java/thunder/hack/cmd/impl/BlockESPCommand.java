@@ -8,22 +8,21 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.cmd.Command;
 import thunder.hack.cmd.args.SearchArgumentType;
-import thunder.hack.modules.render.Search;
+import thunder.hack.core.impl.ModuleManager;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static thunder.hack.modules.client.ClientSettings.isRu;
 
-public class SearchCommand extends Command {
-    public SearchCommand() {
-        super("search");
+public class BlockESPCommand extends Command {
+    public BlockESPCommand() {
+        super("blockesp");
     }
 
     @Override
     public void executeBuild(@NotNull LiteralArgumentBuilder<CommandSource> builder) {
         builder.then(literal("reset").executes(context -> {
-            Search.defaultBlocks.clear();
-            sendMessage("Search got reset.");
-
+            ModuleManager.blockESP.selectedBlocks.getValue().clear();
+            sendMessage(isRu() ? "Search был очищен!" : "Search got reset.");
             mc.worldRenderer.reload();
             return SINGLE_SUCCESS;
         }));
@@ -33,8 +32,8 @@ public class SearchCommand extends Command {
 
             Block result = getRegisteredBlock(blockName);
             if(result != null){
-                Search.defaultBlocks.add(result);
-                sendMessage(Formatting.GREEN + blockName + (isRu() ? " добавлен в Search" : " added to Search"));
+                ModuleManager.blockESP.selectedBlocks.getValue().add(result);
+                sendMessage(Formatting.GREEN + blockName + (isRu() ? " добавлен в BlockESP" : " added to BlockESP"));
             } else {
                 sendMessage(Formatting.RED + (isRu() ? "Такого блока нет!" : "There is no such block!"));
             }
@@ -49,8 +48,8 @@ public class SearchCommand extends Command {
 
             Block result = getRegisteredBlock(blockName);
             if(result != null){
-                Search.defaultBlocks.remove(result);
-                sendMessage(Formatting.GREEN + blockName + (isRu() ? " удален из Search" : " removed from Search"));
+                ModuleManager.blockESP.selectedBlocks.getValue().remove(result);
+                sendMessage(Formatting.GREEN + blockName + (isRu() ? " удален из BlockESP" : " removed from BlockESP"));
             } else {
                 sendMessage(Formatting.RED + (isRu() ? "Такого блока нет!" : "There is no such block!"));
             }
@@ -61,14 +60,14 @@ public class SearchCommand extends Command {
         })));
 
         builder.executes(context -> {
-            if (Search.defaultBlocks.isEmpty()) {
+            if (ModuleManager.blockESP.selectedBlocks.getValue().getItemsById().isEmpty()) {
                 sendMessage("Search list empty");
             } else {
                 StringBuilder f = new StringBuilder("Search list: ");
 
-                for (Block name :  Search.defaultBlocks)
+                for (String name : ModuleManager.blockESP.selectedBlocks.getValue().getItemsById())
                     try {
-                        f.append(name.getTranslationKey().replace("block.minecraft.","")).append(", ");
+                        f.append(name).append(", ");
                     } catch (Exception ignored) {
                     }
 

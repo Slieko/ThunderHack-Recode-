@@ -1,30 +1,22 @@
 package thunder.hack.core.impl;
 
 import com.google.gson.*;
-import com.mojang.logging.LogUtils;
 import net.minecraft.block.Block;
-import net.minecraft.util.Pair;
-import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.ThunderHack;
 import thunder.hack.cmd.Command;
 import thunder.hack.cmd.impl.NukerCommand;
-import thunder.hack.cmd.impl.SearchCommand;
+import thunder.hack.cmd.impl.BlockESPCommand;
 import thunder.hack.core.IManager;
 import thunder.hack.modules.Module;
-import thunder.hack.modules.client.ClientSettings;
 import thunder.hack.modules.misc.Nuker;
-import thunder.hack.modules.render.Search;
+import thunder.hack.modules.render.BlockESP;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.*;
-import thunder.hack.utility.player.InventoryUtility;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -63,19 +55,6 @@ public class ConfigManager implements IManager {
         if (!STASHLOGGER_FOLDER.exists()) STASHLOGGER_FOLDER.mkdirs();
     }
 
-    public void loadSearch() {
-        try {
-            File file = new File(CONFIG_FOLDER_NAME + "/misc/search.txt");
-
-            if (file.exists())
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    while (reader.ready())
-                        Search.defaultBlocks.add(SearchCommand.getRegisteredBlock(reader.readLine()));
-                }
-        } catch (Exception ignored) {
-        }
-    }
-
     public void loadNuker() {
         try {
             File file = new File(CONFIG_FOLDER_NAME + "/misc/nuker.txt");
@@ -90,21 +69,6 @@ public class ConfigManager implements IManager {
         }
     }
 
-    public void saveSearch() {
-        File file = new File(CONFIG_FOLDER_NAME + "/misc/search.txt");
-        try {
-            new File(CONFIG_FOLDER_NAME).mkdirs();
-            file.createNewFile();
-        } catch (Exception ignored) {
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Block name : Search.defaultBlocks) {
-                writer.write(name.getTranslationKey() + "\n");
-            }
-        } catch (Exception ignored) {
-        }
-    }
 
     public void saveNuker() {
         File file = new File(CONFIG_FOLDER_NAME + "/misc/nuker.txt");

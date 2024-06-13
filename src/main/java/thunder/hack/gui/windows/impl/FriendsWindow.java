@@ -3,6 +3,7 @@ package thunder.hack.gui.windows.impl;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.StringHelper;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.StringHelperUpdated;
@@ -10,6 +11,7 @@ import thunder.hack.gui.clickui.ClickGUI;
 import thunder.hack.gui.clickui.impl.SliderElement;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.windows.WindowBase;
+import thunder.hack.gui.windows.WindowsScreen;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.utility.render.Render2DEngine;
 
@@ -58,7 +60,6 @@ public class FriendsWindow extends WindowBase {
         if (friendPlates.isEmpty()) {
             FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), isRu() ? "Тут пока пусто" : "It's empty here yet",
                     getX() + getWidth() / 2f, getY() + getHeight() / 2f, new Color(0xBDBDBD).getRGB());
-            return;
         }
 
         String blink2 = (System.currentTimeMillis() / 240) % 2 == 0 ? "" : "l";
@@ -99,7 +100,7 @@ public class FriendsWindow extends WindowBase {
             FontRenderers.icons.drawString(context.getMatrices(), "w", getX() + getWidth() - 15, friendPlate.offset + getY() + 40 + getScrollOffset(), -1);
             FontRenderers.sf_medium_mini.drawString(context.getMatrices(), id + ".", getX() + 3, friendPlate.offset + getY() + 41 + getScrollOffset(), textColor);
         }
-
+        setMaxElementsHeight(friendPlates.size() * 20);
         Render2DEngine.popWindow();
     }
 
