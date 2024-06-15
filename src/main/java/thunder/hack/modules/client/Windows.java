@@ -1,10 +1,7 @@
 package thunder.hack.modules.client;
 
 import thunder.hack.gui.windows.WindowsScreen;
-import thunder.hack.gui.windows.impl.ConfigWindow;
-import thunder.hack.gui.windows.impl.FriendsWindow;
-import thunder.hack.gui.windows.impl.MacroWindow;
-import thunder.hack.gui.windows.impl.WaypointWindow;
+import thunder.hack.gui.windows.impl.*;
 import thunder.hack.modules.Module;
 
 public class Windows extends Module {

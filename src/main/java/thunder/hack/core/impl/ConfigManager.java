@@ -6,11 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import thunder.hack.ThunderHack;
 import thunder.hack.cmd.Command;
 import thunder.hack.cmd.impl.NukerCommand;
-import thunder.hack.cmd.impl.BlockESPCommand;
 import thunder.hack.core.IManager;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.misc.Nuker;
-import thunder.hack.modules.render.BlockESP;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.*;
 
@@ -53,37 +51,6 @@ public class ConfigManager implements IManager {
         if (!IMAGES_FOLDER.exists()) IMAGES_FOLDER.mkdirs();
         if (!TABPARSER_FOLDER.exists()) TABPARSER_FOLDER.mkdirs();
         if (!STASHLOGGER_FOLDER.exists()) STASHLOGGER_FOLDER.mkdirs();
-    }
-
-    public void loadNuker() {
-        try {
-            File file = new File(CONFIG_FOLDER_NAME + "/misc/nuker.txt");
-
-            if (file.exists())
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    while (reader.ready()) {
-                        Nuker.selectedBlocks.add(NukerCommand.getRegisteredBlock(reader.readLine()));
-                    }
-                }
-        } catch (Exception ignored) {
-        }
-    }
-
-
-    public void saveNuker() {
-        File file = new File(CONFIG_FOLDER_NAME + "/misc/nuker.txt");
-        try {
-            new File(CONFIG_FOLDER_NAME).mkdirs();
-            file.createNewFile();
-        } catch (Exception ignored) {
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Block name : Nuker.selectedBlocks) {
-                writer.write(name.getTranslationKey() + "\n");
-            }
-        } catch (Exception ignored) {
-        }
     }
 
     public static @NotNull String getConfigDate(String name) {
@@ -469,7 +436,7 @@ public class ConfigManager implements IManager {
     }
 
     public void saveCurrentConfig() {
-        File file = new File(CONFIG_FOLDER_NAME + "/misc/currentcfg.txt");
+        File file = new File(ConfigManager.MAIN_FOLDER + "/misc/currentcfg.txt");
         try {
             if (file.exists()) {
                 FileWriter writer = new FileWriter(file);
@@ -487,7 +454,7 @@ public class ConfigManager implements IManager {
     }
 
     public File getCurrentConfig() {
-        File file = new File(CONFIG_FOLDER_NAME + "/misc/currentcfg.txt");
+        File file = new File(ConfigManager.MAIN_FOLDER + "/misc/currentcfg.txt");
         String name = "config";
         try {
             if (file.exists()) {
@@ -501,66 +468,5 @@ public class ConfigManager implements IManager {
         }
         currentConfig = new File(CONFIGS_FOLDER, name + ".th");
         return currentConfig;
-    }
-
-    public void loadChestStealer() {
-        try {
-            File file = new File(CONFIG_FOLDER_NAME + "/misc/search.txt");
-
-            if (file.exists()) {
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    while (reader.ready()) {
-                        ModuleManager.chestStealer.items.add(reader.readLine());
-                    }
-
-                }
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    public void saveChestStealer() {
-        File file = new File(CONFIG_FOLDER_NAME + "/misc/search.txt");
-        try {
-            file.createNewFile();
-        } catch (Exception ignored) {
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (String item : ModuleManager.chestStealer.items) {
-                writer.write(item + "\n");
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    public void loadInvCleaner() {
-        try {
-            File file = new File("config/lambdynlights/misc/invcleaner.txt");
-
-            if (file.exists()) {
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    while (reader.ready()) {
-                        ModuleManager.inventoryCleaner.items.add(reader.readLine());
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    public void saveInvCleaner() {
-        File file = new File("config/lambdynlights/misc/invcleaner.txt");
-        try {
-            file.createNewFile();
-        } catch (Exception ignored) {
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (String item : ModuleManager.inventoryCleaner.items) {
-                writer.write(item + "\n");
-            }
-        } catch (Exception ignored) {
-        }
     }
 }

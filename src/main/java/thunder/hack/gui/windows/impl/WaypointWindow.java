@@ -3,7 +3,6 @@ package thunder.hack.gui.windows.impl;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.StringHelper;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.StringHelperUpdated;

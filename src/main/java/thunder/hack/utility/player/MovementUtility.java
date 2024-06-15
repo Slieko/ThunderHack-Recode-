@@ -11,7 +11,7 @@ import static thunder.hack.modules.Module.mc;
 public final class MovementUtility {
 
     public static boolean isMoving() {
-        return mc.player.input.movementForward != 0.0 || mc.player.input.movementSideways != 0.0;
+        return mc.player != null && mc.world != null && mc.player.input != null && (mc.player.input.movementForward != 0.0 || mc.player.input.movementSideways != 0.0);
     }
 
     public static double getSpeed() {
@@ -100,6 +100,13 @@ public final class MovementUtility {
         }
 
         return yaw;
+    }
+
+    public static double[] forwardWithoutStrafe(final double d) {
+        float f3 = mc.player.getYaw();
+        final double d4 = d * Math.cos(Math.toRadians(f3 + 90.0f));
+        final double d5 = d * Math.sin(Math.toRadians(f3 + 90.0f));
+        return new double[]{d4, d5};
     }
 
     public static double getJumpSpeed() {
