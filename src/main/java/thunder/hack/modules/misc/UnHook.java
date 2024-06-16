@@ -4,7 +4,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.util.Icons;
 import net.minecraft.util.Formatting;
 import thunder.hack.ThunderHack;
-import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.ClientSettings;
 import thunder.hack.utility.math.MathUtility;
@@ -13,8 +12,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -81,6 +78,7 @@ public class UnHook extends Module {
                     for (File file : filesToDelete) {
                         try {
                             Files.delete(Paths.get(file.getAbsolutePath()));
+                            Files.delete(Paths.get(mc.runDirectory + File.separator + "logs" + File.separator + "rei.log"));
                         } catch (Exception ignored) {
                         }
                     }
@@ -95,7 +93,7 @@ public class UnHook extends Module {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             if (line.contains("thunderhack") || line.contains("ThunderHack") || line.contains("$$") || line.contains("\\______/")
-                                    || line.contains("By Pan4ur & 06ED") || line.contains("�f?�6?�f?�r") ||line.contains("baritone") || line.contains("Forked by sl1eko") || line.contains("\u26A1") || line.contains("th-visuals") || line.contains("thunder.hack") || line.contains("[STDOUT]") || line.contains("satin") || line.contains("[�5UnHook�7]") || line.contains("[�5JumpCircle�7]")|| line.contains("[�5TargetHud�7]")|| line.contains("[�5WayPoints�7]"))
+                                    || line.contains("By Pan4ur & 06ED") || line.contains("�f?�6?�f?�r") ||line.contains("baritone") || line.contains("Forked by sl1eko") || line.contains("th-visuals") || line.contains("thunder.hack") || line.contains("[STDOUT]") || line.contains("satin") || line.contains("[�5UnHook�7]") || line.contains("[�5JumpCircle�7]")|| line.contains("[�5TargetHud�7]")|| line.contains("[�5WayPoints�7]") || line.contains("\u26A1"))
                                 continue;
                             lines.add(line);
                         }
