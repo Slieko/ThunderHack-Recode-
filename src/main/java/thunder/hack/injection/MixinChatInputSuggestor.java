@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.ModuleManager;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -29,22 +30,24 @@ public abstract class MixinChatInputSuggestor {
 
     @Inject(method = "refresh", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z", remap = false), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void refreshHook(CallbackInfo ci, String string, StringReader reader) {
-        if (reader.canRead(ThunderHack.commandManager.getPrefix().length()) && reader.getString().startsWith(ThunderHack.commandManager.getPrefix(), reader.getCursor())) {
-            reader.setCursor(reader.getCursor() + 1);
+      if(!ModuleManager.unHook.isEnabled()) {
+          if (reader.canRead(ThunderHack.commandManager.getPrefix().length()) && reader.getString().startsWith(ThunderHack.commandManager.getPrefix(), reader.getCursor())) {
+              reader.setCursor(reader.getCursor() + 1);
 
-            if (parse == null)
-                parse = ThunderHack.commandManager.getDispatcher().parse(reader, ThunderHack.commandManager.getSource());
+              if (parse == null)
+                  parse = ThunderHack.commandManager.getDispatcher().parse(reader, ThunderHack.commandManager.getSource());
 
-            final int cursor = textField.getCursor();
+              final int cursor = textField.getCursor();
 
-            if (cursor >= 1 && (window == null || !completingSuggestions)) {
-                pendingSuggestions = ThunderHack.commandManager.getDispatcher().getCompletionSuggestions(parse, cursor);
-                pendingSuggestions.thenRun(() -> {
-                    if (pendingSuggestions.isDone()) showCommandSuggestions();
-                });
-            }
+              if (cursor >= 1 && (window == null || !completingSuggestions)) {
+                  pendingSuggestions = ThunderHack.commandManager.getDispatcher().getCompletionSuggestions(parse, cursor);
+                  pendingSuggestions.thenRun(() -> {
+                      if (pendingSuggestions.isDone()) showCommandSuggestions();
+                  });
+              }
 
-            ci.cancel();
-        }
+              ci.cancel();
+          }
+      }
     }
 }
