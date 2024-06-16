@@ -62,7 +62,7 @@ public class UnHook extends Module {
                 mc.inGameHud.getChatHud().clear(true);
                 setEnabled(true);
 
-                /* Clean yyyy-mm-dd-h.log.gz
+                // Clean yyyy-mm-dd-h.log.gz
                 String directoryPath = mc.runDirectory + File.separator + "logs" + File.separator;
                 File directory = new File(directoryPath);
 
@@ -70,17 +70,10 @@ public class UnHook extends Module {
                     return;
                 }
 
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-H");
-                String currentDate = LocalDate.now().format(dateFormatter);
                 String regex = "\\d{4}-\\d{2}-\\d{2}-\\d{1}.log.gz";
                 Pattern pattern = Pattern.compile(regex);
 
-                File[] filesToDelete = directory.listFiles(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return pattern.matcher(name).matches();
-                    }
-                });
+                File[] filesToDelete = directory.listFiles((dir, name) -> pattern.matcher(name).matches());
 
                 if(filesToDelete == null || filesToDelete.length == 0) {
                     System.out.println("No logs to remove!");
@@ -92,9 +85,8 @@ public class UnHook extends Module {
                         }
                     }
                 }
-                */
-                //Clean latest.log
 
+                //Clean latest.log
                 try {
                         File file = new File(mc.runDirectory + File.separator + "logs" + File.separator + "latest.log");
                         FileInputStream fis = new FileInputStream(file);
@@ -103,7 +95,7 @@ public class UnHook extends Module {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             if (line.contains("thunderhack") || line.contains("ThunderHack") || line.contains("$$") || line.contains("\\______/")
-                                    || line.contains("By pan4ur, 06ED") || line.contains("Forked by sl1eko") || line.contains("\u26A1") || line.contains("th-visuals") || line.contains("thunder.hack") || line.contains("[STDOUT]") || line.contains("satin") || line.contains("[UnHook]") || line.contains("[TargetHud]")|| line.contains("[JumpCircle]")|| line.contains("[WayPoints]"))
+                                    || line.contains("By Pan4ur & 06ED") || line.contains("�f?�6?�f?�r") ||line.contains("baritone") || line.contains("Forked by sl1eko") || line.contains("\u26A1") || line.contains("th-visuals") || line.contains("thunder.hack") || line.contains("[STDOUT]") || line.contains("satin") || line.contains("[�5UnHook�7]") || line.contains("[�5JumpCircle�7]")|| line.contains("[�5TargetHud�7]")|| line.contains("[�5WayPoints�7]"))
                                 continue;
                             lines.add(line);
                         }

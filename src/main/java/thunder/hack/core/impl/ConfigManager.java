@@ -1,21 +1,17 @@
 package thunder.hack.core.impl;
 
 import com.google.gson.*;
-import net.minecraft.block.Block;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.ThunderHack;
 import thunder.hack.cmd.Command;
-import thunder.hack.cmd.impl.NukerCommand;
 import thunder.hack.core.IManager;
 import thunder.hack.modules.Module;
-import thunder.hack.modules.misc.Nuker;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.*;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,28 +36,19 @@ public class ConfigManager implements IManager {
     public static boolean firstLaunch = false;
 
     public ConfigManager() {
-        if (!MAIN_FOLDER.exists()) {
-            MAIN_FOLDER.mkdirs();
-            firstLaunch = true;
-        }
-        if (!CONFIGS_FOLDER.exists()) CONFIGS_FOLDER.mkdirs();
-        if (!TEMP_FOLDER.exists()) TEMP_FOLDER.mkdirs();
-        if (!MISC_FOLDER.exists()) MISC_FOLDER.mkdirs();
-        if (!SOUNDS_FOLDER.exists()) SOUNDS_FOLDER.mkdirs();
-        if (!IMAGES_FOLDER.exists()) IMAGES_FOLDER.mkdirs();
-        if (!TABPARSER_FOLDER.exists()) TABPARSER_FOLDER.mkdirs();
-        if (!STASHLOGGER_FOLDER.exists()) STASHLOGGER_FOLDER.mkdirs();
+        firstLaunch = !MAIN_FOLDER.exists();
+        createDirs(MAIN_FOLDER, CONFIGS_FOLDER, TEMP_FOLDER, MISC_FOLDER, SOUNDS_FOLDER, IMAGES_FOLDER, TABPARSER_FOLDER, STASHLOGGER_FOLDER);
+    }
+
+    private void createDirs(File... dirs) {
+        for (File dir : dirs) if (!dir.exists()) dir.mkdirs();
     }
 
     public static @NotNull String getConfigDate(String name) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
-        if (!file.exists()) {
+        if (!file.exists())
             return "none";
-        }
-        long x = file.lastModified();
-        DateFormat obj = new SimpleDateFormat("dd MMM yyyy HH:mm");
-        Date sol = new Date(x);
-        return obj.format(sol);
+        return new SimpleDateFormat("dd MMM yyyy HH:mm").format(new Date(file.lastModified()));
     }
 
     public void load(String name, String category) {
@@ -69,7 +56,6 @@ public class ConfigManager implements IManager {
         if (!file.exists()) {
             if (isRu()) Command.sendMessage("Конфига " + name + " не существует!");
             else Command.sendMessage("Config " + name + " does not exist!");
-
             return;
         }
 
@@ -118,9 +104,7 @@ public class ConfigManager implements IManager {
     public void loadModuleOnly(String name, Module module) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            if (isRu()) Command.sendMessage("Конфига " + name + " не существует!");
-            else Command.sendMessage("Config " + name + " does not exist!");
-
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
             return;
         }
 
@@ -131,74 +115,22 @@ public class ConfigManager implements IManager {
     }
 
     public void load(@NotNull File config) {
-        if (!config.exists()) save(config);
-        try {
-            FileReader reader = new FileReader(config, StandardCharsets.UTF_8);
-            JsonParser parser = new JsonParser();
-
-            JsonArray array = null;
-            try {
-                array = (JsonArray) parser.parse(reader);
-            } catch (ClassCastException e) {
-                save(config);
-            }
-
-            JsonArray modules = null;
-            try {
-                JsonObject modulesObject = (JsonObject) array.get(0);
-                modules = modulesObject.getAsJsonArray("Modules");
-            } catch (Exception ignored) {
-            }
-            if (modules != null) {
-                modules.forEach(m -> {
-                    try {
-                        parseModule(m.getAsJsonObject(), "none");
-                    } catch (NullPointerException e) {
-                        System.err.println(e.getMessage());
-                    }
-                });
-            }
-
-            if (isRu()) Command.sendMessage("Загружен конфиг " + config.getName());
-            else Command.sendMessage("Loaded " + config.getName());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        currentConfig = config;
-        saveCurrentConfig();
+        load(config, "none");
     }
 
-    public void load(@NotNull File config, String category) {
-        if (!config.exists()) save(config);
-        try {
-            FileReader reader = new FileReader(config, StandardCharsets.UTF_8);
-            JsonParser parser = new JsonParser();
+    private void load(@NotNull File config, String category) {
+        if (!config.exists())
+            save(config);
 
-            JsonArray array = null;
-            try {
-                array = (JsonArray) parser.parse(reader);
-            } catch (ClassCastException e) {
-                save(config);
-            }
+        try (FileReader reader = new FileReader(config, StandardCharsets.UTF_8)) {
+            JsonObject modulesObject = JsonParser.parseReader(reader).getAsJsonArray().get(0).getAsJsonObject();
+            JsonArray modules = modulesObject.getAsJsonArray("Modules");
 
-            JsonArray modules = null;
-            try {
-                JsonObject modulesObject = (JsonObject) array.get(0);
-                modules = modulesObject.getAsJsonArray("Modules");
-            } catch (Exception ignored) {
-            }
-            if (modules != null) {
-                modules.forEach(m -> {
-                    try {
-                        parseModule(m.getAsJsonObject(), category);
-                    } catch (NullPointerException e) {
-                        System.err.println(e.getMessage());
-                    }
-                });
-            }
+            if (modules != null)
+                for (JsonElement element : modules)
+                    parseModule(element.getAsJsonObject(), category);
 
-            if (isRu()) Command.sendMessage("Загружен конфиг " + config.getName());
-            else Command.sendMessage("Loaded " + config.getName());
+            Command.sendMessage(isRu() ? "Загружен конфиг " + config.getName() : "Loaded " + config.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -207,43 +139,21 @@ public class ConfigManager implements IManager {
     }
 
     public void loadModuleOnly(File config, Module module) {
-        try {
-            FileReader reader = new FileReader(config);
-            JsonParser parser = new JsonParser();
-
-            JsonArray array = null;
-            try {
-                array = (JsonArray) parser.parse(reader);
-            } catch (ClassCastException ignored) {
-            }
-
-            JsonArray modules = null;
-            try {
-                JsonObject modulesObject = (JsonObject) Objects.requireNonNull(array).get(0);
-                modules = modulesObject.getAsJsonArray("Modules");
-            } catch (Exception ignored) {
-            }
+        try (FileReader reader = new FileReader(config)) {
+            JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
+            JsonObject modulesObject = array.get(0).getAsJsonObject();
+            JsonArray modules = modulesObject.getAsJsonArray("Modules");
 
             if (modules != null) {
-                modules.forEach(m -> {
-                    Module module1 = ThunderHack.moduleManager.modules.stream()
-                            .filter(m1 -> m.getAsJsonObject().getAsJsonObject(m1.getName()) != null)
-                            .findFirst().orElse(null);
-
-                    if (module1 == null)
-                        return;
-
-                    if (Objects.equals(module.getName(), module1.getName())) {
-                        try {
-                            parseModule(m.getAsJsonObject(), "none");
-                        } catch (NullPointerException e) {
-                            System.err.println(e.getMessage());
-                        }
-                    }
-                });
+                for (JsonElement element : modules) {
+                    JsonObject moduleObject = element.getAsJsonObject();
+                    Module loadedModule = ThunderHack.moduleManager.modules.stream().filter(m -> moduleObject.getAsJsonObject(m.getName()) != null).findFirst().orElse(null);
+                    if (loadedModule != null && Objects.equals(module.getName(), loadedModule.getName()))
+                        parseModule(moduleObject, "none");
+                }
             }
-            if (isRu()) Command.sendMessage("Загружен модуль " + module.getName() + " с конфига " + config.getName());
-            else Command.sendMessage("Loaded " + module.getName() + " from " + config.getName());
+            Command.sendMessage(isRu() ? "Загружен модуль " + module.getName() + " с конфига " + config.getName() :
+                    "Loaded " + module.getName() + " from " + config.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -262,9 +172,8 @@ public class ConfigManager implements IManager {
 
     public void save(@NotNull File config) {
         try {
-            if (!config.exists()) {
+            if (!config.exists())
                 config.createNewFile();
-            }
             JsonArray array = new JsonArray();
 
             JsonObject modulesObj = new JsonObject();
@@ -272,12 +181,9 @@ public class ConfigManager implements IManager {
             array.add(modulesObj);
 
             FileWriter writer = new FileWriter(config, StandardCharsets.UTF_8);
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-            gson.toJson(array, writer);
+            new GsonBuilder().setPrettyPrinting().create().toJson(array, writer);
             writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 
@@ -287,8 +193,10 @@ public class ConfigManager implements IManager {
                 .findFirst()
                 .orElse(null);
 
-        if (!Objects.equals(category, "none") && !module.getCategory().getName().toLowerCase().equals(category))
-            return;
+        if (!Objects.equals(category, "none")) {
+            assert module != null;
+            if (!module.getCategory().getName().toLowerCase().equals(category)) return;
+        }
 
         if (module != null) {
             JsonObject mobject = object.getAsJsonObject(module.getName());
@@ -331,8 +239,8 @@ public class ConfigManager implements IManager {
                         Enum value = new EnumConverter(((Enum) setting.getValue()).getClass()).doBackward(mobject.getAsJsonPrimitive(setting.getName()));
                         setting.setValue((value == null) ? setting.getDefaultValue() : value);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
+
                 }
             }
         }
@@ -397,16 +305,16 @@ public class ConfigManager implements IManager {
         return moduleObject;
     }
 
-    public boolean delete(@NotNull File file) {
-        return file.delete();
+    public void delete(@NotNull File file) {
+        file.delete();
     }
 
-    public boolean delete(String name) {
+    public void delete(String name) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            return false;
+            return;
         }
-        return delete(file);
+        delete(file);
     }
 
     public List<String> getConfigList() {
@@ -436,7 +344,7 @@ public class ConfigManager implements IManager {
     }
 
     public void saveCurrentConfig() {
-        File file = new File(ConfigManager.MAIN_FOLDER + "/misc/currentcfg.txt");
+        File file = new File(MAIN_FOLDER + "/misc/currentcfg.txt");
         try {
             if (file.exists()) {
                 FileWriter writer = new FileWriter(file);
@@ -454,7 +362,7 @@ public class ConfigManager implements IManager {
     }
 
     public File getCurrentConfig() {
-        File file = new File(ConfigManager.MAIN_FOLDER + "/misc/currentcfg.txt");
+        File file = new File(MAIN_FOLDER + "/misc/currentcfg.txt");
         String name = "config";
         try {
             if (file.exists()) {
