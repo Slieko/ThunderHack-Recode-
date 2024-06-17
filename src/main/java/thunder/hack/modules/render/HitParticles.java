@@ -33,7 +33,7 @@ public class HitParticles extends Module {
     private final Setting<Integer> amount = new Setting<>("Amount", 2, 1, 5);
     private final Setting<Integer> lifeTime = new Setting<>("LifeTime", 2, 1, 10);
     private final Setting<Integer> speed = new Setting<>("Speed", 2, 1, 20);
-    private final Setting<Float> starsScale = new Setting<>("Scale", 3f, 1f, 10f, v -> mode.getValue() != Mode.Orbiz);
+    private final Setting<Float> starsScale = new Setting<>("Scale", 3f, 1f, 10f, v -> mode.getValue() != Mode.Bloom);
     private final Setting<ColorMode> colorMode = new Setting<>("ColorMode", ColorMode.Sync);
     private final Setting<ColorSetting> colorH = new Setting<>("HealColor", new ColorSetting(3142544), v -> mode.is(Mode.Text));
     private final Setting<ColorSetting> colorD = new Setting<>("DamageColor", new ColorSetting(15811379), v -> mode.is(Mode.Text));
@@ -178,7 +178,7 @@ public class HitParticles extends Module {
             matrixStack.translate(-size / 2, -size / 2, -size / 2);
 
             switch (mode.getValue()) {
-                case Orbiz -> {
+                case Bloom -> {
                     drawOrbiz(matrixStack, 0.0f, 0.7, color);
                     drawOrbiz(matrixStack, 0.1f, 1.4, color);
                     drawOrbiz(matrixStack, 0.2f, 2.3, color);
@@ -204,7 +204,7 @@ public class HitParticles extends Module {
     }
 
     public enum Mode {
-        Orbiz, Stars, Hearts, Text
+        Bloom, Stars, Hearts, Text
     }
 
     public enum ColorMode {

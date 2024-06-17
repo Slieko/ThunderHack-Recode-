@@ -125,12 +125,13 @@ public class LegacyHud extends Module {
                 }
                 String s = potion.getName().getString() + " " + power;
                 String s2 = getDuration(potionEffect) + "";
+                Color c = new Color(potionEffect.getEffectType().getColor());
 
                 if (renderingUp.getValue()) {
                     i += offset;
-                    drawText(context, s + " " + s2, (width - getStringWidth(s + " " + s2) - 2), (height - 2 - i), potionEffect.getEffectType().getColor());
+                    drawText(context, s + " " + s2, (width - getStringWidth(s + " " + s2) - 2), (height - 2 - i), c.getRGB());
                 } else {
-                    drawText(context, s + " " + s2, (width - getStringWidth(s + " " + s2) - 2), (2 + i++ * offset), potionEffect.getEffectType().getColor());
+                    drawText(context, s + " " + s2, (width - getStringWidth(s + " " + s2) - 2), (2 + i++ * offset), c.getRGB());
                 }
             }
         }
@@ -292,7 +293,7 @@ public class LegacyHud extends Module {
             int x = i - 189 + 180 + 2;
             context.drawItem(totem, x, y);
             context.drawItemInSlot(mc.textRenderer, totem, x, y);
-            drawText(context, totems + "", x + 8 + getStringWidth(totems + "") / 2, (y - 7), 16777215);
+            drawText(context, totems + "", 8 + (int) (x - (float) getStringWidth(totems + "") / 2f), (y - 7), 16777215);
         }
     }
 

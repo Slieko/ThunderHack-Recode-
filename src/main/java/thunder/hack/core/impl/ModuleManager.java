@@ -217,7 +217,6 @@ public class ModuleManager implements IManager {
     public static Companion companion = new Companion();
     public static BowPop bowPop = new BowPop();
     public static XCarry xCarry = new XCarry();
-    public static Trails trails = new Trails();
     public static Strafe strafe = new Strafe();
     public static Spider spider = new Spider();
     public static BlockESP blockESP = new BlockESP();

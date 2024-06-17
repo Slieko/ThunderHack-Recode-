@@ -43,6 +43,7 @@ public class ThunderHack implements ModInitializer {
     public static long initTime;
     public static KeyListening currentKeyListener;
     public static String[] contributors = new String[16];
+    public static boolean baritone = false;
 
     /*-----------------    Managers  ---------------------*/
     public static NotificationManager notificationManager = new NotificationManager();
@@ -105,6 +106,11 @@ public class ThunderHack implements ModInitializer {
      //   syncVersion();
         syncContributors();
         ThunderUtility.parseChangeLog();
+        try {
+            Class.forName("baritone.api.BaritoneAPI");
+            baritone = true;
+        } catch (ClassNotFoundException e) {}
+
 
         LogUtils.getLogger().info("""
                 \n /$$$$$$$$ /$$                                 /$$                     /$$   /$$                     /$$     \s
