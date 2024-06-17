@@ -39,6 +39,5 @@
 - [@LambdAurora — LambDynamicLights](https://github.com/LambdAurora/LambDynamicLights) for fake cfg-folder name
 
 ## Screenshots
-![image](https://i.imgur.com/ZCBQOvB.png)
-![image](https://i.imgur.com/yqZF9Cu.png)
+![image](https://i.imgur.com/lODAYQ3.png)
 
