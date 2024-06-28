@@ -3,7 +3,9 @@ package thunder.hack.injection;
 import net.minecraft.block.*;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -23,8 +25,8 @@ import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.events.impl.EventAttackBlock;
 import thunder.hack.events.impl.EventBreakBlock;
 import thunder.hack.events.impl.EventClickSlot;
+import thunder.hack.modules.Module;
 import thunder.hack.modules.player.NoInteract;
-import thunder.hack.modules.player.Reach;
 import thunder.hack.modules.player.SpeedMine;
 
 import static thunder.hack.modules.Module.mc;
@@ -56,6 +58,10 @@ public class MixinClientPlayerInteractionManager {
                 && (ModuleManager.aura.isEnabled() || !NoInteract.onlyAura.getValue())) {
             cir.setReturnValue(ActionResult.PASS);
         }
+
+        if(mc.player != null && ModuleManager.antiBallPlace.isEnabled()
+                && ((mc.player.getOffHandStack().getItem() == Items.PLAYER_HEAD && hand == Hand.OFF_HAND) || (mc.player.getMainHandStack().getItem() == Items.PLAYER_HEAD && hand == Hand.MAIN_HAND)))
+            cir.setReturnValue(ActionResult.PASS);
     }
 
     @Redirect(method = "updateBlockBreakingProgress", at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;blockBreakingCooldown:I", opcode = Opcodes.GETFIELD, ordinal = 0))
@@ -72,12 +78,14 @@ public class MixinClientPlayerInteractionManager {
 
     @Inject(method = "attackBlock", at = @At("HEAD"), cancellable = true)
     private void attackBlockHook(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        if(Module.fullNullCheck()) return;
         EventAttackBlock event = new EventAttackBlock(pos, direction);
         ThunderHack.EVENT_BUS.post(event);
         if (event.isCancelled())
             cir.setReturnValue(false);
     }
 
+    /*
     @Inject(method = "getReachDistance", at = @At("HEAD"), cancellable = true)
     private void getReachDistanceHook(CallbackInfoReturnable<Float> cir) {
         if (ModuleManager.reach.isEnabled()) {
@@ -91,9 +99,11 @@ public class MixinClientPlayerInteractionManager {
             cir.setReturnValue(true);
         }
     }
+     */
 
     @Inject(method = "breakBlock", at = @At("HEAD"), cancellable = true)
     public void breakBlockHook(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        if(Module.fullNullCheck()) return;
         EventBreakBlock event = new EventBreakBlock(pos);
         ThunderHack.EVENT_BUS.post(event);
         if (event.isCancelled())
@@ -102,6 +112,7 @@ public class MixinClientPlayerInteractionManager {
 
     @Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
     public void clickSlotHook(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
+        if(Module.fullNullCheck()) return;
         EventClickSlot event = new EventClickSlot(actionType, slotId, button, syncId);
         ThunderHack.EVENT_BUS.post(event);
         if (event.isCancelled())

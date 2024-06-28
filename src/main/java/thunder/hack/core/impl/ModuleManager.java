@@ -251,7 +251,8 @@ public class ModuleManager implements IManager {
     public static Aura aura = new Aura();
     public static FOV fov = new FOV();
     public static ESP esp = new ESP();
-
+    public static PacketCanceler packetCanceler = new PacketCanceler();
+    public static AntiBallPlace antiBallPlace = new AntiBallPlace();
     public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
     public static QunixNew1 qunixnew1 = new QunixNew1();
 

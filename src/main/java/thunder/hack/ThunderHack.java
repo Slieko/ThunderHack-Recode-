@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -32,6 +33,7 @@ import static thunder.hack.core.IManager.mc;
 
 public class ThunderHack implements ModInitializer {
     public static final ModMetadata MOD_META;
+    public static MinecraftClient mc;
     public static final String MOD_ID = "th-visuals";
     public static final IEventBus EVENT_BUS = new EventBus();
     public static final String VERSION = "1.4++";
@@ -60,6 +62,7 @@ public class ThunderHack implements ModInitializer {
     public static CommandManager commandManager = new CommandManager();
     public static SoundManager soundManager = new SoundManager();
     public static Core core = new Core();
+    public static TelemetryManager telemetryManager = new TelemetryManager();
     /*--------------------------------------------------------*/
 
     static {
@@ -72,6 +75,7 @@ public class ThunderHack implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        mc = MinecraftClient.getInstance();
         initTime = System.currentTimeMillis();
 
         EVENT_BUS.registerLambdaFactory("thunder.hack", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
@@ -88,6 +92,7 @@ public class ThunderHack implements ModInitializer {
         moduleManager.onLoad();
         ThunderUtility.parseStarGazer();
 
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if(ModuleManager.unHook.isEnabled())
                 ModuleManager.unHook.disable();
@@ -99,6 +104,7 @@ public class ThunderHack implements ModInitializer {
 
         macroManager.onLoad();
         wayPointManager.onLoad();
+        telemetryManager.onLoad();
 
         Render2DEngine.initShaders();
 
@@ -126,7 +132,7 @@ public class ThunderHack implements ModInitializer {
         LogUtils.getLogger().info("[ThunderHack] Init time: " + (System.currentTimeMillis() - initTime) + " ms.");
 
         initTime = System.currentTimeMillis();
-
+        telemetryManager.telemetryLogin();
     }
 
 

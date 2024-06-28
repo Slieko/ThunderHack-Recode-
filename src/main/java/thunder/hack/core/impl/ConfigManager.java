@@ -21,7 +21,7 @@ import static thunder.hack.modules.client.ClientSettings.isRu;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class ConfigManager implements IManager {
     public static final String CONFIG_FOLDER_NAME = "lambdynlights";
-    public static final File MAIN_FOLDER = new File(mc.runDirectory+"/config", CONFIG_FOLDER_NAME);
+    public static final File MAIN_FOLDER = new File(mc.runDirectory+ File.separator + "config", CONFIG_FOLDER_NAME);
     public static final File CONFIGS_FOLDER = new File(MAIN_FOLDER, "configs");
     public static final File TEMP_FOLDER = new File(MAIN_FOLDER, "temp");
     public static final File MISC_FOLDER = new File(MAIN_FOLDER, "misc");
@@ -344,7 +344,7 @@ public class ConfigManager implements IManager {
     }
 
     public void saveCurrentConfig() {
-        File file = new File(MAIN_FOLDER + "/misc/currentcfg.txt");
+        File file = new File(MAIN_FOLDER + File.separator+"misc"+File.separator+"currentcfg.txt");
         try {
             if (file.exists()) {
                 FileWriter writer = new FileWriter(file);
@@ -362,7 +362,7 @@ public class ConfigManager implements IManager {
     }
 
     public File getCurrentConfig() {
-        File file = new File(MAIN_FOLDER + "/misc/currentcfg.txt");
+        File file = new File(MAIN_FOLDER+File.separator+"misc"+File.separator+"currentcfg.txt");
         String name = "config";
         try {
             if (file.exists()) {

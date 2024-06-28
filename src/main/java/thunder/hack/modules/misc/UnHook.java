@@ -1,11 +1,13 @@
 package thunder.hack.modules.misc;
 
+import baritone.api.utils.SettingsUtil;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.util.Icons;
 import net.minecraft.util.Formatting;
 import thunder.hack.ThunderHack;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.ClientSettings;
+import thunder.hack.setting.Setting;
 import thunder.hack.utility.math.MathUtility;
 
 import java.io.*;
@@ -14,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static thunder.hack.modules.client.ClientSettings.isRu;
@@ -24,6 +27,9 @@ public class UnHook extends Module {
     public UnHook() {
         super("UnHook", Category.MISC);
     }
+
+    private final Setting<Boolean> deleteGz = new Setting<>("Delete .log.gz", false);
+    private final Setting<Boolean> reiLog = new Setting<>("Delete rei.log", false);
 
     List<Module> list;
 
@@ -66,24 +72,25 @@ public class UnHook extends Module {
                 if (!directory.exists() || !directory.isDirectory()) {
                     return;
                 }
+               if(deleteGz.getValue()) {
+                   String regex = "\\d{4}-\\d{2}-\\d{2}-\\d{1}.log.gz";
+                   Pattern pattern = Pattern.compile(regex);
 
-                String regex = "\\d{4}-\\d{2}-\\d{2}-\\d{1}.log.gz";
-                Pattern pattern = Pattern.compile(regex);
+                   File[] filesToDelete = directory.listFiles((dir, name) -> pattern.matcher(name).matches());
 
-                File[] filesToDelete = directory.listFiles((dir, name) -> pattern.matcher(name).matches());
-
-                if(filesToDelete == null || filesToDelete.length == 0) {
-                    System.out.println("No logs to remove!");
-                } else {
-                    for (File file : filesToDelete) {
-                        try {
-                            Files.delete(Paths.get(file.getAbsolutePath()));
-                            Files.delete(Paths.get(mc.runDirectory + File.separator + "logs" + File.separator + "rei.log"));
-                        } catch (Exception ignored) {
-                        }
-                    }
-                }
-
+                   if (filesToDelete == null || filesToDelete.length == 0) {
+                       System.out.println("No logs to remove!");
+                   } else {
+                       for (File file : filesToDelete) {
+                           try {
+                               Files.delete(Paths.get(file.getAbsolutePath()));
+                               if(reiLog.getValue())
+                                Files.delete(Paths.get(mc.runDirectory + File.separator + "logs" + File.separator + "rei.log"));
+                           } catch (Exception ignored) {
+                           }
+                       }
+                   }
+               }
                 //Clean latest.log
                 try {
                         File file = new File(mc.runDirectory + File.separator + "logs" + File.separator + "latest.log");

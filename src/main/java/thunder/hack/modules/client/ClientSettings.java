@@ -1,14 +1,7 @@
 package thunder.hack.modules.client;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
-import thunder.hack.utility.render.Render2DEngine;
-
-import java.awt.*;
 
 public final class ClientSettings extends Module {
     public static Setting<Boolean> futureCompatibility = new Setting<>("FutureCompatibility", false);
@@ -22,10 +15,16 @@ public final class ClientSettings extends Module {
     public static Setting<Boolean> customBob = new Setting<>("CustomBob", true);
     public static Setting<Language> language = new Setting<>("Language", Language.ENG);
     public static Setting<String> prefix = new Setting<>("Prefix", "@");
+    public static Setting<ClipCommandMode> clipCommandMode = new Setting<>("ClipCommandMode", ClipCommandMode.Matrix);
 
     public enum Language {
         RU,
         ENG
+    }
+
+    public enum ClipCommandMode {
+        Default,
+        Matrix
     }
 
     public ClientSettings() {
@@ -35,8 +34,4 @@ public final class ClientSettings extends Module {
     public static boolean isRu() {
         return language.is(Language.RU);
     }
-
-
-
-
 }
