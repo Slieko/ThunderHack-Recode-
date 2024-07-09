@@ -231,6 +231,7 @@
   "descriptions.commands.gettreasure": "Узнать координаты клада из карты сокровищ.",
   "descriptions.commands.tabparse": "Сохранить список игроков в файл.",
   "descriptions.commands.gc": "Очистить оперативную память.",
-    "descriptions.sliekos-tweaks.meteorspeedmine": "Спидмайн как на метеоре (даётся эффект). Никакого копипаста, только позаимствована идея",
-  "descriptions.sliekos-tweaks.autocrash": "кикает с сервера"
+  "descriptions.player.meteorspeedmine": "Спидмайн как на метеоре (даётся эффект). Никакого копипаста, только позаимствована идея",
+  "descriptions.client.selfdestruct": "Полностью выключает чит и удаляет его из памяти. Сделай бекап своего конфига перед включением!",
+  "descriptions.client.telegramapi": "Автоматически отошлёт тебе в тг информацию о мистах"
 }

@@ -4,16 +4,9 @@ import com.mojang.logging.LogUtils;
 import meteordevelopment.orbit.EventBus;
 import meteordevelopment.orbit.IEventBus;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import thunder.hack.core.Core;
 import thunder.hack.core.impl.*;
@@ -27,8 +20,6 @@ import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-import static thunder.hack.core.IManager.mc;
 
 
 public class ThunderHack implements ModInitializer {
@@ -46,6 +37,8 @@ public class ThunderHack implements ModInitializer {
     public static KeyListening currentKeyListener;
     public static String[] contributors = new String[16];
     public static boolean baritone = false;
+    public static boolean unhooked = false;
+    public static boolean ias = false;
 
     /*-----------------    Managers  ---------------------*/
     public static NotificationManager notificationManager = new NotificationManager();
@@ -104,7 +97,7 @@ public class ThunderHack implements ModInitializer {
 
         macroManager.onLoad();
         wayPointManager.onLoad();
-        telemetryManager.onLoad();
+        telemetryManager.fetchData();
 
         Render2DEngine.initShaders();
 
@@ -115,7 +108,12 @@ public class ThunderHack implements ModInitializer {
         try {
             Class.forName("baritone.api.BaritoneAPI");
             baritone = true;
-        } catch (ClassNotFoundException e) {}
+        } catch (ClassNotFoundException ignore) {}
+        try {
+            Class.forName("ru.vidtu.ias.Config");
+            ias = true;
+        } catch (ClassNotFoundException ignore) {}
+
 
 
         LogUtils.getLogger().info("""
@@ -132,18 +130,17 @@ public class ThunderHack implements ModInitializer {
         LogUtils.getLogger().info("[ThunderHack] Init time: " + (System.currentTimeMillis() - initTime) + " ms.");
 
         initTime = System.currentTimeMillis();
-        telemetryManager.telemetryLogin();
     }
 
-
-  //  public static void syncVersion() {
-  //      try {
-    //        if (!new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Pan4ur/THRecodeUtil/main/syncVersion.txt").openStream())).readLine().equals(VERSION))
-   //             isOutdated = true;
-   //     } catch (Exception ignored) {
-  //      }
- //   }
-
+/*
+   public static void syncVersion() {
+        try {
+            if (!new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Pan4ur/THRecodeUtil/main/syncVersion.txt").openStream())).readLine().equals(VERSION))
+                isOutdated = true;
+        } catch (Exception ignored) {
+      }
+  }
+*/
     public static void syncContributors() {
         try {
             URL list = new URL("https://raw.githubusercontent.com/Pan4ur/THRecodeUtil/main/thTeam.txt");

@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -50,10 +51,14 @@ import java.awt.*;
 import java.util.Objects;
 import java.util.Queue;
 
+import static net.minecraft.entity.effect.StatusEffects.HASTE;
+
 // pasted and adapted by sl1eko!
 // source getted by qunix!
 public final class SpeedMine extends Module {
     public final Setting<Mode> mode = new Setting<>("Mode", Mode.Packet);
+
+    private final Setting<Integer> amplifier = new Setting<>("Amplifier",1, 1, 10);
     private final Setting<StartMode> startMode = new Setting<>("StartMode", StartMode.StartAbort, v -> mode.getValue() == Mode.Packet);
     private final Setting<SwitchMode> switchMode = new Setting<>("SwitchMode", SwitchMode.Alternative, v -> mode.getValue() != Mode.Damage);
     private final Setting<Integer> swapDelay = new Setting<>("SwapDelay", 50, 0, 1000, v -> switchMode.getValue() == SwitchMode.Alternative && mode.getValue() != Mode.Damage);
@@ -104,6 +109,10 @@ public final class SpeedMine extends Module {
     public void onDisable() {
         this.miningQueue.clear();
         reset();
+        if(ModuleManager.speedMine.mode.getValue() == Mode.Effect) {
+            assert mc.player != null;
+            mc.player.removeStatusEffect(StatusEffects.HASTE);
+        }
     }
 
     @Override
@@ -115,6 +124,11 @@ public final class SpeedMine extends Module {
             this.miningQueue = Queues.synchronizedQueue(EvictingQueue.create(1));
         }
         reset();
+     if(ModuleManager.speedMine.mode.getValue() == Mode.Effect) {
+         assert mc.player != null;
+         mc.player.setStatusEffect(new StatusEffectInstance(HASTE, -1, amplifier.getValue() -1, false, false, false), null);
+     }
+
     }
 
     @Override
@@ -469,8 +483,8 @@ public final class SpeedMine extends Module {
             }
         }
 
-        if (mc.player.hasStatusEffect(StatusEffects.HASTE))
-            digSpeed *= 1 + (Objects.requireNonNull(mc.player.getStatusEffect(StatusEffects.HASTE)).getAmplifier() + 1) * 0.2F;
+        if (mc.player.hasStatusEffect(HASTE))
+            digSpeed *= 1 + (Objects.requireNonNull(mc.player.getStatusEffect(HASTE)).getAmplifier() + 1) * 0.2F;
 
 
         if (mc.player.hasStatusEffect(StatusEffects.MINING_FATIGUE))
@@ -565,7 +579,8 @@ public final class SpeedMine extends Module {
     public enum Mode {
         Packet,
         GrimInstant,
-        Damage
+        Damage,
+        Effect
     }
 
     public enum RenderMode {

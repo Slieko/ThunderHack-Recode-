@@ -42,7 +42,7 @@ public class Crosshair extends Module {
     }
 
     private enum Mode {
-        Circle, WiseTree, Dot
+        Circle, Dot
     }
 
     private float xAnim, yAnim, prevPitch, prevProgress;
@@ -80,20 +80,6 @@ public class Crosshair extends Module {
             case Circle -> {
                 Render2DEngine.drawArc(context.getMatrices(), xAnim - 25, yAnim - 25, 50, 50, 0.05f, 0.12f, 0, Render2DEngine.interpolateFloat(prevProgress, progress, mc.getTickDelta()));
                 prevProgress = progress;
-            }
-            case WiseTree -> {
-                Color color = this.color.getValue().getColorObject();
-                context.getMatrices().push();
-                context.getMatrices().translate(xAnim, yAnim, 0);
-                context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotation((System.currentTimeMillis() % 70000) / 70000f * 360f));
-                context.getMatrices().translate(-xAnim, -yAnim, 0);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim, yAnim - 5, 5, 1.5f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim + 4, 5.25f, 1.5f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5f, yAnim - 5, 1.5f, 4.25f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim + 3.5f, yAnim, 1.5f, 5.5f, color);
-                context.getMatrices().pop();
             }
             case Dot -> {
                 context.getMatrices().push();

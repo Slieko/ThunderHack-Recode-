@@ -1,6 +1,7 @@
 package thunder.hack.modules.render;
 
 import com.google.common.collect.Ordering;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -40,6 +41,7 @@ import thunder.hack.core.impl.FriendManager;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.hud.impl.PotionHud;
+import thunder.hack.gui.hud.impl.WaterMark;
 import thunder.hack.modules.Module;
 import thunder.hack.modules.client.HudEditor;
 import thunder.hack.modules.misc.NameProtect;
@@ -57,6 +59,7 @@ import java.util.Objects;
 import static thunder.hack.utility.render.Render2DEngine.CONTAINER_BACKGROUND;
 
 public class NameTags extends Module {
+    private final Setting<Boolean> self = new Setting<>("Self",false);
     private final Setting<Float> scale = new Setting<>("Scale", 1f, 0.1f, 10f);
     private final Setting<Float> height = new Setting<>("Height", 2f, 0.1f, 10f);
     private final Setting<Boolean> gamemode = new Setting<>("Gamemode", false);
@@ -98,7 +101,7 @@ public class NameTags extends Module {
 
     public void onRender2D(DrawContext context) {
         for (PlayerEntity ent : mc.world.getPlayers()) {
-            if (ent == mc.player && mc.options.getPerspective().isFirstPerson()) continue;
+            if (ent == mc.player && (mc.options.getPerspective().isFirstPerson() || !self.getValue())) continue;
             if (getEntityPing(ent) <= 0 && !bots.getValue()) continue;
 
             double x = ent.prevX + (ent.getX() - ent.prevX) * mc.getTickDelta();
@@ -127,6 +130,7 @@ public class NameTags extends Module {
             else {
                 final_string += (ent.getDisplayName().getString()) + " ";
             }
+
 
 
             if (hp.getValue() && health.is(Health.Number)) {
@@ -250,6 +254,17 @@ public class NameTags extends Module {
                     Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 3f), textWidth + 6, 1, HudEditor.getColor(0));
                     Render2DEngine.drawRect(context.getMatrices(), tagX - 3, (float) (posY - 14f), 1, 11, HudEditor.getColor(180));
                     Render2DEngine.drawRect(context.getMatrices(), tagX + textWidth + 2, (float) (posY - 14f), 1, 11, HudEditor.getColor(90));
+                }
+                if (ThunderHack.telemetryManager.getOnlinePlayers().contains(ent.getGameProfile().getName())) {
+                    Render2DEngine.drawRect(context.getMatrices(), tagX - 14, (float) (posY - 13f), 12, 11, color.brighter().brighter());
+                    RenderSystem.enableBlend();
+                    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+                    Color lColor = HudEditor.getColor(0);
+                    RenderSystem.setShaderColor(lColor.getRed() / 255f, lColor.getGreen() / 255f, lColor.getBlue() / 255f, 1f);
+                    RenderSystem.setShaderTexture(0, WaterMark.logo);
+                    Render2DEngine.renderTexture(context.getMatrices(), tagX - 13, (float) (posY - 12.5f), 10, 10, 0, 0, 256, 256, 256, 256);
+                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                    RenderSystem.disableBlend();
                 }
 
                 if (font.getValue() == Font.Fancy) {

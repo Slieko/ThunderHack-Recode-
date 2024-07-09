@@ -42,6 +42,9 @@ repositories {
 			}
 		}
 	}
+	maven {
+		url "https://cursemaven.com"
+	}
 	mavenCentral()
 	jcenter()
 }
@@ -57,7 +60,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-
+	modApi "curse.maven:in-game-account-switcher-232676:4967040"
 
 	modImpl("org.ladysnake:satin:${project.satin_version}")
 

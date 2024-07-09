@@ -1,7 +1,9 @@
 package thunder.hack.injection;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
+import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.TextVisitFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +26,9 @@ public class MixinTextVisitFactory {
     }
 
     private static String protect(String string) {
+        assert mc.player != null;
+
+
         if (!ModuleManager.nameProtect.isEnabled() || mc.player == null) {
             return string;
         }
@@ -37,7 +42,7 @@ public class MixinTextVisitFactory {
             if (string.contains(friend)) {
                 string = string.replace(friend, NameProtect.getCustomFriendsName());
             }
-        }
-        return string;
-    }
+
+        } return string;
+}
 }

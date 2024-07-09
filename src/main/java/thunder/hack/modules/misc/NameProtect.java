@@ -2,6 +2,7 @@ package thunder.hack.modules.misc;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.scoreboard.ScoreboardObjective;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.FriendManager;
 import thunder.hack.core.impl.ModuleManager;
@@ -29,5 +30,7 @@ public class NameProtect extends Module {
     public static String getCustomFriendsName() {
         return ModuleManager.nameProtect.isEnabled() && NameProtect.friendProtect.getValue() ? friendName.getValue().replaceAll("&", "\u00a7") : mc.getName();
     }
+
+
 
 }

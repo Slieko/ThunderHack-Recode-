@@ -10,7 +10,6 @@ import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.hud.HudElement;
 import thunder.hack.gui.hud.impl.*;
 import thunder.hack.modules.Module;
-import thunder.hack.modules.Slk.MeteorSpeedMine;
 import thunder.hack.modules.client.*;
 import thunder.hack.modules.combat.*;
 import thunder.hack.modules.misc.*;
@@ -253,8 +252,10 @@ public class ModuleManager implements IManager {
     public static ESP esp = new ESP();
     public static PacketCanceler packetCanceler = new PacketCanceler();
     public static AntiBallPlace antiBallPlace = new AntiBallPlace();
-    public static MeteorSpeedMine speedmine2 = new MeteorSpeedMine();
     public static QunixNew1 qunixnew1 = new QunixNew1();
+
+    // public static SelfDestruct selfDestruct = new SelfDestruct();
+
 
 
     public ModuleManager() {

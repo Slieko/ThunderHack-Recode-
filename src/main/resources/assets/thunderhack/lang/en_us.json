@@ -231,6 +231,7 @@
   "descriptions.commands.gettreasure": "Find out the coordinates of the treasure from the treasure map.",
   "descriptions.commands.tabparse": "Save the list of players to a file.",
   "descriptions.commands.gc": "Run a garbage collector (free some memory).",
-  "descriptions.sliekos-tweaks.meteorspeedmine": "Speedmine from meteor (grant haste effect). No copypaste only idea",
-  "descriptions.sliekos-tweaks.autocrash": "kicks from server"
+  "descriptions.player.meteorspeedmine": "Speedmine from meteor (grant haste effect). No copypaste only idea",
+  "descriptions.client.selfdestruct": "WARNING! Backup your config before enabling! Fully disabling cheat and removing it from memory!",
+  "descriptions.client.telegramapi": "Auto-sending info about events (FunTime)"
 }

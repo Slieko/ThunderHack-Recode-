@@ -1,6 +1,7 @@
 package thunder.hack.gui.mainmenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -13,6 +14,9 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
+import ru.vidtu.ias.gui.IASConfigScreen;
+import the_fireplace.ias.gui.AccountListScreen;
+import thunder.hack.ThunderHack;
 import thunder.hack.core.impl.ModuleManager;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.utility.ThunderUtility;
@@ -29,6 +33,9 @@ import static thunder.hack.modules.Module.mc;
 public class MainMenuScreen extends Screen {
     private static final Identifier TH_TEAM = new Identifier("thunderhack","textures/gui/elements/thteam.png");
     private static final Identifier FORK_AUTHOR = new Identifier("thunderhack","textures/gui/elements/slk.png");
+    private static final Identifier IAS = new Identifier("thunderhack","textures/gui/elements/friendmanagericon.png");
+    Screen prevScreen = mc.currentScreen;
+
     private final List<MainMenuButton> buttons = new ArrayList<>();
     public boolean confirm = false;
     public static int ticksActive;
@@ -87,7 +94,10 @@ public class MainMenuScreen extends Screen {
         buttons.forEach(b -> b.onRender(context, mouseX, mouseY));
         Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
         buttons.forEach(b -> b.onRender(context, mouseX, mouseY));
-
+        if(ThunderHack.ias) {
+            Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 180, mc.getWindow().getScaledHeight() - 60, 40, 40, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 180, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
+            buttons.forEach(b -> b.onRender(context, mouseX, mouseY));
+        }
         boolean hoveredLogo = Render2DEngine.isHovered(mouseX, mouseY, (int) (halfOfWidth - 120), (int) (halfOfHeight - 130), 210, 50);
 
         FontRenderers.thglitchBig.drawCenteredString(context.getMatrices(), "THUNDERHACK", (int) (halfOfWidth), (int) (halfOfHeight - 120), new Color(255, 255, 255, hoveredLogo ? 230 : 180).getRGB());
@@ -102,7 +112,10 @@ public class MainMenuScreen extends Screen {
         RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
         context.drawTexture(FORK_AUTHOR, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40, 0, 0, 40, 40, 40, 40);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-
+        if(ThunderHack.ias) {
+            context.drawTexture(IAS, mc.getWindow().getScaledWidth() - 180, mc.getWindow().getScaledHeight() - 58, 40, 40, 0, 0, 40, 40, 40, 40);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        }
     }
 
     @Override
@@ -121,8 +134,11 @@ public class MainMenuScreen extends Screen {
             mc.setScreen(CreditsScreen.getInstance());
         if (Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 120, mc.getWindow().getScaledHeight() - 60, 40, 40))
             Util.getOperatingSystem().open(URI.create("https://github.com/Slieko/ThunderHack-Recode-"));
+        if (ThunderHack.ias && Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 180, mc.getWindow().getScaledHeight() - 60, 40, 40))
+            mc.setScreen(new AccountListScreen(prevScreen));
         if (Render2DEngine.isHovered(mouseX, mouseY, (int) (halfOfWidth - 157), (int) (halfOfHeight - 140), 300, 70))
             Util.getOperatingSystem().open(URI.create("https://thunderhack.onrender.com/"));
+
 
         return super.mouseClicked(mouseX, mouseY, button);
     }

@@ -4,6 +4,7 @@ import thunder.hack.modules.Module;
 import thunder.hack.setting.Setting;
 
 public final class ClientSettings extends Module {
+    public static Setting<Boolean> telemetry = new Setting<>("CustomBob", true);
     public static Setting<Boolean> futureCompatibility = new Setting<>("FutureCompatibility", false);
     public static Setting<Boolean> customMainMenu = new Setting<>("CustomMainMenu", true);
     public static Setting<Boolean> scaleFactorFix = new Setting<>("ScaleFactorFix", false);
