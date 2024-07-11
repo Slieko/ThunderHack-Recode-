@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class ModuleManager implements IManager {
     public ArrayList<Module> modules = new ArrayList<>();
     public List<Module> sortedModules = new ArrayList<>();
+    public List<Integer> activeMouseKeys = new ArrayList<>();
 
     public static LevitationControl levitationControl = new LevitationControl();
     public static InventoryCleaner inventoryCleaner = new InventoryCleaner();
@@ -396,6 +397,8 @@ public class ModuleManager implements IManager {
     public void onMoseKeyReleased(int eventKey) {
         if (eventKey == -1 || mc.currentScreen instanceof ClickGUI)
             return;
+
+        activeMouseKeys.add(eventKey);
 
         modules.forEach(module -> {
             if (Objects.equals(module.getBind().getBind(), "M" + eventKey) && module.getBind().isHold())

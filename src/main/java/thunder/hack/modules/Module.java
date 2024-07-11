@@ -322,15 +322,24 @@ public abstract class Module {
     }
 
     public boolean isKeyPressed(int button) {
-        if (button == -1 || ModuleManager.unHook.isEnabled())
+        if (button == -1 || !ThunderHack.unhooked)
             return false;
+
+        if (ThunderHack.moduleManager.activeMouseKeys.contains(button)) {
+            ThunderHack.moduleManager.activeMouseKeys.clear();
+            return true;
+        }
+
+        if (button < 10) // check
+            return false;
+
         return InputUtil.isKeyPressed(mc.getWindow().getHandle(), button);
     }
 
     public boolean isKeyPressed(Setting<Bind> bind) {
-        if (bind.getValue().getKey() == -1 || ModuleManager.unHook.isEnabled())
+        if (bind.getValue().getKey() == -1 || !ThunderHack.unhooked)
             return false;
-        return InputUtil.isKeyPressed(mc.getWindow().getHandle(), bind.getValue().getKey());
+        return isKeyPressed(bind.getValue().getKey());
     }
 
     public @Nullable Setting<?> getSettingByName(String name) {
