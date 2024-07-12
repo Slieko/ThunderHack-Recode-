@@ -55,6 +55,7 @@ public class ThunderHack implements ModInitializer {
     public static CommandManager commandManager = new CommandManager();
     public static SoundManager soundManager = new SoundManager();
     public static Core core = new Core();
+    public static ProxyManager proxyManager = new ProxyManager();
     public static TelemetryManager telemetryManager = new TelemetryManager();
     /*--------------------------------------------------------*/
 
@@ -93,10 +94,12 @@ public class ThunderHack implements ModInitializer {
             configManager.save(configManager.getCurrentConfig());
             wayPointManager.saveWayPoints();
             macroManager.saveMacro();
+            proxyManager.saveProxies();
         }));
 
         macroManager.onLoad();
         wayPointManager.onLoad();
+        proxyManager.onLoad();
         telemetryManager.fetchData();
 
         Render2DEngine.initShaders();

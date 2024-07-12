@@ -27,6 +27,7 @@ import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.number.StyledNumberFormat;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -76,6 +77,7 @@ public class NameTags extends Module {
     private final Setting<Boolean> bots = new Setting<>("Bots", false);
     private final Setting<Boolean> potions = new Setting<>("Potions", true);
     private final Setting<Boolean> shulkers = new Setting<>("Shulkers", true);
+    private final Setting<Boolean> tal = new Setting<>("Talisman Detection", true);
     private final Setting<ColorSetting> fillColorA = new Setting<>("Fill", new ColorSetting(0x80000000));
     private final Setting<ColorSetting> fillColorF = new Setting<>("FriendFill", new ColorSetting(0x80000000));
     private final Setting<Font> font = new Setting<>("FontMode", Font.Fancy);
@@ -157,8 +159,13 @@ public class NameTags extends Module {
 
                 ArrayList<ItemStack> stacks = new ArrayList<>();
 
-                if (armorMode.getValue() != Armor.Durability) stacks.add(ent.getOffHandStack());
+                if(tal.getValue()){
+                    if(ent.getInventory().offHand.get(0).getItem().getName().contains(Text.of("ехидны"))){
+                        final_string += "ДОЛБАЁБ";
+                    }
+                }
 
+                if (armorMode.getValue() != Armor.Durability) stacks.add(ent.getOffHandStack());
                 stacks.add(ent.getInventory().armor.get(0));
                 stacks.add(ent.getInventory().armor.get(1));
                 stacks.add(ent.getInventory().armor.get(2));

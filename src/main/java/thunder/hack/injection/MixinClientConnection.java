@@ -1,6 +1,11 @@
 package thunder.hack.injection;
 
+import io.netty.channel.ChannelPipeline;
+import io.netty.handler.proxy.Socks5ProxyHandler;
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.handler.PacketSizeLogger;
 import thunder.hack.ThunderHack;
+import thunder.hack.core.impl.ProxyManager;
 import thunder.hack.events.impl.PacketEvent;
 
 import thunder.hack.modules.Module;
@@ -11,6 +16,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.net.InetSocketAddress;
+
+import static thunder.hack.ThunderHack.mc;
 
 @Mixin(ClientConnection.class)
 public class MixinClientConnection {
@@ -55,5 +64,11 @@ public class MixinClientConnection {
         PacketEvent.SendPost event = new PacketEvent.SendPost(packet);
         ThunderHack.EVENT_BUS.post(event);
         if (event.isCancelled()) info.cancel();
+    }
+    @Inject(method = "addHandlers", at = @At("RETURN"))
+    private static void addHandlersHook(ChannelPipeline pipeline, NetworkSide side, PacketSizeLogger packetSizeLogger, CallbackInfo ci) {
+        ProxyManager.ThProxy proxy = ThunderHack.proxyManager.getActiveProxy();
+        if (proxy != null && side == NetworkSide.CLIENTBOUND && !mc.isInSingleplayer())
+            pipeline.addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getIp(), proxy.getPort()), proxy.getL(), proxy.getP()));
     }
 }

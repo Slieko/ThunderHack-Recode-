@@ -322,7 +322,7 @@ public abstract class Module {
     }
 
     public boolean isKeyPressed(int button) {
-        if (button == -1 || !ThunderHack.unhooked)
+        if (button == -1 || ModuleManager.unHook.isEnabled())
             return false;
 
         if (ThunderHack.moduleManager.activeMouseKeys.contains(button)) {
@@ -337,9 +337,9 @@ public abstract class Module {
     }
 
     public boolean isKeyPressed(Setting<Bind> bind) {
-        if (bind.getValue().getKey() == -1 || !ThunderHack.unhooked)
+        if (bind.getValue().getKey() == -1 || ModuleManager.unHook.isEnabled())
             return false;
-        return isKeyPressed(bind.getValue().getKey());
+        return InputUtil.isKeyPressed(mc.getWindow().getHandle(), bind.getValue().getKey());
     }
 
     public @Nullable Setting<?> getSettingByName(String name) {

@@ -44,7 +44,7 @@ public class ItemSelectWindow extends WindowBase {
     }
 
     public ItemSelectWindow(float x, float y, float width, float height, Setting<ItemSelectSetting> itemSetting) {
-        super(x, y, width, height, "Items / " + Formatting.GRAY + itemSetting.getModule().getName());
+        super(x, y, width, height, "Items / " + Formatting.GRAY + itemSetting.getModule().getName(), null);
         this.itemSetting = itemSetting;
         refreshItemPlates();
 
