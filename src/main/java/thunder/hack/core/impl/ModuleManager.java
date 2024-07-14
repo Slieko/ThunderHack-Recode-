@@ -255,6 +255,7 @@ public class ModuleManager implements IManager {
     public static AntiBallPlace antiBallPlace = new AntiBallPlace();
     public static QunixNew1 qunixnew1 = new QunixNew1();
     public static ChinaHat chinaHat = new ChinaHat();
+    public static Trails trails = new Trails();
 
     // public static SelfDestruct selfDestruct = new SelfDestruct();
 

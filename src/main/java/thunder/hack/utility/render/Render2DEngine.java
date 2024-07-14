@@ -334,7 +334,7 @@ public class Render2DEngine {
         }
     }
 
-    public static void registerTexture(Texture i, byte[] content) {
+    private static void registerTexture(Texture i, byte[] content) {
         try {
             ByteBuffer data = BufferUtils.createByteBuffer(content.length).put(content);
             data.flip();
@@ -731,9 +731,12 @@ public class Render2DEngine {
         }
     }
 
-    public static void drawHudBase2(MatrixStack matrices, float x, float y, float width, float height, float radius, float blurStrenth, float blurOpacity) {
+    public static void drawHudBase2(MatrixStack matrices, float x, float y, float width, float height, float radius, float blurStrenth, float blurOpacity, float animationFactor) {
         if (HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
-            drawRoundedBlur(matrices, x, y, width, height, radius, HudEditor.blurColor.getValue().getColorObject(), blurStrenth, blurOpacity);
+            blurStrenth *= animationFactor;
+            blurOpacity = (float) Render2DEngine.interpolate(1f, blurOpacity, animationFactor);
+            Color c = Render2DEngine.interpolateColorC(Color.BLACK, HudEditor.blurColor.getValue().getColorObject(), animationFactor);
+            drawRoundedBlur(matrices, x, y, width, height, radius, c, blurStrenth, blurOpacity);
         } else {
             preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
             HUD_SHADER.setParameters(x, y, width, height, radius, HudEditor.alpha.getValue(), HudEditor.alpha.getValue());
@@ -859,7 +862,6 @@ public class Render2DEngine {
         bufferBuilder.vertex(x1, y1, 0f).color(color).next();
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
-
     //http://www.java2s.com/example/java/2d-graphics/check-if-a-color-is-more-dark-than-light.html
     public static boolean isDark(Color color) {
         return isDark(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);

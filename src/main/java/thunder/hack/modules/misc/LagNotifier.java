@@ -61,34 +61,37 @@ public class LagNotifier extends Module {
         Render2DEngine.setupRender();
         RenderSystem.defaultBlendFunc();
 
-        if (!rubberbandTimer.passedMs(5000) && rubberbandNotify.getValue()) {
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        if (!mc.isInSingleplayer()) {
+            if (!rubberbandTimer.passedMs(5000) && rubberbandNotify.getValue()) {
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
-            FontRenderers.modules.drawCenteredString(context.getMatrices(), (isRu() ? "Обнаружен руббербенд! " : "Rubberband detected! ") + decimalFormat.format((5000f - (float) rubberbandTimer.getTimeMs()) / 1000f), (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
+                FontRenderers.modules.drawCenteredString(context.getMatrices(), (isRu() ? "Обнаружен руббербенд! " : "Rubberband detected! ") + decimalFormat.format((5000f - (float) rubberbandTimer.getTimeMs()) / 1000f), (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
+            }
+
+            if (packetTimer.passedMs(responseTreshold.getValue() * 1000L) && serverResponseNotify.getValue()) {
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                FontRenderers.modules.drawCenteredString(context.getMatrices(), (isRu() ? "Сервер перестал отвечать! " : "The server stopped responding! ") + decimalFormat.format((float) packetTimer.getTimeMs() / 1000f), (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
+
+                RenderSystem.setShaderColor(1f, 0.87f, 0f, 1f);
+                context.drawTexture(ICON, (int) ((float) mc.getWindow().getScaledWidth() / 2f - 40), (int) ((float) mc.getWindow().getScaledHeight() / 3f - 120), 0, 0, 80, 80, 80, 80);
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            }
+
+            if (ThunderHack.serverManager.getTPS() < 10 && notifyTimer.passedMs(60000) && tpsNotify.getValue()) {
+                String msg = isRu() ? "ТПС сервера ниже 10!" : "Server TPS is below 10!";
+                if (ModuleManager.tpsSync.isDisabled())
+                    msg += isRu() ? " Рекомендуется включить TPSSync" : "It is recommended to enable TPSSync";
+                ThunderHack.notificationManager.publicity("LagNotifier", msg, 8, Notification.Type.ERROR);
+
+                isLagging = true;
+                notifyTimer.reset();
+            }
+
+            if (ThunderHack.serverManager.getTPS() > 15 && isLagging) {
+                ThunderHack.notificationManager.publicity("LagNotifier", isRu() ? "ТПС сервера стабилизировался!" : "Server TPS has stabilized!", 8, Notification.Type.SUCCESS);
+                isLagging = false;
+            }
+            Render2DEngine.endRender();
         }
-
-        if (packetTimer.passedMs(responseTreshold.getValue() * 1000L) && serverResponseNotify.getValue()) {
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            FontRenderers.modules.drawCenteredString(context.getMatrices(), (isRu() ? "Сервер перестал отвечать! " : "The server stopped responding! ") + decimalFormat.format((float) packetTimer.getTimeMs() / 1000f), (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
-
-            RenderSystem.setShaderColor(1f, 0.87f, 0f, 1f);
-            context.drawTexture(ICON, (int) ((float) mc.getWindow().getScaledWidth() / 2f - 40), (int) ((float) mc.getWindow().getScaledHeight() / 3f - 120), 0, 0, 80, 80, 80, 80);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        }
-
-        if (ThunderHack.serverManager.getTPS() < 10 && notifyTimer.passedMs(60000) && tpsNotify.getValue()) {
-            String msg = isRu() ? "ТПС сервера ниже 10!" : "Server TPS is below 10!";
-            if (ModuleManager.tpsSync.isDisabled()) msg += isRu() ? " Рекомендуется включить TPSSync" : "It is recommended to enable TPSSync";
-            ThunderHack.notificationManager.publicity("LagNotifier", msg, 8, Notification.Type.ERROR);
-
-            isLagging = true;
-            notifyTimer.reset();
-        }
-
-        if (ThunderHack.serverManager.getTPS() > 15 && isLagging) {
-            ThunderHack.notificationManager.publicity("LagNotifier", isRu() ? "ТПС сервера стабилизировался!" : "Server TPS has stabilized!", 8, Notification.Type.SUCCESS);
-            isLagging = false;
-        }
-        Render2DEngine.endRender();
     }
 }

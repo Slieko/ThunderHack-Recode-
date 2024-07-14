@@ -13,23 +13,25 @@ import thunder.hack.modules.client.HudEditor;
 import thunder.hack.modules.client.Media;
 import thunder.hack.modules.misc.NameProtect;
 import thunder.hack.setting.Setting;
+import thunder.hack.setting.impl.ColorSetting;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.TextUtil;
 
 import java.awt.*;
-import java.util.Set;
 
 import static thunder.hack.core.impl.ServerManager.getPing;
 
 public class WaterMark extends HudElement {
     public WaterMark() {
-        super("WaterMark", 256, 36);
+        super("WaterMark", 100, 35);
     }
 
     public static final Setting<Mode> mode = new Setting<>("Mode", Mode.Big);
+    private final Setting<ColorSetting> color = new Setting<>("Color", new ColorSetting(Color.DARK_GRAY), v->mode.getValue() == Mode.Small);
     private final Setting<Boolean> ru = new Setting<>("RU", false, v->HudEditor.hudStyle.getValue() == HudEditor.HudStyle.Glowing && mode.getValue() != Mode.Small);
     private final Setting<Boolean> name_i = new Setting<>("RenderName", true,v-> mode.getValue() == Mode.Small);
     private final Setting<Boolean> server_ip = new Setting<>("RenderServer", true,v-> mode.getValue() == Mode.Small);
+    private final Setting<Brand> brand = new Setting<>("Brand", Brand.Recode, v->mode.getValue() == Mode.Small);
     private final Setting<Boolean> customName = new Setting<>("CustomName", false,v-> mode.getValue() == Mode.Small);
     public final Setting<String> name = new Setting<>("nickname", "notnull", v->customName.getValue() && mode.getValue() == Mode.Small);
 
@@ -54,6 +56,9 @@ public class WaterMark extends HudElement {
 
     private enum Mode {
         Big, Small, Classic, BaltikaClient
+    }
+    private enum Brand {
+        Recode, Alpha
     }
 
     public void onRender2D(DrawContext context) {
@@ -85,12 +90,14 @@ public class WaterMark extends HudElement {
 
                     Render2DEngine.setupRender();
 
-                    Render2DEngine.drawLine(getPosX() + 14, getPosY() - 0.5f,getPosX() + 14, getPosY() + 15f, HudEditor.getColor(270).getRGB());
+                    //Render2DEngine.drawLine(getPosX() + 14, getPosY()+12f,getPosX() + 14, getPosY()+2f, Color.GRAY.getRGB());
+                    Render2DEngine.drawRoundedBlur(context.getMatrices(), getPosX() + 13, getPosY() + 2.5f,1, 10,1 , color.getValue().getColorObject());
+                   // Render2DEngine.drawRect(context.getMatrices(), getPosX() + 13, getPosY() + 1.5f, 0.5f, 11, new Color(0x44FFFFFF, true));
 
-                    FontRenderers.sf_bold.drawGradientString(context.getMatrices(), "Recode", getPosX() + 18, getPosY() + 4.5f, 20);
+                    FontRenderers.sf_bold.drawGradientString(context.getMatrices(), (brand.getValue() == Brand.Recode ? "Recode" : " Alpha"), getPosX() + 18, getPosY() + 4.5f, 20);
                     RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
                     RenderSystem.setShaderTexture(0, logo);
-                    Render2DEngine.renderGradientTexture(context.getMatrices(), getPosX() + 1.5f, getPosY() + 1.5f, 11, 11, 0, 0, 128, 128, 128, 128,
+                    Render2DEngine.renderGradientTexture(context.getMatrices(), getPosX() + 1, getPosY() + 2, 11, 11, 0, 0, 128, 128, 128, 128,
                             HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
 
                     if (name_i.getValue()) {
@@ -124,7 +131,7 @@ public class WaterMark extends HudElement {
                         FontRenderers.sf_bold.drawString(context.getMatrices(), (mc.isInSingleplayer() ? "SinglePlayer" : mc.getNetworkHandler().getServerInfo().address), getPosX() + offset1 + name.getValue().length()+ 18.5f, getPosY() + 4.5f, HudEditor.textColor.getValue().getColor());
                     }
                     Render2DEngine.endRender();
-                    setBounds(getPosX(), getPosY(), 100, 15f);
+                    setBounds(getPosX(), getPosY(), 112 + (customName.getValue() ? name.getValue().length()*2 : mc.getSession().getUsername().length()*2) + (!mc.isInSingleplayer() ? mc.player.networkHandler.getServerInfo().address.length()*2 : "SinglePlayer".length() *2)*2 , 15f);
                 } else {
                     String info = Formatting.DARK_GRAY + "| " + Formatting.RESET + username + Formatting.DARK_GRAY + " | " + Formatting.RESET + getPing() + " ms" + Formatting.DARK_GRAY + " | " + Formatting.RESET + (mc.isInSingleplayer() ? "SinglePlayer" : mc.getNetworkHandler().getServerInfo().address);
                     float width = FontRenderers.sf_bold.getStringWidth("ThunderHack " + info) + 5;

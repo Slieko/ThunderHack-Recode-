@@ -107,9 +107,9 @@ public class MainMenuScreen extends Screen {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         if(ThunderHack.ias) {
-            Render2DEngine.drawHudBase(context.getMatrices(),605, 267, 40, 40, 5, Render2DEngine.isHovered(mouseX, mouseY, 605, 267, 40, 40) ? 0.7f : 1f);
-            RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, 605, 267, 40, 40) ? 0.7f : 1f);
-            context.drawTexture(IAS, 605, 268, 40, 40, 0, 0, 40, 40, 40, 40);
+            Render2DEngine.drawHudBase(context.getMatrices(),mc.getWindow().getScaledWidth() /2+125, mc.getWindow().getScaledHeight()/ 4 + 146, 40, 40, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() /2+125, mc.getWindow().getScaledHeight()/ 4 + 146, 40, 40) ? 0.7f : 1f);
+            RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() /2+125, mc.getWindow().getScaledHeight()/ 4 + 146, 40, 40) ? 0.7f : 1f);
+            context.drawTexture(IAS, mc.getWindow().getScaledWidth() /2+125, mc.getWindow().getScaledHeight()/ 4 + 148, 40, 40, 0, 0, 40, 40, 40, 40);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
 

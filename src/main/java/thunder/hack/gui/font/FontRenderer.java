@@ -21,6 +21,7 @@ import thunder.hack.modules.client.HudEditor;
 import java.awt.*;
 import java.io.Closeable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static thunder.hack.core.IManager.mc;
+import static thunder.hack.utility.math.MathUtility.roundToDecimal;
 
 public class FontRenderer implements Closeable {
     private static final Char2IntArrayMap colorCodes = new Char2IntArrayMap() {{
@@ -141,6 +143,7 @@ public class FontRenderer implements Closeable {
         return glyphMap.getGlyph(glyph);
     }
 
+    @Nullable
     private Glyph locateGlyph1(char glyph) {
         return allGlyphs.computeIfAbsent(glyph, this::locateGlyph0);
     }
@@ -161,19 +164,19 @@ public class FontRenderer implements Closeable {
         drawString(stack, s, x, y, r, g, b, a, false, 0);
     }
 
-
     public void drawString(MatrixStack stack, String s, float x, float y, float r, float g, float b, float a, boolean gradient, int offset) {
         if (prebakeGlyphsFuture != null && !prebakeGlyphsFuture.isDone()) {
             try {
                 prebakeGlyphsFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException ignored) {
             }
         }
+
         sizeCheck();
         float r2 = r, g2 = g, b2 = b;
         stack.push();
         y -= 3f;
-        stack.translate(x, y, 0);
+        stack.translate(roundToDecimal(x, 1), roundToDecimal(y, 1), 0);
         stack.scale(1f / this.scaleMul, 1f / this.scaleMul, 1f);
 
         RenderSystem.enableBlend();
@@ -298,8 +301,7 @@ public class FontRenderer implements Closeable {
                 continue;
             }
             Glyph glyph = locateGlyph1(c1);
-            float w = glyph == null ? 0 : glyph.width();
-            currentLine += w / (float) this.scaleMul;
+            currentLine +=  glyph == null ? 0 : (glyph.width() / (float) this.scaleMul);
         }
         return Math.max(currentLine, maxPreviousLines);
     }
@@ -314,15 +316,18 @@ public class FontRenderer implements Closeable {
         for (char c1 : c) {
             if (c1 == '\n') {
                 if (currentLine == 0) {
-                    currentLine = locateGlyph1(' ').height() / (float) this.scaleMul;
+                    currentLine = (locateGlyph1(' ') == null ? 0 : (Objects.requireNonNull(locateGlyph1(' ')).height() / (float) this.scaleMul));
                 }
                 previous += currentLine;
                 currentLine = 0;
                 continue;
             }
             Glyph glyph = locateGlyph1(c1);
-            float h = glyph == null ? 0 : glyph.height();
-            currentLine = Math.max(h / (float) this.scaleMul, currentLine);
+            currentLine = Math.max(
+
+                    glyph == null ? 0 : (glyph.height() / (float) this.scaleMul)
+
+                    , currentLine);
         }
         return currentLine + previous;
     }
@@ -342,18 +347,17 @@ public class FontRenderer implements Closeable {
             maps.clear();
             allGlyphs.clear();
             initialized = false;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 
     @Contract(value = "-> new", pure = true)
     public static @NotNull Identifier randomIdentifier() {
-        return new Identifier("thunderhack", "temp/" + randomString(32));
+        return new Identifier("thunderhack", "temp/" + randomString());
     }
 
-    private static String randomString(int length) {
-        return IntStream.range(0, length)
+    private static String randomString() {
+        return IntStream.range(0, 32)
                 .mapToObj(operand -> String.valueOf((char) new Random().nextInt('a', 'z' + 1)))
                 .collect(Collectors.joining());
     }
@@ -374,6 +378,9 @@ public class FontRenderer implements Closeable {
         drawString(stack, s, x, y, 255, 255, 255, 255, true, offset);
     }
 
-    record DrawEntry(float atX, float atY, float r, float g, float b, Glyph toDraw) {
+    public void drawGradientCenteredString(MatrixStack matrices, String s, float x, float y, int i) {
+        drawGradientString(matrices, s, x - getStringWidth(s) / 2f, y, i);
     }
+
+    record DrawEntry(float atX, float atY, float r, float g, float b, Glyph toDraw) {}
 }

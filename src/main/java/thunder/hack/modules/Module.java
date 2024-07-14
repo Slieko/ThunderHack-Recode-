@@ -131,6 +131,9 @@ public abstract class Module {
         if (!fullNullCheck() || (this instanceof UnHook) || (this instanceof Windows))
             onEnable();
 
+        if(ModuleManager.unHook.isEnabled())
+            disable();
+
         if (isOn()) ThunderHack.EVENT_BUS.subscribe(this);
         if (fullNullCheck()) return;
         if (ignoredModules.contains(getDisplayName())) {

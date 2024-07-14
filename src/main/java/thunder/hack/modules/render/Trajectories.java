@@ -22,17 +22,19 @@ import thunder.hack.setting.impl.ColorSetting;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.Render3DEngine;
 
+
 public class Trajectories extends Module {
     private final Setting<Mode> mode = new Setting<>("ColorMode", Mode.Sync);
     private final Setting<ColorSetting> color = new Setting<>("Color", new ColorSetting(0x2250b4b4), v -> mode.getValue() == Mode.Custom);
     private final Setting<Mode> lmode = new Setting<>("LandedColorMode", Mode.Sync);
     private final Setting<ColorSetting> lcolor = new Setting<>("LandedColor", new ColorSetting(0x2250b4b4), v -> lmode.getValue() == Mode.Custom);
-  //  public final Setting<Boolean> predictions = new Setting<>("Predictions", true);
 
     private enum Mode {
         Custom,
         Sync
     }
+
+
 
     public Trajectories() {
         super("Trajectories", Category.RENDER);
@@ -85,6 +87,8 @@ public class Trajectories extends Module {
 
         } else calcTrajectory(hand == Hand.OFF_HAND ? offHand.getItem() : mainHand.getItem(), mc.player.getYaw());
         mc.options.getBobView().setValue(prev_bob);
+
+
     }
 
     private void calcTrajectory(Item item, float yaw) {
@@ -176,12 +180,8 @@ public class Trajectories extends Module {
             if (y <= -65) break;
             if (motionX == 0 && motionY == 0 && motionZ == 0) continue;
 
-          //  if(ModuleManager.trajectories.predictions.getValue()){
-               // Render3DEngine.drawFilledBox(new MatrixStack(),new Box(bhr.getBlockPos()), Color.gray); //.dra
-               // Render3DEngine.drawTextIn3D("penis", lastPos, 0,0,0,Color.white);
-           // }
-
             Render3DEngine.drawLine(lastPos, pos, mode.getValue() == Mode.Sync ? HudEditor.getColor(i) : color.getValue().getColorObject());
         }
     }
+
 }

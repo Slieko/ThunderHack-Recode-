@@ -325,9 +325,7 @@ public class TargetHud extends HudElement {
                         Render2DEngine.renderRoundedGradientRect(context.getMatrices(), HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90), getPosX(), getPosY(), 95, 35, 7);
                         Render2DEngine.drawRound(context.getMatrices(), getPosX() + 0.5f, getPosY() + 0.5f, 94, 34, 7, Render2DEngine.injectAlpha(Color.BLACK, 220));
                     } else
-                        Render2DEngine.drawHudBase2(context.getMatrices(), getPosX(), getPosY(), 95, 35.5f, 8,
-                                HudEditor.blurStrength.getValue() * animationFactor,
-                                (float) Render2DEngine.interpolate(1f, HudEditor.blurOpacity.getValue(), animationFactor));
+                        Render2DEngine.drawHudBase2(context.getMatrices(), getPosX(), getPosY(), 137f, 47.5f, 9f, HudEditor.blurStrength.getValue(), HudEditor.blurOpacity.getValue(), animationFactor);
 
                     setBounds(getPosX(), getPosY(), 95, 35.5f);
 
@@ -396,9 +394,7 @@ public class TargetHud extends HudElement {
                         Render2DEngine.renderRoundedGradientRect(context.getMatrices(), HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90), getPosX(), getPosY(), 137, 47.5f, 9);
                         Render2DEngine.drawRound(context.getMatrices(), getPosX() + 0.5f, getPosY() + 0.5f, 136f, 46, 9, Render2DEngine.injectAlpha(Color.BLACK, 220));
                     } else
-                        Render2DEngine.drawHudBase2(context.getMatrices(), getPosX(), getPosY(), 137f, 47.5f, 9f,
-                                HudEditor.blurStrength.getValue() * animationFactor,
-                                (float) Render2DEngine.interpolate(1f, HudEditor.blurOpacity.getValue(), animationFactor));
+                        Render2DEngine.drawHudBase2(context.getMatrices(), getPosX(), getPosY(), 95, 35.5f, 8, HudEditor.blurStrength.getValue(), HudEditor.blurOpacity.getValue(), animationFactor);
 
                     setBounds(getPosX(), getPosY(), 137, 47.5f);
 

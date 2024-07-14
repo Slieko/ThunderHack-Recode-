@@ -1,6 +1,5 @@
 package thunder.hack.modules.misc;
 
-import baritone.api.utils.SettingsUtil;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.util.Icons;
 import net.minecraft.util.Formatting;
@@ -17,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import static thunder.hack.modules.client.ClientSettings.isRu;
@@ -38,13 +36,13 @@ public class UnHook extends Module {
 
     @Override
     public void onEnable() {
-
          code = (int) MathUtility.random(10, 99);
 
          for (int i = 0; i < 20; i++)
              sendMessage(isRu() ? Formatting.RED + "Ща все свернется, напиши в чат " + Formatting.WHITE + code + Formatting.RED + " чтобы все вернуть!"
                      : Formatting.RED + "It's all close now, write to the chat " + Formatting.WHITE + code + Formatting.RED + " to return everything!");
          list = ThunderHack.moduleManager.getEnabledModules();
+         list.remove(ModuleManager.unHook);
 
          mc.setScreen(null);
 
@@ -55,16 +53,16 @@ public class UnHook extends Module {
                          continue;
                      module.disable();
                  }
+                 cleanLogs();
+                 cleanGzLogs();
+                 vanillaClean();
                  ClientSettings.customMainMenu.setValue(false);
-
-
+                 // TODO: try to fix (?) bug
+                 setEnabled(true);
              });
-             cleanLogs();
-             cleanGzLogs();
-             vanillaClean();
          }, 5000);
          ThunderHack.unhooked = true;
-     }
+    }
 
 
     public void cleanLogs(){
@@ -118,11 +116,10 @@ public class UnHook extends Module {
     }
     public void vanillaClean(){
         try {
-            mc.getWindow().setIcon(mc.getDefaultResourcePack(), SharedConstants.getGameVersion().isStable() ? Icons.RELEASE : Icons.SNAPSHOT);
-        } catch (Exception e) {
+            mc.getWindow().setIcon(mc.getDefaultResourcePack(), Icons.RELEASE);
+        } catch (Exception ignored) {
         }
         mc.inGameHud.getChatHud().clear(true);
-        setEnabled(true);
     }
 
 
