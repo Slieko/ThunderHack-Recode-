@@ -54,25 +54,22 @@ public class ConfigManager implements IManager {
     public void load(String name, String category) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            if (isRu()) Command.sendMessage("Конфига " + name + " не существует!");
-            else Command.sendMessage("Config " + name + " does not exist!");
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
             return;
         }
 
         if (currentConfig != null)
             save(currentConfig);
 
-        ThunderHack.moduleManager.onUnload();
-        ThunderHack.moduleManager.onUnloadPost();
+        ThunderHack.moduleManager.onUnload(category);
         load(file, category);
-        ThunderHack.moduleManager.onLoad();
+        ThunderHack.moduleManager.onLoad(category);
     }
 
     public void load(String name) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            if (isRu()) Command.sendMessage("Конфига " + name + " не существует!");
-            else Command.sendMessage("Config " + name + " does not exist!");
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
 
             return;
         }
@@ -80,10 +77,9 @@ public class ConfigManager implements IManager {
         if (currentConfig != null)
             save(currentConfig);
 
-        ThunderHack.moduleManager.onUnload();
-        ThunderHack.moduleManager.onUnloadPost();
+        ThunderHack.moduleManager.onUnload("none");
         load(file);
-        ThunderHack.moduleManager.onLoad();
+        ThunderHack.moduleManager.onLoad("none");
     }
 
     public void loadCloud(String name) {
@@ -108,10 +104,9 @@ public class ConfigManager implements IManager {
             return;
         }
 
-        ThunderHack.moduleManager.onUnload();
-        ThunderHack.moduleManager.onUnloadPost();
+        ThunderHack.moduleManager.onUnload("none");
         loadModuleOnly(file, module);
-        ThunderHack.moduleManager.onLoad();
+        ThunderHack.moduleManager.onLoad("none");
     }
 
     public void load(@NotNull File config) {
@@ -134,7 +129,10 @@ public class ConfigManager implements IManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        currentConfig = config;
+
+        if (Objects.equals(category, "none"))
+            currentConfig = config;
+
         saveCurrentConfig();
     }
 

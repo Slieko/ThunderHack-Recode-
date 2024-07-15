@@ -305,7 +305,7 @@ public class ModuleManager implements IManager {
         return Arrays.asList(Module.Category.values());
     }
 
-    public void onLoad() {
+    public void onLoad(String category) {
         try {
             ThunderHack.EVENT_BUS.unsubscribe(unHook);
         } catch (Exception ignored) {
@@ -313,8 +313,10 @@ public class ModuleManager implements IManager {
         unHook.setEnabled(false);
 
         modules.sort(Comparator.comparing(Module::getName));
-        modules.stream().filter(Module::listening).forEach(ThunderHack.EVENT_BUS::subscribe);
-
+        modules.forEach(m -> {
+            if (m.isEnabled() && (m.getCategory().getName().toLowerCase().equals(category.toLowerCase()) || category.equals("none")))
+                ThunderHack.EVENT_BUS.subscribe(m);
+        });
         if (ConfigManager.firstLaunch) {
             ModuleManager.notifications.enable();
             soundFX.enable();
@@ -350,19 +352,14 @@ public class ModuleManager implements IManager {
         modules.forEach(Module::onLogin);
     }
 
-    public void onUnload() {
+    public void onUnload(String category) {
         modules.forEach(module -> {
-            if (module.isEnabled()) {
+            if (module.isEnabled() && (module.getCategory().getName().toLowerCase().equals(category.toLowerCase()) || category.equals("none"))) {
                 ThunderHack.EVENT_BUS.unsubscribe(module);
+                module.setEnabled(false);
             }
         });
         modules.forEach(Module::onUnload);
-    }
-
-    public void onUnloadPost() {
-        for (Module module : modules) {
-            module.setEnabled(false);
-        }
     }
 
     public void onKeyPressed(int eventKey) {

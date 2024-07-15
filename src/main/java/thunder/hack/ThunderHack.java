@@ -83,7 +83,7 @@ public class ThunderHack implements ModInitializer {
 
         FriendManager.loadFriends();
         configManager.load(configManager.getCurrentConfig());
-        moduleManager.onLoad();
+        moduleManager.onLoad("none");
         ThunderUtility.parseStarGazer();
 
 
